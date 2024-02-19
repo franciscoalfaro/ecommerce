@@ -14,6 +14,7 @@ import { PrivateLayout } from '../components/layout/private/PrivateLayout'
 import { Logout } from '../components/user/Logout'
 import { Profile } from '../components/user/Profile'
 import { Checkout } from '../components/user/Checkout'
+import { Categorys } from '../components/user/Categorys'
 
 export const Routing = () => {
     return (
@@ -27,6 +28,7 @@ export const Routing = () => {
                         <Route path='registro' element={<Register></Register>}></Route>
                         <Route path='recuperar' element={<Recovery></Recovery>}></Route>
                         <Route path='products' element={<Products></Products>}></Route>
+                        <Route path='categorys/:id/' element={<Categorys></Categorys>}></Route>
                         <Route path='checkout' element={<Checkout></Checkout>}></Route>
                         <Route path='cart' element={<Cart></Cart>}></Route>
                         <Route path='terminoycondiciones' element={<TerminoyCondiciones></TerminoyCondiciones>}></Route>

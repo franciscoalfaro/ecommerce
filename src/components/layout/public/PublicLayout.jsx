@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Header } from './Header'
 import { Navigate, Outlet, useNavigate } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
+import { Footer } from './Footer';
 
 export const PublicLayout = () => {
   const { auth } = useAuth();
@@ -19,6 +20,8 @@ export const PublicLayout = () => {
 
         <Header></Header>
         {auth && auth._id ? <Navigate to="/auth"></Navigate> : <Outlet></Outlet>}
+
+        <Footer></Footer>
 
        
 
