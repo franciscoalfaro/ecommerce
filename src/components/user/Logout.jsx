@@ -14,7 +14,7 @@ export const Logout = () => {
     //setear estados a vacios
     setAuth({})
 
-    navigate("/login")
+    navigate("/")
   })
 
   return (

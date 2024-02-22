@@ -3,7 +3,7 @@ import { NavLink, Navigate, Outlet, useNavigate } from 'react-router-dom'
 import useAuth from '../../../hooks/useAuth'
 import { Spiner } from '../../../hooks/Spiner'
 import { Header } from './Header'
-import { Sidebar } from './Sidebar'
+
 import { Footer } from './Footer'
 
 
@@ -29,7 +29,7 @@ export const PrivateLayout = () => {
     return (
       <>
         {/*Layout*/}
-        <Sidebar></Sidebar>
+
         <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
           <Header></Header>
           

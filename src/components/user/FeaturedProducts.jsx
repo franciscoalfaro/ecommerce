@@ -2,7 +2,7 @@ import React from 'react'
 
 export const FeaturedProducts = () => {
 
-    //llamado al end-point para listar los productos mas vendidos.
+    //llamado al end-point para listar los productos destacados o ultimos subidos.
 
     //llamado al end-point para mostrar los productos en ofertas. 
 

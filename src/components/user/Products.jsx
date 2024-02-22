@@ -1,74 +1,125 @@
-import React from 'react'
-import { FeaturedProducts } from './FeaturedProducts'
+import React, { useEffect, useState } from 'react'
+import { Global } from '../../helpers/Global';
+
 
 export const Products = () => {
+
+  //listar todos los productos y permitir un filtro de productos
+  const [filter, setFilter] = useState('');
+  const [products, setProducts] = useState([])
+
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+
+
+
+  const nextPage = () => {
+    let next = page + 1;
+    setPage(next);
+
+  };
+  const prevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  };
+
+  useEffect(() => {
+    productList(page)
+
+  }, [page])
+
+  const handleChange = (event) => {
+    setFilter(event.target.value);
+  };
+
+  const productList = async (nextPage = 1) => {
+
+    try {
+      const request = await fetch(Global.url + 'product/list' + '/' + nextPage, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('token')
+        }
+      })
+      const data = await request.json()
+      console.log(data)
+      if (data.status === 'success') {
+        setProducts(data.products)
+        setTotalPages(data.totalPages)
+
+
+      } else {
+        console.log(data.message)
+      }
+
+    } catch (error) {
+
+    }
+
+  }
+
+
   return (
     <main>
-
-      <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
-        <ol className="carousel-indicators">
-          <li data-target="#carouselExampleIndicators" data-slide-to="0" className="active"></li>
-          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-        </ol>
-        <div className="carousel-inner">
-          <div className="carousel-item active">
-            <img src="https://images.falabella.com/v3/assets/blt7c5c2f2f888a7cc3/bltc8a23d9a8cdce812/65d36d4bce7e23433bda094b/01-Vitrina-DK-Computacion-190224-AC.jpg?disable=upscale&format=webp&quality=70&width=1920" className="d-block w-100" alt="Imagen 1"></img>
-          </div>
-          <div className="carousel-item">
-            <img src="https://images.falabella.com/v3/assets/blt7c5c2f2f888a7cc3/bltc8a23d9a8cdce812/65d36d4bce7e23433bda094b/01-Vitrina-DK-Computacion-190224-AC.jpg?disable=upscale&format=webp&quality=70&width=1920" className="d-block w-100" alt="Imagen 2"></img>
-          </div>
-          <div className="carousel-item">
-            <img src="https://images.falabella.com/v3/assets/blt7c5c2f2f888a7cc3/bltc8a23d9a8cdce812/65d36d4bce7e23433bda094b/01-Vitrina-DK-Computacion-190224-AC.jpg?disable=upscale&format=webp&quality=70&width=1920" className="d-block w-100" alt="Imagen 3"></img>
-          </div>
-        </div>
-        <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span className="sr-only">Anterior</span>
-        </a>
-        <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-          <span className="carousel-control-next-icon" aria-hidden="true"></span>
-          <span className="sr-only">Siguiente</span>
-        </a>
-      </div>
-
-
-      <section className="py-4">
+      <section className="py-4 bg-light">
         <div className="container">
-          <h2>Categorías</h2>
+          <h2>Filtrar por</h2>
           <div className="row">
             <div className="col-lg-3 col-md-4 col-sm-6 mb-4">
-              <a href="#" className="card">
-                <img src="assets/img/image1.jpg" className="card-img-top" alt="Categoría 1"></img>
-                <div className="card-body">
-                  <h5 className="card-title">Calefaccion</h5>
-                </div>
-              </a>
-            </div>
-
-            <div className="col-lg-3 col-md-4 col-sm-6 mb-4">
-              <a href="#" className="card">
-                <img src="assets/img/image1.jpg" className="card-img-top" alt="Categoría 1"></img>
-                <div className="card-body">
-                  <h5 className="card-title">Cocina</h5>
-                </div>
-              </a>
-            </div>
-
-            <div className="col-lg-3 col-md-4 col-sm-6 mb-4">
-              <a href="#" className="card">
-                <img src="assets/img/image1.jpg" className="card-img-top" alt="Categoría 1"></img>
-                <div className="card-body">
-                  <h5 className="card-title">Bano</h5>
-                </div>
-              </a>
+              <select className="form-select" value={filter} onChange={handleChange}>
+                <option value="">Todos los productos</option>
+                <option value="zapatillas">Zapatillas</option>
+                <option value="ropa">Ropa</option>
+              </select>
             </div>
           </div>
         </div>
       </section>
 
-      <FeaturedProducts></FeaturedProducts>
+      <section className="py-4 bg-light">
+        <div className="container">
+          {products.length === 0 ? (
+            <p>No existen productos mas vendidos.</p>
+          ) : (
+            <div className="row">
+              {products.map(product => (
+                <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={product._id}>
+                  <div className="card">
+                    {product.images.length > 0 && (
+                      <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name}></img>
+                    )}
+                    
+                    <div className="card-body">
+                      <h5 className="card-title">{product.name}</h5>
+                      <p className="card-text">${product.price}</p>
+                      <button className="btn btn-primary"><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                    </div>
 
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <nav aria-label="Page navigation example">
+            <ul className="pagination">
+              <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
+                <a className="page-link" href="#" onClick={prevPage}>Previous</a>
+              </li>
+              {Array.from({ length: totalPages }, (_, index) => (
+                <li key={index} className={`page-item ${page === index + 1 ? 'active' : ''}`}>
+                  <a className="page-link" href="#" onClick={() => setPage(index + 1)}>{index + 1}</a>
+                </li>
+              ))}
+              <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
+                <a className="page-link" href="#" onClick={nextPage}>Next</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </section>
     </main>
   )
 }
