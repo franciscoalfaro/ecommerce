@@ -6,11 +6,12 @@ import ReactTimeAgo from 'react-time-ago';
 export const Products = () => {
 
   //listar todos los productos y permitir un filtro de productos
-  const [filter, setFilter] = useState('');
   const [products, setProducts] = useState([])
 
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [productFilter, setProductFilter] = useState('');
+  const [priceFilter, setPriceFilter] = useState('');
 
 
 
@@ -28,12 +29,9 @@ export const Products = () => {
   useEffect(() => {
     productList(page)
 
-  }, [page])
+  }, [page, productFilter])
 
-  const handleChange = (event) => {
-    setFilter(event.target.value);
-    
-  };
+
 
   const productList = async (nextPage = 1) => {
 
@@ -48,15 +46,23 @@ export const Products = () => {
       const data = await request.json()
       console.log(data)
       if (data.status === 'success') {
-        setProducts(data.products)
-        setTotalPages(data.totalPages)
+        let filteredProducts = data.products;
+        
 
+        if (productFilter) {
+          filteredProducts = filteredProducts.filter(product => product.brand === productFilter);
+          
+        }
+
+        setProducts(filteredProducts);
+        setTotalPages(data.totalPages);
 
       } else {
-        console.log(data.message)
+        setProducts([]);
       }
 
     } catch (error) {
+      console.log(data.message)
 
     }
 
@@ -68,22 +74,24 @@ export const Products = () => {
       <section className="py-4 bg-light">
         <div className="container">
           <h2>Filtrar por</h2>
+
           <div className="row">
             <div className="col-lg-3 col-md-4 col-sm-6 mb-4">
-              <select className="form-select" value={filter} onChange={handleChange}>
+              <select className="form-select" value={productFilter} onChange={(e) => setProductFilter(e.target.value)}>
                 <option value="">Todos los productos</option>
-                <option value="zapatillas">Zapatillas</option>
-                <option value="ropa">Ropa</option>
+                <option value="levis">levis</option>
+                <option value="opaline">opaline</option>
               </select>
             </div>
           </div>
+
         </div>
       </section>
 
       <section className="py-4 bg-light">
         <div className="container">
           {products.length === 0 ? (
-            <p>No existen productos mas vendidos.</p>
+            <p>No existen productos.</p>
           ) : (
             <div className="row">
               {products.map(product => (
@@ -92,12 +100,14 @@ export const Products = () => {
                     {product.images.length > 0 && (
                       <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name}></img>
                     )}
-                    
+
                     <div className="card-body">
                       <h5 className="card-title">{product.name}</h5>
                       <p className="card-text">${product.price}</p>
+                      <p className="card-text">Marca {product.brand}</p>
                       <p className="card-text">{product.description}</p>
                       <ReactTimeAgo date={new Date(product.createdAt)}></ReactTimeAgo>
+                      
                       <br></br>
                       <br></br>
                       <button className="btn btn-primary"><i className="bi bi-cart-fill"></i> Agregar al carrito</button>

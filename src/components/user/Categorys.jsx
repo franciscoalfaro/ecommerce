@@ -53,7 +53,7 @@ export const Categorys = () => {
   return (
     <section className="py-4 bg-light">
       <div className="container">
-        <h2>{nameCategoria}</h2>
+        <h2 className='title'>{nameCategoria}</h2>
         <br></br>
         {products.length === 0 ? (
           <p>No existen productos disponibles.</p>

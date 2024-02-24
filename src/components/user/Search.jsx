@@ -10,6 +10,8 @@ export const Search = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  const [genderFilter, setGenderFilter] = useState('');
+
 
   const nextPage = () => {
     let next = page + 1;
@@ -28,7 +30,7 @@ export const Search = () => {
 
   useEffect(() => {
     buscarProducto(1);
-  }, [params]);
+  }, [params, genderFilter]);
 
 
   const buscarProducto = async (nextPage = 1) => {
@@ -44,7 +46,13 @@ export const Search = () => {
       console.log(data)
 
       if (data.status === 'success') {
-        setProducts(data.resultados);
+        let filteredProducts = data.resultados;
+
+        if (genderFilter) {
+          filteredProducts = filteredProducts.filter(product => product.gender === genderFilter);
+        }
+
+        setProducts(filteredProducts);
         setTotalPages(data.totalPages);
 
       } else {
@@ -61,8 +69,24 @@ export const Search = () => {
 
   return (
     <>
+
       <section className="py-4 bg-light">
         <div className="container">
+
+          {/*filtro*/}
+          
+            <div className="row">
+              <div className="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <select className="form-select" value={genderFilter} onChange={(e) => setGenderFilter(e.target.value)}>
+                  <option value="">Todos los productos</option>
+                  <option value="hombre">Hombre</option>
+                  <option value="mujer">Mujer</option>
+                </select>
+              </div>
+            </div>
+        
+          {/*fin - filtro*/}
+
           {products.length === 0 ? (
             <p>Buscaste {params.product}</p>
           ) : (
@@ -79,6 +103,7 @@ export const Search = () => {
                       <h5 className="card-title">{product.name}</h5>
                       <p className="card-text">${product.price}</p>
                       <p className="card-text">{product.description}</p>
+                      <p className="card-text">Genero {product.gender}</p>
 
                       <button className="btn btn-primary"><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
                     </div>
