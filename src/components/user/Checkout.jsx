@@ -1,222 +1,225 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import { NavLink, useParams } from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
+import { trabajos } from '../data/chile';
 
 export const Checkout = () => {
-    return (
-        
-  <div class="container">
-    <main>
-      <div class="py-5 text-center">
-        <img class="d-block mx-auto mb-4" src="/docs/5.3/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"></img>
-        <h2>Checkout form</h2>
-      </div>
+  const { auth } = useAuth({});
 
-      <div class="row g-5">
-        <div class="col-md-5 col-lg-4 order-md-last">
-          <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-primary">Your cart</span>
-            <span class="badge bg-primary rounded-pill">3</span>
-          </h4>
-          <ul class="list-group mb-3">
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-              <div>
-                <h6 class="my-0">Product name</h6>
-                <small class="text-body-secondary">Brief description</small>
-              </div>
-              <span class="text-body-secondary">$12</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-              <div>
-                <h6 class="my-0">Second product</h6>
-                <small class="text-body-secondary">Brief description</small>
-              </div>
-              <span class="text-body-secondary">$8</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between lh-sm">
-              <div>
-                <h6 class="my-0">Third item</h6>
-                <small class="text-body-secondary">Brief description</small>
-              </div>
-              <span class="text-body-secondary">$5</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between bg-body-tertiary">
-              <div class="text-success">
-                <h6 class="my-0">Promo code</h6>
-                <small>EXAMPLECODE</small>
-              </div>
-              <span class="text-success">−$5</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between">
-              <span>Total (USD)</span>
-              <strong>$20</strong>
-            </li>
-          </ul>
+  const [proyecto, setProyecto] = useState({});
+  const params = useParams();
+  const [showTransferArea, setShowTransferArea] = useState(false);
 
-          <form class="card p-2">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Promo code"></input>
-              <button type="submit" class="btn btn-secondary">Redeem</button>
-            </div>
-          </form>
+  useEffect(() => {
+    let proyecto = trabajos.filter(trabajo => trabajo.id === params.id);
+    setProyecto(proyecto[0]);
+  }, [params.id]);
+
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const [selectedCommune, setSelectedCommune] = useState('');
+
+  useEffect(() => {
+    if (selectedRegion) {
+      const region = trabajos.find(region => region.name === selectedRegion);
+      const communes = region ? region.communes : [];
+      setSelectedCommune(communes);
+    }
+  }, [selectedRegion]);
+
+
+
+
+
+  return (
+    <div className="container">
+      <main>
+        <div className="py-5 text-center">
+          <img className="d-block mx-auto mb-4" src="../../../src/assets/img/cart2.svg" alt="" width="72" height="57" />
+          <h2>Confirmar Compra</h2>
         </div>
-        <div class="col-md-7 col-lg-8">
-          <h4 class="mb-3">Billing address</h4>
-          <form class="needs-validation" novalidate="">
-            <div class="row g-3">
-              <div class="col-sm-6">
-                <label for="firstName" class="form-label">First name</label>
-                <input type="text" class="form-control" id="firstName" placeholder="" value="" required=""></input>
-                <div class="invalid-feedback">
-                  Valid first name is required.
-                </div>
-              </div>
 
-              <div class="col-sm-6">
-                <label for="lastName" class="form-label">Last name</label>
-                <input type="text" class="form-control" id="lastName" placeholder="" value="" required=""></input>
-                <div class="invalid-feedback">
-                  Valid last name is required.
-                </div>
-              </div>
+        <div className="row g-5">
+          <div className="col-md-5 col-lg-4 order-md-last">
+            <h4 className="d-flex justify-content-between align-items-center mb-3">
+              {auth && auth._id ? (
+                <span className="text-primary"><NavLink to={'/auth/cart/'}>Mi Carro</NavLink></span>
+              ) : (
+                <span className="text-primary"><NavLink to={'/cart/'}>Mi Carro</NavLink></span>
+              )}
+              <span className="badge bg-primary rounded-pill">3</span>
+            </h4>
 
-              <div class="col-12">
-                <label for="username" class="form-label">Username</label>
-                <div class="input-group has-validation">
-                  <span class="input-group-text">@</span>
-                  <input type="text" class="form-control" id="username" placeholder="Username" required=""></input>
-                  <div class="invalid-feedback">
-                    Your username is required.
+            <ul className="list-group mb-3">
+              <li className="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                  <h6 className="my-0">Product name</h6>
+                  <small className="text-body-secondary">Brief description</small>
+                </div>
+                <span className="text-body-secondary">$12</span>
+              </li>
+              <li className="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                  <h6 className="my-0">Second product</h6>
+                  <small className="text-body-secondary">Brief description</small>
+                </div>
+                <span className="text-body-secondary">$8</span>
+              </li>
+              <li className="list-group-item d-flex justify-content-between lh-sm">
+                <div>
+                  <h6 className="my-0">Third item</h6>
+                  <small className="text-body-secondary">Brief description</small>
+                </div>
+                <span className="text-body-secondary">$5</span>
+              </li>
+              <li className="list-group-item d-flex justify-content-between bg-body-tertiary">
+                <div className="text-success">
+                  <h6 className="my-0">Promo code</h6>
+                  <small>EXAMPLECODE</small>
+                </div>
+                <span className="text-success">−$0</span>
+              </li>
+              <li className="list-group-item d-flex justify-content-between">
+                <span>Total (CLP)</span>
+                <strong>$20</strong>
+              </li>
+            </ul>
+
+            <form className="card p-2">
+              <div className="input-group">
+                <label htmlFor='promecode'></label>
+                <input type="text" className="form-control" placeholder="Promo code" />
+                <button type="submit" className="btn btn-secondary">Redeem</button>
+              </div>
+            </form>
+          </div>
+
+
+          <div className="col-md-7 col-lg-8">
+            <h4 className="mb-3">Direccion de envio</h4>
+            <form className="needs-validation" noValidate="">
+              <div className="row g-3">
+                <div className="col-sm-6">
+                  <label htmlFor="firstName" className="form-label">Nombre</label>
+                  <input type="text" className="form-control" id="firstName" placeholder="" defaultValue="" required="" />
+                  <div className="invalid-feedback">
+                    Valid first name is required.
+                  </div>
+                </div>
+
+                <div className="col-sm-6">
+                  <label htmlFor="lastName" className="form-label">Apellido</label>
+                  <input type="text" className="form-control" id="lastName" placeholder="" defaultValue="" required="" />
+                  <div className="invalid-feedback">
+                    Valid last name is required.
+                  </div>
+                </div>
+
+                <div className="col-12">
+                  <label htmlFor="email" className="form-label">Email <span className="text-body-secondary"></span></label>
+                  <input type="email" className="form-control" id="email" placeholder="you@email.com" />
+                  <div className="invalid-feedback">
+                    Please enter a valid email address for shipping updates.
+                  </div>
+                </div>
+
+                <div className="col-8">
+                  <label htmlFor="address" className="form-label">Direccion</label>
+                  <input type="text" className="form-control" id="address" placeholder="1234 Main St" required="" />
+                  <div className="invalid-feedback">
+                    Please enter your shipping address.
+                  </div>
+                </div>
+                <div className="col-4">
+                  <label htmlFor="address2" className="form-label">numero<span
+                    className="text-body-secondary"></span></label>
+                  <input type="text" className="form-control" id="address2" placeholder="123456" />
+                </div>
+
+                <div className="col-md-5">
+                  <label htmlFor="country" className="form-label">Region</label>
+                  <select className="form-select" id="country" required="" onChange={(e) => setSelectedRegion(e.target.value)}>
+                    <option defaultValue="">Seleciona...</option>
+                    {trabajos.map(pais => (
+                      <optgroup label={pais.name} key={pais.name}>
+                        {pais.regions.map(region => (
+                          <option key={region.name}>{region.name}</option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
+                  <div className="invalid-feedback">
+                    Please select a valid country.
+                  </div>
+                </div>
+
+                <div className="col-md-4">
+                  <label htmlFor="state" className="form-label">Comuna</label>
+                  <select className="form-select" id="state" required="" onChange={(e) => setSelectedCommune(e.target.value)}>
+                    <option defaultValue="">Seleciona...</option>
+                    {trabajos.map(pais => (
+                      pais.regions.map(region => (
+                        region.name === selectedRegion &&
+                        region.communes.map(commune => (
+                          <option key={commune.name}>{commune.name}</option>
+                        ))
+                      ))
+                    ))}
+                  </select>
+                  <div className="invalid-feedback">
+                    Please provide a valid state.
+                  </div>
+                </div>
+
+                <div className="col-md-3">
+                  <label htmlFor="zip" className="form-label">Codigo postal</label>
+                  <input type="text" className="form-control" id="zip" placeholder="" required="" />
+                  <div className="invalid-feedback">
+                    Zip code required.
                   </div>
                 </div>
               </div>
 
-              <div class="col-12">
-                <label for="email" class="form-label">Email <span class="text-body-secondary">(Optional)</span></label>
-                <input type="email" class="form-control" id="email" placeholder="you@example.com"></input>
-                <div class="invalid-feedback">
-                  Please enter a valid email address for shipping updates.
+              <hr className="my-4" />
+
+              <h4 className="mb-3">Payment</h4>
+
+              <div className="my-3">
+                <div className="form-check">
+                  <input id="Transferencia" name="paymentMethod" type="radio" className="form-check-input" defaultChecked="" required="" onChange={() => setShowTransferArea(true)} />
+                  <label className="form-check-label" htmlFor="credit">Transferencia</label>
+                </div>
+                <div className="form-check">
+                  <input id="debit" name="paymentMethod" type="radio" className="form-check-input" required="" onChange={() => setShowTransferArea(false)}/>
+                  <label className="form-check-label" htmlFor="debit">Mercado Pago</label>
+                </div>
+                <div className="form-check">
+                  <input id="paypal" name="paymentMethod" type="radio" className="form-check-input" required="" onChange={() => setShowTransferArea(false)}/>
+                  <label className="form-check-label" htmlFor="paypal">PayPal</label>
                 </div>
               </div>
 
-              <div class="col-12">
-                <label for="address" class="form-label">Address</label>
-                <input type="text" class="form-control" id="address" placeholder="1234 Main St" required=""></input>
-                <div class="invalid-feedback">
-                  Please enter your shipping address.
-                </div>
+              <div className="row gy-3">
+                {showTransferArea && (
+                  <div className="col-md-6" id='transferenciaHidden'>
+                    <label htmlFor="cc-name" className="form-label">Datos de transferencia</label>
+                    <p></p>
+                    <p>Banco Estado</p>
+                    <p>Cuenta Corriente: </p>
+                    <p>Rut: </p>
+                    <p>correo: </p>
+                  </div>
+                )}
               </div>
 
-              <div class="col-12">
-                <label for="address2" class="form-label">Address 2 <span
-                    class="text-body-secondary">(Optional)</span></label>
-                <input type="text" class="form-control" id="address2" placeholder="Apartment or suite"></input>
-              </div>
+              <hr className="my-4" />
 
-              <div class="col-md-5">
-                <label for="country" class="form-label">Country</label>
-                <select class="form-select" id="country" required="">
-                  <option value="">Choose...</option>
-                  <option>United States</option>
-                </select>
-                <div class="invalid-feedback">
-                  Please select a valid country.
-                </div>
-              </div>
-
-              <div class="col-md-4">
-                <label for="state" class="form-label">State</label>
-                <select class="form-select" id="state" required="">
-                  <option value="">Choose...</option>
-                  <option>California</option>
-                </select>
-                <div class="invalid-feedback">
-                  Please provide a valid state.
-                </div>
-              </div>
-
-              <div class="col-md-3">
-                <label for="zip" class="form-label">Zip</label>
-                <input type="text" class="form-control" id="zip" placeholder="" required=""></input>
-                <div class="invalid-feedback">
-                  Zip code required.
-                </div>
-              </div>
-            </div>
-
-            <hr class="my-4"></hr>
-
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="same-address"></input>
-              <label class="form-check-label" for="same-address">Shipping address is the same as my billing
-                address</label>
-            </div>
-
-            <div class="form-check">
-              <input type="checkbox" class="form-check-input" id="save-info"></input>
-              <label class="form-check-label" for="save-info">Save this information for next time</label>
-            </div>
-
-            <hr class="my-4"></hr>
-
-            <h4 class="mb-3">Payment</h4>
-
-            <div class="my-3">
-              <div class="form-check">
-                <input id="credit" name="paymentMethod" type="radio" class="form-check-input" checked="" required=""></input>
-                <label class="form-check-label" for="credit">Credit card</label>
-              </div>
-              <div class="form-check">
-                <input id="debit" name="paymentMethod" type="radio" class="form-check-input" required=""></input>
-                <label class="form-check-label" for="debit">Debit card</label>
-              </div>
-              <div class="form-check">
-                <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" required=""></input>
-                <label class="form-check-label" for="paypal">PayPal</label>
-              </div>
-            </div>
-
-            <div class="row gy-3">
-              <div class="col-md-6">
-                <label for="cc-name" class="form-label">Name on card</label>
-                <input type="text" class="form-control" id="cc-name" placeholder="" required=""></input>
-                <small class="text-body-secondary">Full name as displayed on card</small>
-                <div class="invalid-feedback">
-                  Name on card is required
-                </div>
-              </div>
-
-              <div class="col-md-6">
-                <label for="cc-number" class="form-label">Credit card number</label>
-                <input type="text" class="form-control" id="cc-number" placeholder="" required=""></input>
-                <div class="invalid-feedback">
-                  Credit card number is required
-                </div>
-              </div>
-
-              <div class="col-md-3">
-                <label for="cc-expiration" class="form-label">Expiration</label>
-                <input type="text" class="form-control" id="cc-expiration" placeholder="" required=""></input>
-                <div class="invalid-feedback">
-                  Expiration date required
-                </div>
-              </div>
-
-              <div class="col-md-3">
-                <label for="cc-cvv" class="form-label">CVV</label>
-                <input type="text" class="form-control" id="cc-cvv" placeholder="" required=""></input>
-                <div class="invalid-feedback">
-                  Security code required
-                </div>
-              </div>
-            </div>
-
-            <hr class="my-4"></hr>
-
-            <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
-          </form>
+              <button className="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
+            </form>
+          </div>
         </div>
-      </div>
-    </main>
-  </div>
-        
-    )
+      </main>
+      <br></br>
+    </div>
+    
+  )
 }

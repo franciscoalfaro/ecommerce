@@ -7,7 +7,6 @@ export const BestSellers = () => {
     const [totalPages, setTotalPages] = useState(1)
 
 
-
     const nextPage = () => {
         let next = page + 1;
         setPage(next);

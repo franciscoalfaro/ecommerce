@@ -3,10 +3,9 @@ import React from 'react'
 export const Footer = () => {
   return (
 
-    <footer className="bg-dark text-light text-center py-3">
-
+    <footer id="footer" className="text-center">
       <div className="container">
-        <p>Tu Tienda &copy; 2024. Todos los derechos reservados.</p>
+        <p className="copyright">&copy; 2024. Todos los derechos reservados. -</p>
       </div>
     </footer>
 

@@ -8,21 +8,23 @@ export const Nav = () => {
   const [categorys, setCategorys] = useState([])
   const navegar = useNavigate();
 
-  //crear un hooks para las ultimas publicaciones (3) y despues seleccionar al hacer clic en la publicacion se debe de ir a leer la misma
+
 
   const buscador = (e) => {
-      e.preventDefault()
-      let miBusqueda = e.target.search_field.value
-      //aca paso el parametro del campo de la busquera y la derivo a la ruta donde esta, con este codigo { replace: true } reemplazo lo que se escribe en la url
-      if (miBusqueda == '') {
-          console.log('debe de ingresar texto')
-      }
-      navegar("search/" + miBusqueda, { replace: true })
+    e.preventDefault()
+    let miBusqueda = e.target.search_field.value
+    
+    //aca paso el parametro del campo de la busquera y la derivo a la ruta donde esta
+    if (miBusqueda == '') {
+      console.log('debe de ingresar texto')
+    }
+    navegar("search/" + miBusqueda,{replace:true})
 
   }
   
   useEffect(() => {
     listCategorys()
+    
   }, [])
 
   //llamado al end-point para listar las categorias
@@ -71,8 +73,6 @@ export const Nav = () => {
           <li className="nav-item">
             <NavLink className="nav-link" to="/products">Productos</NavLink>
           </li>
-
-
           <li className="nav-item dropdown">
             <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
               aria-haspopup="true" aria-expanded="false">
@@ -92,6 +92,13 @@ export const Nav = () => {
               <i className="bi bi-cart-fill"></i> Carro
             </Link>
           </li>
+
+          <li className="nav-item">
+            <Link className="nav-link" to="/seguimiento">
+            <i className="bi bi-box-seam"></i> Seguimiento
+            </Link>
+          </li>
+
         </ul>
         <form className="form-inline" onSubmit={buscador}>
           <input className="form-control mr-sm-2" name="search_field" type="search" placeholder="Buscar" aria-label="Buscar"></input>

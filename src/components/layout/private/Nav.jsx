@@ -8,8 +8,6 @@ import { Global } from '../../../helpers/Global'
 
 export const Nav = () => {
   const [categorys, setCategorys] = useState([])
-
-
   const navegar = useNavigate();
 
   const buscador = (e) => {
@@ -78,18 +76,23 @@ export const Nav = () => {
               </a>
               <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                 {categorys.map(category => (
-                  <Link key={category._id} className="dropdown-item" to={`categorys/${category._id}`}>{category.name}</Link>))}
+                  <Link key={category._id} className="dropdown-item" to={`/auth/categorys/${category._id}`}>{category.name}</Link>))}
               </div>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/auth/offers">Ofertas</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/auth/perfil"><i class="bi bi-person"></i>Perfil</Link>
+              <Link className="nav-link" to="/auth/perfil"><i className="bi bi-person"></i>Perfil</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/auth/checkout">
                 <i className="bi bi-cart-fill"></i> Carro
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/auth/seguimiento">
+                <i className="bi bi-box-seam"></i> Seguimiento
               </Link>
             </li>
           </ul>
@@ -97,7 +100,7 @@ export const Nav = () => {
             <input className="form-control mr-sm-2" name="search_field" type="search" placeholder="Buscar" aria-label="Buscar"></input>
             <button className="btn btn-outline-primary my-2 my-sm-0" type="submit">Buscar</button>
           </form>
-          <Link className="btn btn-link" to="/auth/logout"><i class="bi bi-box-arrow-right"></i></Link>
+          <Link className="btn btn-link" to="/auth/logout"><i className="bi bi-box-arrow-right"></i></Link>
         </div>
       </nav>
 

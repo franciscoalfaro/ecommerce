@@ -64,7 +64,7 @@ export const Profile = () => {
         });
 
         const uploadData = await uploadRequest.json();
-       
+
 
         if (uploadData.status == "success" && uploadData.user) {
           delete uploadData.password;
@@ -92,7 +92,7 @@ export const Profile = () => {
         });
 
         const uploadData = await uploadRequest.json();
-    
+
 
         if (uploadData.status == "success" && uploadData.user) {
           delete uploadData.password;
@@ -159,8 +159,8 @@ export const Profile = () => {
       </div>
       <div className="container">
         <div className="row mt-lg-n10 mt-md-n11 mt-n10">
-          <div className="col-xl-5 col-lg-5 col-md-7 mx-auto">
-            <div className="card z-index-0">
+          <div className="col-xl-10 col-lg-5 col-md-7 mx-auto">
+            <div className="card">
               <div className="card-header text-center pt-4">
                 <h5>Mis Datos</h5>
               </div>
@@ -196,16 +196,11 @@ export const Profile = () => {
                   </div>
 
                   <div className="mb-3">
-                    <label htmlFor='bio'>biografia</label>
-                    <input type="text" className="form-control" name="bio" defaultValue={auth.bio} aria-label="bio" aria-describedby="name-addon" ></input>
-                  </div>
-
-                  <div className="mb-3">
                     <label htmlFor="file0">Actualizar Avatar:</label>
                     <input type="file" name='file0' id="file0" className="form-control"></input>
                   </div>
                   <div className="text-center">
-                    <button type="submit" className="btn bg-gradient-dark w-100 my-4 mb-2">Actualizar</button>
+                    <button type="submit" className="btn btn-primary">Actualizar</button>
                   </div>
                 </form>
               </div>

@@ -2,6 +2,10 @@
     max-width: 960px;
 }
 
+.h2{
+    text-decoration-line: underline !important;
+}
+
 
 .bd-placeholder-img {
     font-size: 1.125rem;
@@ -79,3 +83,49 @@
 .bd-mode-toggle .dropdown-menu .active .bi {
     display: block !important;
 }
+
+/* Estilo para el botón de eliminar */
+.btn-remove {
+    padding: 5px 10px;
+    /* Ajusta el padding según sea necesario */
+    font-size: 12px;
+    /* Ajusta el tamaño de la fuente según sea necesario */
+    margin-top: 5px;
+    /* Ajusta el margen superior según sea necesario */
+}
+
+/* Centrar el botón de eliminar */
+.list-group-item .d-flex.justify-content-between {
+    align-items: center;
+}
+
+/* Estilo para la imagen del producto */
+.product-image {
+    max-width: 50px;
+    /* Ajusta el tamaño de la imagen según sea necesario */
+    margin-right: 10px;
+    /* Ajusta el margen derecho según sea necesario */
+}
+
+/* Estilo para el contador del carrito */
+.cart-counter {
+    background-color: #ffffff00;
+    color: #000;
+    padding: 0px 0px;
+    border-radius: 50%;
+    font-size: 17px;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+
+.rounded-circle, .profile-image{
+  border-radius: 50% !important;
+  height: 236px;
+  width: 236px;
+}
+
+
+
+

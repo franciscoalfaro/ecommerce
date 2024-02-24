@@ -59,7 +59,7 @@ export const Offers = () => {
             <section className="py-4 bg-light">
                 <div className="container">
                     {offerProduct.length === 0 ? (
-                        <p>No existen productos mas vendidos.</p>
+                        <p>No existen productos en ofertas.</p>
                     ) : (
                         <div className="row">
                             {offerProduct.map(product => (

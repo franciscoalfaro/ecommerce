@@ -54,12 +54,13 @@ export const Categorys = () => {
     <section className="py-4 bg-light">
       <div className="container">
         <h2>{nameCategoria}</h2>
+        <br></br>
         {products.length === 0 ? (
           <p>No existen productos disponibles.</p>
         ) : (
           <div className="row">
             {products.map(product => (
-              <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={product._id}>
+              <div className="col-lg-4 col-md-4 col-sm-6 mb-4" key={product._id}>
                 <div className="card">
                   {product.images.length > 0 && (
                     <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name}></img>
@@ -78,7 +79,7 @@ export const Categorys = () => {
         <nav aria-label="Page navigation example">
           <ul className="pagination">
             <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-              <a className="page-link" href="#" onClick={prevPage}>Previous</a>
+              <a className="page-link" href="#" onClick={prevPage}>Anterior</a>
             </li>
             {Array.from({ length: totalPages }, (_, index) => (
               <li key={index} className={`page-item ${page === index + 1 ? 'active' : ''}`}>
@@ -86,7 +87,7 @@ export const Categorys = () => {
               </li>
             ))}
             <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
-              <a className="page-link" href="#" onClick={nextPage}>Next</a>
+              <a className="page-link" href="#" onClick={nextPage}>Siguiente</a>
             </li>
           </ul>
         </nav>

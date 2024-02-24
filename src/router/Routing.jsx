@@ -19,6 +19,7 @@ import { FeaturedProducts } from '../components/user/FeaturedProducts'
 import { Search } from '../components/user/Search'
 import { Inicio } from '../components/user/Inicio'
 import { Offers } from '../components/user/Offers'
+import { OrderSearch } from '../components/user/OrderSearch'
 
 export const Routing = () => {
     return (
@@ -40,6 +41,7 @@ export const Routing = () => {
                         <Route path='standout' element={<FeaturedProducts></FeaturedProducts>}></Route>
                         <Route path='offers' element={<Offers></Offers>}></Route>
                         <Route path='search/:product' element={<Search></Search>}></Route>
+                        <Route path='seguimiento' element={<OrderSearch></OrderSearch>}></Route>
                     </Route>
 
                     <Route path='/auth' element={<PrivateLayout></PrivateLayout>}>
@@ -52,10 +54,12 @@ export const Routing = () => {
                         <Route path='perfil' element={<Profile></Profile>}></Route>
 
                         <Route path='products' element={<Products></Products>}></Route>
+                        
                         <Route path='categorys/:id/' element={<Categorys></Categorys>}></Route>
                         <Route path='standout' element={<FeaturedProducts></FeaturedProducts>}></Route>
                         <Route path='search/:product' element={<Search></Search>}></Route>
                         <Route path='offers' element={<Offers></Offers>}></Route>
+                        <Route path='seguimiento' element={<OrderSearch></OrderSearch>}></Route>
 
                     </Route>
 
