@@ -1,6 +1,7 @@
 import React from 'react'
-import { FeaturedProducts } from './FeaturedProducts'
-import { BestSellers } from './BestSellers'
+import { FeaturedProducts } from '../publication/FeaturedProducts'
+import { BestSellers } from '../publication/BestSellers'
+
 
 export const Inicio = () => {
     return (

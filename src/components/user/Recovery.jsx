@@ -64,20 +64,14 @@ export const Recovery = () => {
       <section className="min-vh-100 mb-8">
         <div className="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg">
           <span className="mask bg-gradient-dark opacity-6"></span>
-          <div className="container">
-            <div className="row justify-content-center">
-              <div className="col-lg-5 text-center mx-auto">
-                <h1 className="text-white mb-2 mt-5">Bienvenido!</h1>
-                <p className="text-lead text-white">Recupera tu cuenta</p>
-              </div>
-            </div>
-          </div>
+
         </div>
         <div className="container">
           <div className="row mt-lg-n10 mt-md-n11 mt-n10">
-            <div className="col-xl-4 col-lg-5 col-md-7 mx-auto">
+            <div className="col-xl-6 col-lg-5 col-md-7 mx-auto">
               <div className="card z-index-0">
                 <div className="card-header text-center pt-4">
+                <h1 className="title">Bienvenido!</h1>
                   <h5>Recuperar Cuenta</h5>
                   <img src={userImage} alt="Imagen superior" className="img-fluid mb-3"/>
                 </div>
@@ -91,7 +85,7 @@ export const Recovery = () => {
                       <Spiner></Spiner>
                     ) : (  
                     <div className="text-center">
-                        <button type="submit" className="btn bg-gradient-dark w-100 my-4 mb-2">Recuperar</button>
+                        <button type="submit" className="btn btn-primary">Recuperar</button>
                       </div>
                     )}
                     <p className="text-sm mt-3 mb-0">Ya tienes cuenta? <NavLink to="/login" className="text-dark font-weight-bolder">Ingresar</NavLink></p>

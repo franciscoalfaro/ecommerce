@@ -106,17 +106,13 @@ export const Login = () => {
                       <input type="password" name="password" className="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon" onChange={changed} required></input>
                     </div>
                     <div className="mb-3 form-check">
-                      <p className="mb-4 text-sm mx-auto">
-                        No tienes cuenta?
-                        <NavLink className="nav-link" to="/registro">
-                          <span>Regístrate</span>
-                        </NavLink>
-                      </p>
-                      <NavLink className="nav-link" to="/recuperar">
-                        <span>¿Olvidaste tu contraseña?</span>
-                      </NavLink>
+                      <p className="text-sm mt-3 mb-0">No tienes cuenta? <NavLink to="/registro" className="text-dark font-weight-bolder">Regístrate</NavLink></p>
+                      <br></br>
+                      <p className="text-sm mt-3 mb-0"><NavLink to="/recuperar" className="text-dark font-weight-bolder">¿Olvidaste tu contraseña?</NavLink></p>
                     </div>
-                    <button type="submit" className="btn btn-primary">Iniciar Sesión</button>
+                    <div className="text-center">
+                      <button type="submit" className="btn btn-primary">Iniciar sesion</button>
+                    </div>
                   </form>
                 </div>
               </div>

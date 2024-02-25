@@ -1,25 +1,31 @@
 import React from 'react'
-import { Products } from '../components/user/Products'
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
+
 import { Login } from '../components/user/Login'
 import { Register } from '../components/user/Register'
 import { Recovery } from '../components/user/Recovery'
-import { Dashboard } from '../components/user/Dashboard'
-import { Cart } from '../components/user/Cart'
-import { Orders } from '../components/user/Orders'
-import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
+import { Logout } from '../components/user/Logout'
+import { Profile } from '../components/user/Profile'
+import { Inicio } from '../components/user/Inicio'
 import { AuthProvider } from '../context/AuthProvider'
 import { PublicLayout } from '../components/layout/public/PublicLayout'
 import { TerminoyCondiciones } from '../components/layout/public/TerminoyCondiciones'
 import { PrivateLayout } from '../components/layout/private/PrivateLayout'
-import { Logout } from '../components/user/Logout'
-import { Profile } from '../components/user/Profile'
-import { Checkout } from '../components/user/Checkout'
-import { Categorys } from '../components/user/Categorys'
-import { FeaturedProducts } from '../components/user/FeaturedProducts'
 import { Search } from '../components/user/Search'
-import { Inicio } from '../components/user/Inicio'
-import { Offers } from '../components/user/Offers'
-import { OrderSearch } from '../components/user/OrderSearch'
+import { Products } from '../components/publication/Products'
+import { Categorys } from '../components/publication/Categorys'
+import { Checkout } from '../components/publication/Checkout'
+import { Cart } from '../components/publication/Cart'
+import { FeaturedProducts } from '../components/publication/FeaturedProducts'
+import { Offers } from '../components/publication/Offers'
+import { OrderSearch } from '../components/publication/OrderSearch'
+import { Dashboard } from '../components/publication/Dashboard'
+import { Orders } from '../components/publication/Orders'
+
+
+
+
+
 
 export const Routing = () => {
     return (
