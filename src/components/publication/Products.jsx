@@ -36,7 +36,7 @@ export const Products = () => {
   const productList = async (nextPage = 1) => {
 
     try {
-      const request = await fetch(Global.url + 'product/list' + '/' + nextPage, {
+      const request = await fetch(Global.url + 'product/list/'  + nextPage, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -47,11 +47,11 @@ export const Products = () => {
       console.log(data)
       if (data.status === 'success') {
         let filteredProducts = data.products;
-        
+
 
         if (productFilter) {
           filteredProducts = filteredProducts.filter(product => product.brand === productFilter);
-          
+
         }
 
         setProducts(filteredProducts);
@@ -103,13 +103,26 @@ export const Products = () => {
 
                     <div className="card-body">
                       <h5 className="card-title">{product.name}</h5>
-                      <p className="card-text">${product.price}</p>
                       <p className="card-text">Marca {product.brand}</p>
                       <p className="card-text">{product.description}</p>
-                      <ReactTimeAgo date={new Date(product.createdAt)}></ReactTimeAgo>
                       
-                      <br></br>
-                      <br></br>
+                      {product.discountPercentage > 0 ? (
+                        <>
+                          <p className="card-text">
+                            <ins>${product.offerprice}</ins>
+                            <span className="discount"> -{product.discountPercentage}%</span>
+                          </p>
+                          <del>
+                            <p className="old-price">${product.price}</p>
+                          </del>
+
+                        </>
+                      ) : (
+
+                        <p className="card-text">
+                          ${product.price}
+                        </p>
+                      )}
                       <button className="btn btn-primary"><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
                     </div>
 
