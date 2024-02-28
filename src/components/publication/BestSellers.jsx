@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Global } from '../../helpers/Global'
+import useAuth from '../../hooks/useAuth'
 
 export const BestSellers = () => {
+    const {auth} = useAuth({})
     const [page, setPage] = useState(1)
     const [bestseller, setBestseller] = useState([])
     const [totalPages, setTotalPages] = useState(1)
@@ -65,8 +67,11 @@ export const BestSellers = () => {
                                 <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={product._id}>
                                     <div className="card">
                                         {product.images.length > 0 && (
-                                            <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name}></img>
+                                            <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}>
+                                                <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name} />
+                                            </Link>
                                         )}
+
                                         <div className="card-body">
                                             <h5 className="card-title">{product.name}</h5>
                                             <p className="card-text">${product.price}</p>
@@ -77,7 +82,7 @@ export const BestSellers = () => {
                             ))}
                         </div>
                     )}
-                    
+
                     <nav aria-label="Page navigation example">
                         <ul className="pagination">
                             <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>

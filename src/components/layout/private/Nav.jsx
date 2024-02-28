@@ -2,10 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { Global } from '../../../helpers/Global'
 
-
-
-
-
 export const Nav = () => {
   const [categorys, setCategorys] = useState([])
   const navegar = useNavigate();
@@ -50,6 +46,11 @@ export const Nav = () => {
     }
 
   }
+
+
+  //funcion del carrito
+
+
 
 
 

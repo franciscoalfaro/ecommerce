@@ -21,6 +21,7 @@ import { Offers } from '../components/publication/Offers'
 import { OrderSearch } from '../components/publication/OrderSearch'
 import { Dashboard } from '../components/publication/Dashboard'
 import { Orders } from '../components/publication/Orders'
+import { ProductSelect } from '../components/publication/ProductSelect'
 
 
 
@@ -39,6 +40,7 @@ export const Routing = () => {
                         <Route path='registro' element={<Register></Register>}></Route>
                         <Route path='recuperar' element={<Recovery></Recovery>}></Route>
 
+                        <Route path='product/:id/' element={<ProductSelect></ProductSelect>}></Route>
                         <Route path='products' element={<Products></Products>}></Route>
                         <Route path='categorys/:id/' element={<Categorys></Categorys>}></Route>
                         <Route path='checkout' element={<Checkout></Checkout>}></Route>
@@ -60,6 +62,7 @@ export const Routing = () => {
                         <Route path='perfil' element={<Profile></Profile>}></Route>
 
                         <Route path='products' element={<Products></Products>}></Route>
+                        <Route path='product/:id/' element={<ProductSelect></ProductSelect>}></Route>
                         
                         <Route path='categorys/:id/' element={<Categorys></Categorys>}></Route>
                         <Route path='standout' element={<FeaturedProducts></FeaturedProducts>}></Route>

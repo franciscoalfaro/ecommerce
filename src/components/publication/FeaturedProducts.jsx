@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { Global } from '../../helpers/Global'
 import ReactTimeAgo from 'react-time-ago'
+import useAuth from '../../hooks/useAuth'
+import { Link } from 'react-router-dom'
 
 export const FeaturedProducts = () => {
+    const { auth } = useAuth({})
     const [featuredproduct, setFeaturedproduct] = useState([])
     const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
@@ -67,7 +70,9 @@ export const FeaturedProducts = () => {
                                     <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={product._id}>
                                         <div className="card">
                                             {product.images.length > 0 && (
-                                                <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name}></img>
+                                                <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}>
+                                                    <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name} />
+                                                </Link>
                                             )}
                                             <div className="card-body">
                                                 <h5 className="card-title">{product.name}</h5>
@@ -78,12 +83,12 @@ export const FeaturedProducts = () => {
                                                             <span className="discount"> -{product.discountPercentage}%</span>
                                                         </p>
                                                         <del>
-                                                             <p className="old-price">${product.price}</p>
+                                                            <p className="old-price">${product.price}</p>
                                                         </del>
-                                                       
+
                                                     </>
                                                 ) : (
-                                                    
+
                                                     <p className="card-text">
                                                         ${product.price}
                                                     </p>

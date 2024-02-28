@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Global } from '../../helpers/Global';
+import useAuth from '../../hooks/useAuth';
 
 export const Categorys = () => {
+  const {auth} = useAuth({})
   const [products, setProducts] = useState([]);
   const [nameCategoria, setnameCategoria] = useState('null')
   const params = useParams();
@@ -62,9 +64,11 @@ export const Categorys = () => {
             {products.map(product => (
               <div className="col-lg-4 col-md-4 col-sm-6 mb-4" key={product._id}>
                 <div className="card">
-                  {product.images.length > 0 && (
-                    <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name}></img>
-                  )}
+                {product.images.length > 0 && (
+                      <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}>
+                        <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name} />
+                      </Link>
+                    )}
                   <div className="card-body">
                     <h5 className="card-title">{product.name}</h5>
                     <p className="card-text">${product.price}</p>

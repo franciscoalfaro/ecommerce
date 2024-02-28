@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { Global } from '../../helpers/Global';
 import ReactTimeAgo from 'react-time-ago';
+import useAuth from '../../hooks/useAuth';
+import { Link } from 'react-router-dom';
+import { useCart } from '../../hooks/useCart';
 
 
 export const Products = () => {
+  const { auth } = useAuth({})
+  const { cart, addToCart, removeFromCart, updateQuantity, updateShippingAddress } = useCart([])
+
 
   //listar todos los productos y permitir un filtro de productos
   const [products, setProducts] = useState([])
@@ -36,7 +42,7 @@ export const Products = () => {
   const productList = async (nextPage = 1) => {
 
     try {
-      const request = await fetch(Global.url + 'product/list/'  + nextPage, {
+      const request = await fetch(Global.url + 'product/list/' + nextPage, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -97,15 +103,19 @@ export const Products = () => {
               {products.map(product => (
                 <div className="col-lg-4 col-md-4 col-sm-6 mb-4" key={product._id}>
                   <div className="card">
+
+
                     {product.images.length > 0 && (
-                      <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name}></img>
+                      <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}>
+                        <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name} />
+                      </Link>
                     )}
 
                     <div className="card-body">
                       <h5 className="card-title">{product.name}</h5>
                       <p className="card-text">Marca {product.brand}</p>
                       <p className="card-text">{product.description}</p>
-                      
+
                       {product.discountPercentage > 0 ? (
                         <>
                           <p className="card-text">
