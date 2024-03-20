@@ -4,6 +4,7 @@ import { useState } from 'react'
 import useAuth from '../../hooks/useAuth'
 import { Global } from '../../helpers/Global'
 import { NavLink } from 'react-router-dom'
+import useCart from '../../hooks/useCart'
 
 export const Login = () => {
 
@@ -31,6 +32,7 @@ export const Login = () => {
       // Persistir datos en el navegador - guardar datos de inicio de sesión
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
+
       setSaved("login");
       // Establecer datos en el auth
       setAuth(data.user);

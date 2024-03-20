@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { Global } from '../../helpers/Global'
 import useAuth from '../../hooks/useAuth'
+import { Link } from 'react-router-dom'
+import useCart from '../../hooks/useCart'
+import { IntlProvider, FormattedNumber } from 'react-intl'
 
 export const BestSellers = () => {
-    const {auth} = useAuth({})
+    const { auth } = useAuth({})
     const [page, setPage] = useState(1)
     const [bestseller, setBestseller] = useState([])
     const [totalPages, setTotalPages] = useState(1)
+    const { addToCart } = useCart()
 
 
     const nextPage = () => {
@@ -74,8 +78,31 @@ export const BestSellers = () => {
 
                                         <div className="card-body">
                                             <h5 className="card-title">{product.name}</h5>
-                                            <p className="card-text">${product.price}</p>
-                                            <button className="btn btn-primary"><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+
+
+                                            <IntlProvider locale="es" defaultLocale="es">
+
+                                                {product.discountPercentage > 0 &&
+                                                    <del>
+                                                        $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                                                    </del>
+                                                }
+                                                <p className="card-text">
+                                                    $<FormattedNumber value={product.offerprice} style="currency" currency="CLP" ></FormattedNumber>
+
+                                                </p>
+
+                                            </IntlProvider>
+
+                                            {product.stock?.quantity > 0 ? (
+                                                <button className="btn btn-primary" onClick={() => addToCart(product)}><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                                            ) : (
+                                                <>
+                                                    <button className="btn btn-primary" onClick={() => addToCart(product)} disabled><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                                                    <br></br>
+                                                    <span>sin stock disponible</span>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

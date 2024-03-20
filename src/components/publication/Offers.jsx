@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Global } from '../../helpers/Global'
+import useCart from '../../hooks/useCart'
+import { IntlProvider, FormattedNumber } from 'react-intl'
 
 export const Offers = () => {
 
@@ -7,6 +9,7 @@ export const Offers = () => {
     const [offerProduct, setOfferProduct] = useState([])
     const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
+    const { addToCart } = useCart()
 
 
 
@@ -68,19 +71,29 @@ export const Offers = () => {
                                         {product.images.length > 0 && (
                                             <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name}></img>
                                         )}
+
                                         <div className="card-body">
+
                                             <h5 className="card-title">{product.name}</h5>
-                                            {product.discountPercentage > 0 &&
-                                                <del>
-                                                    <p className="card-text">${product.price}</p>
-                                                </del>
-                                            }
-                                            <p className="card-text">
-                                                <ins>${product.offerprice}</ins>
-                                            </p>
+
+                                            <IntlProvider locale="es" defaultLocale="es">
+     
+                                                {product.discountPercentage > 0 &&
+                                                    <del>
+                                                         $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                                                    </del>
+                                                }
+                                                <p className="card-text">
+                                                $<FormattedNumber value={product.offerprice} style="currency" currency="CLP" ></FormattedNumber>
+                                                    
+                                                </p>
+
+                                            </IntlProvider>
                                             <p className="card-text">{product.description}</p>
                                             <button className="btn btn-primary"><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
                                         </div>
+
+
                                     </div>
                                 </div>
                             ))}

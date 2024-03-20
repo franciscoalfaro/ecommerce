@@ -3,12 +3,15 @@ import { Global } from '../../helpers/Global'
 import ReactTimeAgo from 'react-time-ago'
 import useAuth from '../../hooks/useAuth'
 import { Link } from 'react-router-dom'
+import useCart from '../../hooks/useCart'
+import { IntlProvider, FormattedNumber } from 'react-intl'
 
 export const FeaturedProducts = () => {
     const { auth } = useAuth({})
     const [featuredproduct, setFeaturedproduct] = useState([])
     const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
+    const { addToCart } = useCart()
 
 
 
@@ -16,12 +19,12 @@ export const FeaturedProducts = () => {
         let next = page + 1;
         setPage(next);
 
-    };
+    }
     const prevPage = () => {
         if (page > 1) {
             setPage(page - 1);
         }
-    };
+    }
 
     useEffect(() => {
         productList(page)
@@ -76,24 +79,42 @@ export const FeaturedProducts = () => {
                                             )}
                                             <div className="card-body">
                                                 <h5 className="card-title">{product.name}</h5>
+
                                                 {product.discountPercentage > 0 ? (
                                                     <>
                                                         <p className="card-text">
-                                                            <ins>${product.offerprice}</ins>
-                                                            <span className="discount"> -{product.discountPercentage}%</span>
+                                                            <ins>
+                                                                <IntlProvider locale="es" defaultLocale="es">
+                                                                    $<FormattedNumber value={product.offerprice} style="currency" currency="CLP" /><span className="discount"> -{product.discountPercentage}%</span>
+                                                                </IntlProvider>
+                                                            </ins>
                                                         </p>
                                                         <del>
-                                                            <p className="old-price">${product.price}</p>
+                                                            <IntlProvider locale="es" defaultLocale="es">
+                                                                <p className="card-text">
+                                                                    <FormattedNumber value={product.price} style="currency" currency="CLP" />
+                                                                </p>
+                                                            </IntlProvider>
                                                         </del>
-
                                                     </>
                                                 ) : (
 
-                                                    <p className="card-text">
-                                                        ${product.price}
-                                                    </p>
+                                                    <IntlProvider locale="es" defaultLocale="es">
+                                                        <p className="card-text">
+                                                            <FormattedNumber value={product.price} style="currency" currency="CLP" />
+                                                        </p>
+                                                    </IntlProvider>
                                                 )}
-                                                <button className="btn btn-primary"><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+
+                                                {product.stock?.quantity > 0 ? (
+                                                    <button className="btn btn-primary" onClick={() => addToCart(product)}><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                                                ) : (
+                                                    <>
+                                                        <button className="btn btn-primary" onClick={() => addToCart(product)} disabled><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                                                        <br></br>
+                                                        <span>sin stock disponible</span>
+                                                    </>
+                                                )}
                                             </div>
                                         </div>
                                     </div>

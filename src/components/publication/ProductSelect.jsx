@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom' // Agrega Link
 import useAuth from '../../hooks/useAuth'
 import { Global } from '../../helpers/Global'
+import { IntlProvider, FormattedNumber } from 'react-intl'
+import useCart from '../../hooks/useCart'
 
 export const ProductSelect = () => {
   const { auth } = useAuth({})
   const params = useParams()
   const [productSelect, setProductSelect] = useState([])
-  console.log(productSelect)
+  const { addToCart,updateQuantity } = useCart()
+  
 
 
   useEffect(() => {
@@ -72,9 +75,25 @@ export const ProductSelect = () => {
                   <h2>{product.name}</h2>
                   <p>{product.description}</p>
                   <p>Stock: {product.stock?.quantity}</p>
-                  <p>categoria: {product.categoty?.name}</p>
-                  <p>Precio: ${product.price}</p>
-                  <button className="btn btn-primary">Agregar al Carro</button>
+                  <p>categoria: {product.category?.name}</p>
+
+                  <IntlProvider locale="es" defaultLocale="es">
+                    <p className="card-text">
+                      <FormattedNumber value={product.price} style="currency" currency="CLP" />
+                    </p>
+                  </IntlProvider>
+                  
+                  {product.stock?.quantity > 0 ? (
+                    <button className="btn btn-primary" onClick={() => addToCart(product)}><i className="bi bi-cart-fill"></i> Agregar al carrito</button>                    
+                  ) : (
+                    <>
+                    <button className="btn btn-primary" onClick={() => addToCart(product)} disabled><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                    <br></br>
+                    <span>sin stock disponible</span>
+                    </>
+                  )}
+                  
+
                 </div>
 
                 <div className="row mt-5">

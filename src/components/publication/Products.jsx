@@ -3,13 +3,15 @@ import { Global } from '../../helpers/Global';
 import ReactTimeAgo from 'react-time-ago';
 import useAuth from '../../hooks/useAuth';
 import { Link } from 'react-router-dom';
-import { useCart } from '../../hooks/useCart';
+import useCart from '../../hooks/useCart';
+
+import { IntlProvider, FormattedNumber } from 'react-intl'
 
 
 export const Products = () => {
   const { auth } = useAuth({})
-  const { cart, addToCart, removeFromCart, updateQuantity, updateShippingAddress } = useCart([])
 
+  const { addToCart } = useCart()
 
   //listar todos los productos y permitir un filtro de productos
   const [products, setProducts] = useState([])
@@ -18,7 +20,6 @@ export const Products = () => {
   const [totalPages, setTotalPages] = useState(1)
   const [productFilter, setProductFilter] = useState('');
   const [priceFilter, setPriceFilter] = useState('');
-
 
 
   const nextPage = () => {
@@ -50,7 +51,7 @@ export const Products = () => {
         }
       })
       const data = await request.json()
-      console.log(data)
+
       if (data.status === 'success') {
         let filteredProducts = data.products;
 
@@ -75,8 +76,10 @@ export const Products = () => {
   }
 
 
+
   return (
     <main>
+
       <section className="py-4 bg-light">
         <div className="container">
           <h2>Filtrar por</h2>
@@ -123,17 +126,35 @@ export const Products = () => {
                             <span className="discount"> -{product.discountPercentage}%</span>
                           </p>
                           <del>
-                            <p className="old-price">${product.price}</p>
+                            <IntlProvider locale="es" defaultLocale="es">
+                              <p className="card-text">
+                                $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                              </p>
+                            </IntlProvider>
                           </del>
 
                         </>
                       ) : (
 
-                        <p className="card-text">
-                          ${product.price}
-                        </p>
+
+                        <IntlProvider locale="es" defaultLocale="es">
+                          <p className="card-text">
+                            <FormattedNumber value={product.price} style="currency" currency="CLP" />
+                          </p>
+                        </IntlProvider>
+
                       )}
-                      <button className="btn btn-primary"><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+
+                      {product.stock?.quantity > 0 ? (
+                        <button className="btn btn-primary" onClick={() => addToCart(product)}><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                      ) : (
+                        <>
+                          <button className="btn btn-primary" onClick={() => addToCart(product)} disabled><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                          <br></br>
+                          <div>sin stock disponible</div>
+                        </>
+                      )}
+
                     </div>
 
                   </div>

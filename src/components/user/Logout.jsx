@@ -9,7 +9,8 @@ export const Logout = () => {
 
   useEffect( ()=>{
     //vaciar LocalStorage
-    localStorage.clear()
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
 
     //setear estados a vacios
     setAuth({})

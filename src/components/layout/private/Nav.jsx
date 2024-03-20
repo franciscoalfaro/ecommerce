@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { Global } from '../../../helpers/Global'
+import useCart from '../../../hooks/useCart'
 
 export const Nav = () => {
   const [categorys, setCategorys] = useState([])
   const navegar = useNavigate();
+  const {totalItems } = useCart();
+ 
 
   const buscador = (e) => {
     e.preventDefault()
@@ -87,9 +90,16 @@ export const Nav = () => {
               <Link className="nav-link" to="/auth/perfil"><i className="bi bi-person"></i>Perfil</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/auth/checkout">
-                <i className="bi bi-cart-fill"></i> Carro
-              </Link>
+              {totalItems === 0 ? (
+                <Link className="nav-link" to="/auth/cart">
+                  <i className="bi bi-cart-fill"></i> Carro
+                </Link>
+
+              ) : (
+                <Link className="nav-link" to="/auth/cart">
+                  <i className="bi bi-cart-fill"></i> Carro ({totalItems})
+                </Link>
+              )}
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/auth/seguimiento">
