@@ -121,10 +121,12 @@ export const Products = () => {
 
                       {product.discountPercentage > 0 ? (
                         <>
-                          <p className="card-text">
-                            <ins>${product.offerprice}</ins>
-                            <span className="discount"> -{product.discountPercentage}%</span>
-                          </p>
+                          <IntlProvider locale="es" defaultLocale="es">
+                            <p className="card-text">
+                              <ins>$<FormattedNumber value={product.offerprice} style="currency" currency="CLP" /></ins>
+                              <span className="discount"> -{product.discountPercentage}%</span>
+                            </p>
+                          </IntlProvider>
                           <del>
                             <IntlProvider locale="es" defaultLocale="es">
                               <p className="card-text">
@@ -139,7 +141,7 @@ export const Products = () => {
 
                         <IntlProvider locale="es" defaultLocale="es">
                           <p className="card-text">
-                            <FormattedNumber value={product.price} style="currency" currency="CLP" />
+                            $<FormattedNumber value={product.price} style="currency" currency="CLP" />
                           </p>
                         </IntlProvider>
 

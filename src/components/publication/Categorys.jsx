@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Global } from '../../helpers/Global';
 import useAuth from '../../hooks/useAuth';
+import { IntlProvider, FormattedNumber } from 'react-intl'
+import useCart from '../../hooks/useCart';
 
 export const Categorys = () => {
   const {auth} = useAuth({})
@@ -12,6 +14,8 @@ export const Categorys = () => {
 
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const { addToCart } = useCart()
+
 
 
 
@@ -42,6 +46,7 @@ export const Categorys = () => {
       });
       const data = await request.json();
       if (data.status === 'success') {
+        console.log(data)
 
         setProducts(data.products);
         setnameCategoria(data.categoryName)
@@ -71,9 +76,48 @@ export const Categorys = () => {
                     )}
                   <div className="card-body">
                     <h5 className="card-title">{product.name}</h5>
-                    <p className="card-text">${product.price}</p>
+                  
                     <p className="card-text">{product.description}</p>
-                    <button className="btn btn-primary"><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+
+
+                    {product.discountPercentage > 0 ? (
+                        <>
+                          <IntlProvider locale="es" defaultLocale="es">
+                            <p className="card-text">
+                              <ins>$<FormattedNumber value={product.offerprice} style="currency" currency="CLP" /></ins>
+                              <span className="discount"> -{product.discountPercentage}%</span>
+                            </p>
+                          </IntlProvider>
+                          <del>
+                            <IntlProvider locale="es" defaultLocale="es">
+                              <p className="card-text">
+                                $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                              </p>
+                            </IntlProvider>
+                          </del>
+
+                        </>
+                      ) : (
+
+
+                        <IntlProvider locale="es" defaultLocale="es">
+                          <p className="card-text">
+                            $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                          </p>
+                        </IntlProvider>
+
+                      )}
+
+                      {product.stock?.quantity > 0 ? (
+                        <button className="btn btn-primary" onClick={() => addToCart(product)}><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                      ) : (
+                        <>
+                          <button className="btn btn-primary" onClick={() => addToCart(product)} disabled><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                          <br></br>
+                          <div>sin stock disponible</div>
+                        </>
+                      )}
+                    
                   </div>
                 </div>
               </div>

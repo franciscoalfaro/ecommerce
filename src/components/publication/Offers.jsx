@@ -76,21 +76,46 @@ export const Offers = () => {
 
                                             <h5 className="card-title">{product.name}</h5>
 
-                                            <IntlProvider locale="es" defaultLocale="es">
-     
-                                                {product.discountPercentage > 0 &&
-                                                    <del>
-                                                         $<FormattedNumber value={product.price} style="currency" currency="CLP" />
-                                                    </del>
-                                                }
-                                                <p className="card-text">
-                                                $<FormattedNumber value={product.offerprice} style="currency" currency="CLP" ></FormattedNumber>
-                                                    
-                                                </p>
+                                            {product.discountPercentage > 0 ? (
+                                                <>
+                                                    <IntlProvider locale="es" defaultLocale="es">
+                                                        <p className="card-text">
+                                                            <ins>$<FormattedNumber value={product.offerprice}  style="currency" currency="CLP"></FormattedNumber></ins>
+                                                            <span className="discount"> -{product.discountPercentage}%</span>
+                                                        </p>
+                                                    </IntlProvider>
 
-                                            </IntlProvider>
-                                            <p className="card-text">{product.description}</p>
-                                            <button className="btn btn-primary"><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                                                    <del>
+                                                        <IntlProvider locale="es" defaultLocale="es">
+                                                            <p className="card-text">
+                                                                $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                                                            </p>
+                                                        </IntlProvider>
+                                                    </del>
+
+                                                </>
+                                            ) : (
+
+
+                                                <IntlProvider locale="es" defaultLocale="es">
+                                                    <p className="card-text">
+                                                        <FormattedNumber value={product.price} style="currency" currency="CLP" />
+                                                    </p>
+                                                </IntlProvider>
+
+                                            )}
+
+                                            {product.stock?.quantity > 0 ? (
+                                                <button className="btn btn-primary" onClick={() => addToCart(product)}><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                                            ) : (
+                                                <>
+                                                    <button className="btn btn-primary" onClick={() => addToCart(product)} disabled><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                                                    <br></br>
+                                                    <div>sin stock disponible</div>
+                                                </>
+                                            )}
+
+
                                         </div>
 
 

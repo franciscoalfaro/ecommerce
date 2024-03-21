@@ -9,8 +9,8 @@ export const ProductSelect = () => {
   const { auth } = useAuth({})
   const params = useParams()
   const [productSelect, setProductSelect] = useState([])
-  const { addToCart,updateQuantity } = useCart()
-  
+  const { addToCart, updateQuantity } = useCart()
+
 
 
   useEffect(() => {
@@ -77,22 +77,45 @@ export const ProductSelect = () => {
                   <p>Stock: {product.stock?.quantity}</p>
                   <p>categoria: {product.category?.name}</p>
 
-                  <IntlProvider locale="es" defaultLocale="es">
-                    <p className="card-text">
-                      <FormattedNumber value={product.price} style="currency" currency="CLP" />
-                    </p>
-                  </IntlProvider>
-                  
+                  {product.discountPercentage > 0 ? (
+                    <>
+                      <IntlProvider locale="es" defaultLocale="es">
+                        <p className="card-text">
+                          <ins>$<FormattedNumber value={product.offerprice} style="currency" currency="CLP"></FormattedNumber></ins>
+                          <span className="discount"> -{product.discountPercentage}%</span>
+                        </p>
+                      </IntlProvider>
+
+                      <del>
+                        <IntlProvider locale="es" defaultLocale="es">
+                          <p className="card-text">
+                            $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                          </p>
+                        </IntlProvider>
+                      </del>
+
+                    </>
+                  ) : (
+
+
+                    <IntlProvider locale="es" defaultLocale="es">
+                      <p className="card-text">
+                        $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                      </p>
+                    </IntlProvider>
+
+                  )}
+
                   {product.stock?.quantity > 0 ? (
-                    <button className="btn btn-primary" onClick={() => addToCart(product)}><i className="bi bi-cart-fill"></i> Agregar al carrito</button>                    
+                    <button className="btn btn-primary" onClick={() => addToCart(product)}><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
                   ) : (
                     <>
-                    <button className="btn btn-primary" onClick={() => addToCart(product)} disabled><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
-                    <br></br>
-                    <span>sin stock disponible</span>
+                      <button className="btn btn-primary" onClick={() => addToCart(product)} disabled><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
+                      <br></br>
+                      <div>sin stock disponible</div>
                     </>
                   )}
-                  
+
 
                 </div>
 
