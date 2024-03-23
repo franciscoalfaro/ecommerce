@@ -32,16 +32,36 @@ export const Cart = () => {
                         </Link>
                       )}
 
-
-
                       <div>
                         <h5>{item.name}</h5>
 
+                        {item.discountPercentage > 0 ? (
+                        <>
+                          <IntlProvider locale="es" defaultLocale="es">
+                            <p className="card-text">
+                              <ins>$<FormattedNumber value={item.offerprice} style="currency" currency="CLP" /></ins>
+                              <span className="discount"> -{item.discountPercentage}%</span>
+                            </p>
+                          </IntlProvider>
+                          <del>
+                            <IntlProvider locale="es" defaultLocale="es">
+                              <p className="card-text">
+                                $<FormattedNumber value={item.price} style="currency" currency="CLP" />
+                              </p>
+                            </IntlProvider>
+                          </del>
+
+                        </>
+                      ) : (
+
+
                         <IntlProvider locale="es" defaultLocale="es">
                           <p className="card-text">
-                            <FormattedNumber value={item.price} style="currency" currency="CLP" />
+                            $<FormattedNumber value={item.price} style="currency" currency="CLP" />
                           </p>
                         </IntlProvider>
+
+                      )}
 
                         <div className="d-flex align-items-center">
                           <p className="mr-2">Cantidad</p>

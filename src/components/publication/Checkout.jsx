@@ -1,18 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
-import { trabajos } from '../data/chile';
+import { regiones } from '../data/chile';
+import useCart from '../../hooks/useCart';
+import { FormattedNumber, IntlProvider } from 'react-intl';
 
 export const Checkout = () => {
   const { auth } = useAuth({});
 
-  const [proyecto, setProyecto] = useState({});
+  //funcionamiento del carrito 
+  const { cart, removeFromCart, updateQuantity,totalItems } = useCart();
+
+
+
+  const getTotalPrice = () => {
+    const totalPrice = cart.reduce((total, item) => total + item.quantity * parseFloat(item.price), 0);
+    return totalPrice.toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  };
+
+
+  //funcionamiento de seleccion de region
+
+  const [regionChile, setRegionChile] = useState({});
   const params = useParams();
   const [showTransferArea, setShowTransferArea] = useState(false);
 
+  console.log(regionChile)
+
+
+  //selecion de region comuna 
   useEffect(() => {
-    let proyecto = trabajos.filter(trabajo => trabajo.id === params.id);
-    setProyecto(proyecto[0]);
+    let regionChile = regiones.filter(trabajo => trabajo.id === params.id);
+    setRegionChile(regionChile[0]);
   }, [params.id]);
 
   const [selectedRegion, setSelectedRegion] = useState('');
@@ -20,7 +39,7 @@ export const Checkout = () => {
 
   useEffect(() => {
     if (selectedRegion) {
-      const region = trabajos.find(region => region.name === selectedRegion);
+      const region = regiones.find(region => region.name === selectedRegion);
       const communes = region ? region.communes : [];
       setSelectedCommune(communes);
     }
@@ -46,31 +65,53 @@ export const Checkout = () => {
               ) : (
                 <span className="text-primary"><NavLink to={'/cart/'}>Mi Carro</NavLink></span>
               )}
-              <span className="badge bg-primary rounded-pill">3</span>
+              <span className="badge bg-primary rounded-pill">{totalItems}</span>
             </h4>
 
+
+
             <ul className="list-group mb-3">
-              <li className="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                  <h6 className="my-0">Product name</h6>
-                  <small className="text-body-secondary">Brief description</small>
-                </div>
-                <span className="text-body-secondary">$12</span>
-              </li>
-              <li className="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                  <h6 className="my-0">Second product</h6>
-                  <small className="text-body-secondary">Brief description</small>
-                </div>
-                <span className="text-body-secondary">$8</span>
-              </li>
-              <li className="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                  <h6 className="my-0">Third item</h6>
-                  <small className="text-body-secondary">Brief description</small>
-                </div>
-                <span className="text-body-secondary">$5</span>
-              </li>
+              {cart.map((item) => (
+                <li className="list-group-item d-flex justify-content-between lh-sm" key={item._id}>
+                  <div>
+                    <h6 className="my-0">{item.name}</h6>
+                    <small className="text-body-secondary">{item.description}</small>
+                    <p>cantidad {item.quantity}</p>
+                    <button className="btn btn-danger btn-remove" onClick={() => removeFromCart(item._id)}>Eliminar</button>
+                  </div>
+                  {item.discountPercentage > 0 ? (
+                    <>
+                      <IntlProvider locale="es" defaultLocale="es">
+                        <p className="card-text">
+                          <ins>$<FormattedNumber value={item.offerprice} style="currency" currency="CLP" /></ins>
+                          <span className="discount"> -{item.discountPercentage}%</span>
+                        </p>
+                      </IntlProvider>
+                      <del>
+                        <IntlProvider locale="es" defaultLocale="es">
+                          <p className="card-text">
+                            $<FormattedNumber value={item.price} style="currency" currency="CLP" />
+                          </p>
+                        </IntlProvider>
+                      </del>
+
+                    </>
+                  ) : (
+
+                    <IntlProvider locale="es" defaultLocale="es">
+                      <p className="card-text">
+                        $<FormattedNumber value={item.price} style="currency" currency="CLP" />
+                      </p>
+                    </IntlProvider>
+
+                  )}
+
+                </li>
+
+                
+              ))}
+
+            {/* 
               <li className="list-group-item d-flex justify-content-between bg-body-tertiary">
                 <div className="text-success">
                   <h6 className="my-0">Promo code</h6>
@@ -78,9 +119,10 @@ export const Checkout = () => {
                 </div>
                 <span className="text-success">−$0</span>
               </li>
+              */}
               <li className="list-group-item d-flex justify-content-between">
-                <span>Total (CLP)</span>
-                <strong>$20</strong>
+                <span>Precio Total: </span>
+                <strong>${getTotalPrice()}</strong>
               </li>
             </ul>
 
@@ -88,7 +130,7 @@ export const Checkout = () => {
               <div className="input-group">
                 <label htmlFor='promecode'></label>
                 <input type="text" className="form-control" placeholder="Promo code" />
-                <button type="submit" className="btn btn-secondary">Redeem</button>
+                <button type="submit" className="btn btn-secondary">Aplicar</button>
               </div>
             </form>
           </div>
@@ -139,7 +181,7 @@ export const Checkout = () => {
                   <label htmlFor="country" className="form-label">Region</label>
                   <select className="form-select" id="country" required="" onChange={(e) => setSelectedRegion(e.target.value)}>
                     <option defaultValue="">Seleciona...</option>
-                    {trabajos.map(pais => (
+                    {regiones.map(pais => (
                       <optgroup label={pais.name} key={pais.name}>
                         {pais.regions.map(region => (
                           <option key={region.name}>{region.name}</option>
@@ -156,7 +198,7 @@ export const Checkout = () => {
                   <label htmlFor="state" className="form-label">Comuna</label>
                   <select className="form-select" id="state" required="" onChange={(e) => setSelectedCommune(e.target.value)}>
                     <option defaultValue="">Seleciona...</option>
-                    {trabajos.map(pais => (
+                    {regiones.map(pais => (
                       pais.regions.map(region => (
                         region.name === selectedRegion &&
                         region.communes.map(commune => (
@@ -189,11 +231,11 @@ export const Checkout = () => {
                   <label className="form-check-label" htmlFor="credit">Transferencia</label>
                 </div>
                 <div className="form-check">
-                  <input id="debit" name="paymentMethod" type="radio" className="form-check-input" required="" onChange={() => setShowTransferArea(false)}/>
+                  <input id="debit" name="paymentMethod" type="radio" className="form-check-input" required="" onChange={() => setShowTransferArea(false)} />
                   <label className="form-check-label" htmlFor="debit">Mercado Pago</label>
                 </div>
                 <div className="form-check">
-                  <input id="paypal" name="paymentMethod" type="radio" className="form-check-input" required="" onChange={() => setShowTransferArea(false)}/>
+                  <input id="paypal" name="paymentMethod" type="radio" className="form-check-input" required="" onChange={() => setShowTransferArea(false)} />
                   <label className="form-check-label" htmlFor="paypal">PayPal</label>
                 </div>
               </div>
@@ -220,6 +262,6 @@ export const Checkout = () => {
       </main>
       <br></br>
     </div>
-    
+
   )
 }

@@ -1,4 +1,4 @@
-export const trabajos = [
+export const regiones = [
     {
         "name": "Chile",
         "regions": [
