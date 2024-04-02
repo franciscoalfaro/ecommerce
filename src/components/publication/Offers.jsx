@@ -128,7 +128,7 @@ export const Offers = () => {
                     <nav aria-label="Page navigation example">
                         <ul className="pagination">
                             <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-                                <a className="page-link" href="#" onClick={prevPage}>Previous</a>
+                                <a className="page-link" href="#" onClick={prevPage}>Anterior</a>
                             </li>
                             {Array.from({ length: totalPages }, (_, index) => (
                                 <li key={index} className={`page-item ${page === index + 1 ? 'active' : ''}`}>
@@ -136,7 +136,7 @@ export const Offers = () => {
                                 </li>
                             ))}
                             <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
-                                <a className="page-link" href="#" onClick={nextPage}>Next</a>
+                                <a className="page-link" href="#" onClick={nextPage}>Siguiente</a>
                             </li>
                         </ul>
                     </nav>

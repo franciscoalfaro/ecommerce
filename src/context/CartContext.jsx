@@ -35,13 +35,15 @@ export const CartProvider = ({ children }) => {
       const updatedCart = [...cart];
       updatedCart[existingItemIndex].quantity += 1;
       setCart(updatedCart);
+      Swal.fire({ position: "bottom-end", title: "producto actualizado en el carro",showConfirmButton: false,timer: 400});
     } else {
       setCart([...cart, { ...product, quantity: 1 }]);
+      Swal.fire({ position: "bottom-end", title: "producto agregado al carro",showConfirmButton: false,timer: 400});
     }
     localStorage.setItem('cart', JSON.stringify(cart));
   };
 
-  //crear productos del carrito en el localstorage
+
 
 
 

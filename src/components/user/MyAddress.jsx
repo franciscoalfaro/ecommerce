@@ -1,0 +1,349 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { Global } from '../../helpers/Global';
+import { useForm } from '../../hooks/useForm';
+import { SerializeForm } from '../../helpers/SerializeForm';
+
+export const MyAddress = () => {
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [address, setAddress] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const { form, changed } = useForm()
+
+
+  const nextPage = () => {
+    let next = page + 1;
+    setPage(next);
+
+  }
+  const prevPage = () => {
+    if (page > 1) {
+      setPage(page - 1);
+    }
+  }
+
+
+
+  useEffect(() => {
+    getAddressList(page);
+  }, [page]);
+
+  const getAddressList = async (nextPage = 1) => {
+    try {
+      const request = await fetch(Global.url + 'address/list/' + nextPage, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('token')
+        }
+      });
+      const data = await request.json();
+
+      if (data.status === 'success') {
+        setAddress(data.address);
+        setTotalPages(data.totalPages)
+      } else {
+        setAddress([]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleAddressClick = (selectedAddress) => {
+    setSelectedAddress(selectedAddress);
+    getAddressList()
+  };
+
+
+
+
+  const deleteAddress = async (addressId, index) => {
+
+    try {
+      const request = await fetch(Global.url + 'address/delete/' + addressId, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('token')
+        }
+      });
+      const data = await request.json();
+
+      if (data.status === 'success') {
+        const newItems = [...address];
+        newItems.splice(index, 1);
+        setAddress(newItems);
+        getAddressList()
+
+
+      } else {
+        setAddress([]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
+
+  const updateAddress = async (e) => {
+    e.preventDefault();
+    const addressID = selectedAddress._id
+    const updateAddressUser = SerializeForm(e.target)
+    try {
+      const request = await fetch(Global.url + "address/update/" + addressID, {
+        method: "PUT",
+        body: JSON.stringify(updateAddressUser),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': localStorage.getItem('token')
+        }
+      })
+      const data = await request.json();
+
+      if (data.status === "success") {
+        getAddressList()
+      }
+
+
+    } catch (error) {
+      console.error(error);
+    }
+
+
+  }
+
+
+
+  const createAddress = async (e) => {
+    e.preventDefault();
+
+    let newAddress = form
+
+
+    try {
+      const request = await fetch(Global.url + 'address/create', {
+        method: "POST",
+        body: JSON.stringify(newAddress),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('token')
+
+        }
+      })
+      const data = await request.json()
+
+      if (data.status === "success") {
+        getAddressList()
+        Swal.fire({ position: "bottom-end", title: "Direccion Agregada correctamente", showConfirmButton: false, timer: 800 });
+
+        $('#exampleModal3').modal('hide');
+
+      } else {
+        console.log(data.message)
+
+      }
+
+      const myForm = document.querySelector("#CreateAdd")
+      myForm.reset()
+
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+  return (
+    <div>
+      <h2>Mis Direcciones</h2>
+      <button type="button" className="btn btn-secondary"><i className="bi bi-building-fill-add" data-toggle="modal" data-target="#exampleModal3"> Agregar nueva direccion</i>
+      </button>
+      <hr></hr>
+
+      {address && address.length > 0 ? (
+        address.map((addr, index) => (
+          <div key={addr._id} className="address-container">
+            <button type="button" className="btn btn-primary" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal">
+              {addr.nombre}
+            </button>
+            <i className="bi bi-trash" onClick={() => deleteAddress(addr._id)}></i>
+            <i className="bi bi-pencil" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal2"></i>
+          </div>
+
+
+
+        ))
+
+      ) : (
+        <div>
+          Sin direcciones
+        </div>
+      )}
+
+      <nav aria-label="Page navigation example">
+        <ul className="pagination">
+          <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
+            <a className="page-link" href="#" onClick={prevPage}>Anterior</a>
+          </li>
+          {Array.from({ length: totalPages }, (_, index) => (
+            <li key={index} className={`page-item ${page === index + 1 ? 'active' : ''}`}>
+              <a className="page-link" href="#" onClick={() => setPage(index + 1)}>{index + 1}</a>
+            </li>
+          ))}
+          <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
+            <a className="page-link" href="#" onClick={nextPage}>Siguiente</a>
+          </li>
+        </ul>
+      </nav>
+
+
+      <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel" >Mi dirección</h5>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              {selectedAddress && (
+                <div>
+                  <p><strong>Nombre:</strong> {selectedAddress.nombre}</p>
+                  <p><strong>Dirección:</strong> {selectedAddress.direccion}</p>
+                  <p><strong>Número:</strong> {selectedAddress.numero}</p>
+                  <p><strong>Teléfono:</strong> {selectedAddress.phone}</p>
+                  <p><strong>Región:</strong> {selectedAddress.region}</p>
+                  <p><strong>Comuna:</strong> {selectedAddress.comuna}</p>
+                  <p><strong>Ciudad:</strong> {selectedAddress.ciudad}</p>
+                </div>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div className="modal fade" id="exampleModal2" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel" >Editar</h5>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form onSubmit={updateAddress}>
+              <div className="modal-body">
+                {selectedAddress && (
+                  <div>
+                    <div className="mb-3">
+                      <label htmlFor="nombre">Nombre:</label>
+                      <input type="text" className="form-control" id="nombre" name="nombre" value={selectedAddress.nombre} onChange={changed} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="direccion">Dirección:</label>
+                      <input type="text" className="form-control" id="direccion" name="direccion" value={selectedAddress.direccion} onChange={changed} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="numero">Número:</label>
+                      <input type="text" className="form-control" id="numero" name="numero" value={selectedAddress.numero} onChange={changed} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="phone">Teléfono:</label>
+                      <input type="text" className="form-control" id="phone" name="phone" value={selectedAddress.phone} onChange={changed} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="region">Región:</label>
+                      <input type="text" className="form-control" id="region" name="region" value={selectedAddress.region} onChange={changed} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="comuna">Comuna:</label>
+                      <input type="text" className="form-control" id="comuna" name="comuna" value={selectedAddress.comuna} onChange={changed} />
+                    </div>
+                    <div className="mb-3">
+                      <label htmlFor="ciudad">Ciudad:</label>
+                      <input type="text" className="form-control" id="ciudad" name="ciudad" value={selectedAddress.ciudad} onChange={changed} />
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="submit" className="btn btn-primary">Actualizar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+      <div className="modal fade" id="exampleModal3" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel" >Crear nueva direccion</h5>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form id="CreateAdd" onSubmit={createAddress}>
+              <div className="modal-body">
+
+                <div>
+                  <div className="mb-3">
+                    <label htmlFor="nombre">Nombre:</label>
+                    <input type="text" className="form-control" id="nombre" name="nombre" onChange={changed} />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="direccion">Dirección:</label>
+                    <input type="text" className="form-control" id="direccion" name="direccion" onChange={changed} />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="numero">Número:</label>
+                    <input type="text" className="form-control" id="numero" name="numero" onChange={changed} />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="phone">Teléfono:</label>
+                    <input type="text" className="form-control" id="phone" name="phone" onChange={changed} />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="ciudad">codigo postal:</label>
+                    <input type="text" className="form-control" id="codigoPostal" name="codigoPostal" onChange={changed} />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="region">Región:</label>
+                    <input type="text" className="form-control" id="region" name="region" onChange={changed} />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="comuna">Comuna:</label>
+                    <input type="text" className="form-control" id="comuna" name="comuna" onChange={changed} />
+                  </div>
+                  <div className="mb-3">
+                    <label htmlFor="ciudad">Ciudad:</label>
+                    <input type="text" className="form-control" id="ciudad" name="ciudad" onChange={changed} />
+                  </div>
+                </div>
+
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="submit" className="btn btn-primary">Crear</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+
+
+    </div >
+  );
+};
+

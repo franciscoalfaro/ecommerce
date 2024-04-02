@@ -131,7 +131,7 @@
     cursor: pointer;
 }
 
-.modal-body{
+.modal-body {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -142,6 +142,10 @@
     justify-content: center;
     align-items: center;
     height: 90%;
-  }
-  
+}
 
+
+.address-container {
+    margin-bottom: 10px;
+    /* Puedes ajustar el valor de margen según tus preferencias */
+}

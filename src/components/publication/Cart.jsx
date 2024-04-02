@@ -9,10 +9,23 @@ export const Cart = () => {
   const { auth } = useAuth({});
   const { cart, removeFromCart, updateQuantity } = useCart();
 
+  console.log(cart)
+
   const getTotalPrice = () => {
-    const totalPrice = cart.reduce((total, item) => total + item.quantity * parseFloat(item.price), 0);
+    let totalPrice = 0;
+  
+    cart.forEach(item => {
+      if (item.offerprice && item.offerprice !== "0") {
+        totalPrice += item.quantity * parseFloat(item.offerprice);
+      } else if (item.price) {
+        totalPrice += item.quantity * parseFloat(item.price);
+      }
+    });
+  
     return totalPrice.toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
   };
+  
+  
 
   return (
     <section>

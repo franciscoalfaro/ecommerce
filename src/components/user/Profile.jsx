@@ -3,6 +3,7 @@ import useAuth from '../../hooks/useAuth'
 import { Global } from '../../helpers/Global'
 import avatar from '../../../src/assets/img/default.png'
 import { SerializeForm } from '../../helpers/SerializeForm'
+import { MyAddress } from './MyAddress'
 
 export const Profile = () => {
   const { auth, setAuth } = useAuth()
@@ -151,63 +152,67 @@ export const Profile = () => {
 
 
   return (
-    <section className="min-vh-100 mb-8">
-      <div className="page-header align-items-start min-vh-10 pt-7 pb-5 m-6 border-radius-lg">
-        <span className="mask bg-gradient-dark opacity-6"></span>
-        <div className="container">
-        </div>
-      </div>
-      <div className="container">
-        <div className="row mt-lg-n10 mt-md-n11 mt-n10">
-          <div className="col-xl-10 col-lg-5 col-md-7 mx-auto">
-            <div className="card">
-              <div className="card-header text-center pt-4">
-                <h5>Mis Datos</h5>
+<section className="min-vh-100 mb-8">
+  <div className="page-header align-items-start min-vh-10 pt-7 pb-5 m-6 border-radius-lg">
+    <span className="mask bg-gradient-dark opacity-6"></span>
+    <div className="container">
+    </div>
+  </div>
+  <div className="container">
+    <div className="row mt-lg-n10 mt-md-n11 mt-n10">
+      <div className="col-xl-6">
+        <div className="card">
+          <div className="card-header text-center pt-4">
+            <h5>Mis Datos</h5>
+          </div>
+          <div className="card-body">
+            <form role="form text-left" onSubmit={updateUser}>
+              <div className="mb-3 d-flex justify-content-center">
+                <div className="d-flex align-items-center">
+                  {auth.image == 'default.png' && <img src={avatar} className="img-fluid img-thumbnail rounded-circle profile-image" alt="Foto de perfil"></img>}
+                  {auth.image != 'default.png' && <img src={Global.url + "user/avatar/" + auth.image} className="img-fluid img-thumbnail rounded-circle profile-image" alt="Foto de perfil"></img>}
+                  <div className="ml-3">
+                  </div>
+                </div>
               </div>
-              <div className="card-body">
-                <form role="form text-left" onSubmit={updateUser}>
-                  <div className="mb-3 d-flex justify-content-center">
-                    <div className="d-flex align-items-center">
-                      {auth.image == 'default.png' && <img src={avatar} className="img-fluid img-thumbnail rounded-circle profile-image" alt="Foto de perfil"></img>}
-                      {auth.image != 'default.png' && <img src={Global.url + "user/avatar/" + auth.image} className="img-fluid img-thumbnail rounded-circle profile-image" alt="Foto de perfil"></img>}
-                      <div className="ml-3">
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor='name'>Nombre</label>
-                    <input type="text" className="form-control" name="name" defaultValue={auth.name} aria-label="Name" aria-describedby="name-addon" ></input>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor='surname'>Apellido</label>
-                    <input type="text" className="form-control" name="surname" defaultValue={auth.surname} aria-label="Apellido" aria-describedby="name-addon" ></input>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor='nick'>Nick</label>
-                    <input type="text" className="form-control" name="nick" defaultValue={auth.nick} aria-label="Nick" aria-describedby="name-addon" ></input>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor='email'>Email</label>
-                    <input type="email" className="form-control" name="email" defaultValue={auth.email} aria-label="Email" aria-describedby="email-addon" ></input>
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor='password'>Password</label>
-                    <input type="password" className="form-control" name="password" placeholder="Password" aria-label="Password" aria-describedby="password-addon" ></input>
-                  </div>
+              <div className="mb-3">
+                <label htmlFor='name'>Nombre</label>
+                <input type="text" className="form-control" name="name" defaultValue={auth.name} aria-label="Name" aria-describedby="name-addon" ></input>
+              </div>
+              <div className="mb-3">
+                <label htmlFor='surname'>Apellido</label>
+                <input type="text" className="form-control" name="surname" defaultValue={auth.surname} aria-label="Apellido" aria-describedby="name-addon" ></input>
+              </div>
+              <div className="mb-3">
+                <label htmlFor='nick'>Nick</label>
+                <input type="text" className="form-control" name="nick" defaultValue={auth.nick} aria-label="Nick" aria-describedby="name-addon" ></input>
+              </div>
+              <div className="mb-3">
+                <label htmlFor='email'>Email</label>
+                <input type="email" className="form-control" name="email" defaultValue={auth.email} aria-label="Email" aria-describedby="email-addon" ></input>
+              </div>
+              <div className="mb-3">
+                <label htmlFor='password'>Password</label>
+                <input type="password" className="form-control" name="password" placeholder="Password" aria-label="Password" aria-describedby="password-addon" ></input>
+              </div>
 
-                  <div className="mb-3">
-                    <label htmlFor="file0">Actualizar Avatar:</label>
-                    <input type="file" name='file0' id="file0" className="form-control"></input>
-                  </div>
-                  <div className="text-center">
-                    <button type="submit" className="btn btn-primary">Actualizar</button>
-                  </div>
-                </form>
+              <div className="mb-3">
+                <label htmlFor="file0">Actualizar Avatar:</label>
+                <input type="file" name='file0' id="file0" className="form-control"></input>
               </div>
-            </div>
+              <div className="text-center">
+                <button type="submit" className="btn btn-primary">Actualizar</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-    </section>
+      <div className="col-xl-6">
+        <MyAddress></MyAddress>
+      </div>
+    </div>
+  </div>
+</section>
+
   )
 }

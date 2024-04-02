@@ -42,11 +42,10 @@ export const BestSellers = () => {
                 }
             })
             const data = await request.json()
-            console.log(data)
+            console.log('best seller', data)
             if (data.status === 'success') {
                 setBestseller(data.products)
                 setTotalPages(data.totalPages)
-
 
             } else {
                 console.log(data.message)
@@ -80,19 +79,31 @@ export const BestSellers = () => {
                                             <h5 className="card-title">{product.name}</h5>
 
 
-                                            <IntlProvider locale="es" defaultLocale="es">
-
-                                                {product.discountPercentage > 0 &&
+                                            {product.discountPercentage > 0 ? (
+                                                <>
+                                                    <p className="card-text">
+                                                        <ins>
+                                                            <IntlProvider locale="es" defaultLocale="es">
+                                                                $<FormattedNumber value={product.offerprice} style="currency" currency="CLP" /><span className="discount"> -{product.discountPercentage}%</span>
+                                                            </IntlProvider>
+                                                        </ins>
+                                                    </p>
                                                     <del>
-                                                        $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                                                        <IntlProvider locale="es" defaultLocale="es">
+                                                            <p className="card-text">
+                                                                <FormattedNumber value={product.price} style="currency" currency="CLP" />
+                                                            </p>
+                                                        </IntlProvider>
                                                     </del>
-                                                }
-                                                <p className="card-text">
-                                                    $<FormattedNumber value={product.offerprice} style="currency" currency="CLP" ></FormattedNumber>
+                                                </>
+                                            ) : (
 
-                                                </p>
-
-                                            </IntlProvider>
+                                                <IntlProvider locale="es" defaultLocale="es">
+                                                    <p className="card-text">
+                                                        <FormattedNumber value={product.price} style="currency" currency="CLP" />
+                                                    </p>
+                                                </IntlProvider>
+                                            )}
 
                                             {product.stock?.quantity > 0 ? (
                                                 <button className="btn btn-primary" onClick={() => addToCart(product)}><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
@@ -113,7 +124,7 @@ export const BestSellers = () => {
                     <nav aria-label="Page navigation example">
                         <ul className="pagination">
                             <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-                                <a className="page-link" href="#" onClick={prevPage}>Previous</a>
+                                <a className="page-link" href="#" onClick={prevPage}>Anterior</a>
                             </li>
                             {Array.from({ length: totalPages }, (_, index) => (
                                 <li key={index} className={`page-item ${page === index + 1 ? 'active' : ''}`}>
@@ -121,7 +132,7 @@ export const BestSellers = () => {
                                 </li>
                             ))}
                             <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
-                                <a className="page-link" href="#" onClick={nextPage}>Next</a>
+                                <a className="page-link" href="#" onClick={nextPage}>Siguiente</a>
                             </li>
                         </ul>
                     </nav>
