@@ -103,7 +103,12 @@ export const Nav = () => {
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/auth/seguimiento">
-                <i className="bi bi-box-seam"></i> Seguimiento
+                <i className="bi bi-truck"></i> Seguimiento
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/auth/order">
+                <i className="bi bi-box-seam"></i> Mis compras
               </Link>
             </li>
           </ul>

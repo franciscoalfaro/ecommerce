@@ -80,7 +80,7 @@ export const OrderSearch = () => {
                                 <p className="card-text">Dirección: {order.shippingAddress.direccion}</p>
                                 <p className="card-text">Número: {order.shippingAddress.numero}</p>
                                 <p className="card-text">Región: {order.shippingAddress.region}</p>
-                                <p className="card-text">Ciudad: {order.shippingAddress.cuidad}</p>
+                                <p className="card-text">Ciudad: {order.shippingAddress.ciudad}</p>
                                 <p className="card-text">Comuna: {order.shippingAddress.comuna}</p>
                                 <p className="card-text">Teléfono: {order.shippingAddress.phone}</p>
 
