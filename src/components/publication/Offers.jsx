@@ -52,6 +52,7 @@ export const Offers = () => {
             }
 
         } catch (error) {
+            console.log('code',error)
 
         }
 

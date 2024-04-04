@@ -51,9 +51,6 @@ export const Nav = () => {
   }
 
 
-  //funcion del carrito
-
-
 
 
 

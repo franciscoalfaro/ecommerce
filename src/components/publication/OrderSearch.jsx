@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 import { Spiner } from '../../hooks/Spiner'
 import ReactTimeAgo from 'react-time-ago'
+import { FormattedNumber, IntlProvider } from 'react-intl'
 
 
 export const OrderSearch = () => {
@@ -19,6 +20,7 @@ export const OrderSearch = () => {
         e.preventDefault()
 
         let numeroOrder = form.order
+        setError(null);
 
         // Validar que numeroOrder no sea null ni undefined
         if (!numeroOrder) {
@@ -41,7 +43,6 @@ export const OrderSearch = () => {
             if (data.status === 'success') {
                 setOrderNume(data.order);
 
-                console.log(data.order)
 
             } else {
                 setError('Error al obtener el número de orden')
@@ -51,11 +52,13 @@ export const OrderSearch = () => {
         } finally {
             setLoading(false)
         }
+
+        
     }
 
     return (
         <>
-        <br></br>
+            <br></br>
             <form className="form-inline" onSubmit={getOrder}>
                 <h6 className="mb-1">Seguimiento </h6>
                 <br></br>
@@ -73,8 +76,13 @@ export const OrderSearch = () => {
                         <div key={index} className="card border-primary mb-3">
                             <div className="card-header">Orden #: {order.orderNumber}</div>
                             <div className="card-body text-primary">
-                                <p className="card-text">Status: {order.status}</p>
-                                <p className="card-text">Total: ${order.totalPrice}</p>
+                                <p className="card-text">Estado: {order.status}</p>
+
+                                <IntlProvider locale="es" defaultLocale="es">
+                                    <p className="card-text">
+                                        Total: $<FormattedNumber value={order.totalPrice} style="currency" currency="CLP" />
+                                    </p>
+                                </IntlProvider>
 
                                 <h4 className="card-title">Dirección de envío</h4>
                                 <p className="card-text">Dirección: {order.shippingAddress.direccion}</p>
@@ -90,7 +98,11 @@ export const OrderSearch = () => {
                                         <div className="card-header">Producto #{index + 1}</div>
                                         <div className="card-body text-secondary">
                                             <p className="card-text">Nombre: {product.product.name}</p>
-                                            <p className="card-text">Precio unitario: ${product.priceunitary}</p>
+                                            <IntlProvider locale="es" defaultLocale="es">
+                                                <p className="card-text">
+                                                Precio unitario: $<FormattedNumber value={product.priceunitary} style="currency" currency="CLP"/>
+                                                </p>
+                                            </IntlProvider>
                                             <p className="card-text">Cantidad: {product.quantity}</p>
                                         </div>
                                     </div>

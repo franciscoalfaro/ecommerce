@@ -54,6 +54,7 @@ export const FeaturedProducts = () => {
             }
 
         } catch (error) {
+            console.log('code',error)
 
         }
 

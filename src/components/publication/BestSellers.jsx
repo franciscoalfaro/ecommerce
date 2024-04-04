@@ -52,6 +52,7 @@ export const BestSellers = () => {
             }
 
         } catch (error) {
+            console.log('code',error)
 
         }
     }

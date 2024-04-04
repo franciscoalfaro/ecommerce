@@ -53,7 +53,7 @@ export const Categorys = () => {
 
       }
     } catch (error) {
-      console.error(error);
+      console.log('code',error)
     }
   };
 

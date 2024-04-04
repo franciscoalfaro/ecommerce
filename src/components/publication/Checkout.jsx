@@ -63,7 +63,7 @@ export const Checkout = () => {
       products: cart.map(item => ({
         product: item._id,
         quantity: item.quantity,
-        priceunitary: item.price
+        priceunitary: item.offerprice && parseFloat(item.offerprice) > 0 ? item.offerprice : item.price
       }))
     };
 
@@ -97,7 +97,7 @@ export const Checkout = () => {
       }
 
     } catch (error) {
-      console.log(error)
+      console.log('code',error)
 
     }
 

@@ -55,7 +55,7 @@ export const ProductSelect = () => {
         console.log(data.message)
       }
     } catch (error) {
-      console.error(error)
+      console.log('code',error)
     }
   }
 

@@ -149,3 +149,32 @@
     margin-bottom: 10px;
     /* Puedes ajustar el valor de margen según tus preferencias */
 }
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table th,
+.orders-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+.orders-table th {
+    background-color: #f2f2f2;
+}
+
+.orders-table button {
+    cursor: pointer;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+}
+
+.orders-table button:hover {
+    background-color: #0056b3;
+}

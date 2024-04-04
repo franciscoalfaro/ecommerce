@@ -69,7 +69,7 @@ export const Products = () => {
       }
 
     } catch (error) {
-      console.log(data.message)
+      console.log('code',error)
 
     }
 
