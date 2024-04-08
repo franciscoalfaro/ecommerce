@@ -42,8 +42,7 @@ export const OrderSearch = () => {
 
             if (data.status === 'success') {
                 setOrderNume(data.order);
-
-
+                console.log(data.order)
             } else {
                 setError('Error al obtener el número de orden')
             }

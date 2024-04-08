@@ -6,11 +6,9 @@ import { Header } from './Header'
 
 import { Footer } from './Footer'
 
-
-
-
-export const PrivateLayout = () => {
+export const AdminLayout = () => {
   const { auth, loading } = useAuth()
+  console.log('el auth role', auth.role)
 
   const navigate = useNavigate();
 
@@ -26,31 +24,30 @@ export const PrivateLayout = () => {
   if (loading) {
     return <Spiner></Spiner>
   } else {
-    if (auth && auth.role === 'role_user') {
+
+
+    if (auth && auth.role === 'admin') {
       return (
         <>
-          {/*Layout*/}
+          <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg">
+            <Header />
+            {/* Contenido principal */}
+            <div className='container mt-4'>
+              <div className="row mt-4">
+                <Outlet />
+                <Footer />
+              </div>
 
-          <main className="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-            <Header></Header>
+            </div>
 
-            {/*cabecera y navegacion*/}
 
-            {/*contenido principal*/}
-            <Outlet></Outlet>
-
-            {/*barra lateral*/}
-            <Footer></Footer>
           </main>
+        
         </>
-      )
-
-
+      );
     } else {
-        // Si el usuario no es role_user, redirigirlo a la página de inicio de sesión
-      return <Navigate to="/admin" />;
-
+      // Si el usuario no es admin, redirigirlo a la página de inicio de sesión
+      return <Navigate to="/auth" />;
     }
-
   }
-}
+};

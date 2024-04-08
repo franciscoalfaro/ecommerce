@@ -2,10 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { ComisionTransaccion } from './ComisionTransaccion'
 import useAuth from '../../hooks/useAuth';
 import { Global } from '../../helpers/Global';
+import { FormattedNumber, IntlProvider } from 'react-intl';
+import { Spiner } from '../../hooks/Spiner';
 
 export const Orders = () => {
   const { auth } = useAuth({});
   const [order, setOrder] = useState([])
+  const [orderNume, setOrderNume] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     obtenerOrdenes()
@@ -26,7 +31,8 @@ export const Orders = () => {
 
       if (data.status === "success") {
         setOrder(data.order)
-      }else{
+        console.log(data.order)
+      } else {
         console.log('code', data.message)
       }
 
@@ -34,6 +40,53 @@ export const Orders = () => {
       console.log('code', error)
 
     }
+
+  }
+
+
+  const handleAddressClick = (order) => {
+    getOrder(order)
+
+  };
+
+
+  const getOrder = async (order) => {
+    console.log('getorder', order)
+
+
+    let numeroOrder = order.orderNumber
+    setError(null);
+
+    // Validar que numeroOrder no sea null ni undefined
+    if (!numeroOrder) {
+      setError('Ingrese un número de orden válido')
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const request = await fetch(Global.url + 'order/orderNum/' + numeroOrder, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      })
+
+      const data = await request.json()
+
+      if (data.status === 'success') {
+        setOrderNume(data.order);
+        console.log(data.order)
+      } else {
+        setError('Error al obtener el número de orden')
+      }
+    } catch (error) {
+      setError('Error de red al obtener el número de orden')
+    } finally {
+      setLoading(false)
+    }
+
 
   }
 
@@ -48,7 +101,8 @@ export const Orders = () => {
           <tr>
             <th>Numero de orden</th>
             <th>Estado</th>
-            <th>Action</th>
+            <th>Boleta</th>
+            <th>Mas</th>
           </tr>
         </thead>
         <tbody>
@@ -59,10 +113,83 @@ export const Orders = () => {
               <td>
                 <button>Descargar Boleta</button>
               </td>
+              <td>
+                <button type="button" className="btn btn-primary" onClick={() => handleAddressClick(order)} data-toggle="modal" data-target="#exampleModal"> Detalle
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+
+      {loading && <Spiner></Spiner>}
+      {error && <p>{error}</p>}
+
+
+      <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div className="modal-dialog modal-lg" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">Orden numero : </h5>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              {orderNume && (
+                <div>
+                  {orderNume.map((order, index) => (
+                    <div key={index} className="card border-primary mb-3">
+                      <div className="card-header">Orden #: {order.orderNumber}</div>
+                      <div className="card-body text-primary">
+                        <p className="card-text">Estado: {order.status}</p>
+
+                        <IntlProvider locale="es" defaultLocale="es">
+                          <p className="card-text">
+                            Total: $<FormattedNumber value={order.totalPrice} style="currency" currency="CLP" />
+                          </p>
+                        </IntlProvider>
+
+                        <h4 className="card-title">Dirección de envío</h4>
+                        <p className="card-text">Dirección: {order.shippingAddress.direccion}</p>
+                        <p className="card-text">Número: {order.shippingAddress.numero}</p>
+                        <p className="card-text">Región: {order.shippingAddress.region}</p>
+                        <p className="card-text">Ciudad: {order.shippingAddress.ciudad}</p>
+                        <p className="card-text">Comuna: {order.shippingAddress.comuna}</p>
+                        <p className="card-text">Teléfono: {order.shippingAddress.phone}</p>
+
+                        <h4 className="card-title">Productos</h4>
+                        <div className="d-flex flex-wrap">
+                          {order.products.map((product, index) => (
+                            <div key={index} className="card border-secondary mb-3 mr-3">
+                              <div className="card-header">Producto #{index + 1}</div>
+                              <div className="card-body text-secondary">
+                                <p className="card-text">Nombre: {product.product.name}</p>
+                                <IntlProvider locale="es" defaultLocale="es">
+                                  <p className="card-text">
+                                    Precio unitario: $<FormattedNumber value={product.priceunitary} style="currency" currency="CLP" />
+                                  </p>
+                                </IntlProvider>
+                                <p className="card-text">Cantidad: {product.quantity}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
 
     </>
 

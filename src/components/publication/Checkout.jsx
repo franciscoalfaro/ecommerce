@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { regiones } from '../data/chile';
 import useCart from '../../hooks/useCart';
@@ -7,10 +7,13 @@ import { FormattedNumber, IntlProvider } from 'react-intl';
 import { Global } from '../../helpers/Global';
 import { useForm } from '../../hooks/useForm';
 import { CheckoutRegister } from './CheckoutRegister';
+import { Spiner } from '../../hooks/Spiner';
 
 export const Checkout = () => {
   const { auth } = useAuth({});
   const { form, changed } = useForm({})
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate()
 
   //funcionamiento del carrito 
   const { cart, removeFromCart, updateQuantity, totalItems } = useCart();
@@ -56,6 +59,7 @@ export const Checkout = () => {
 
   const generarOrden = async (e) => {
     e.preventDefault();
+    setLoading(true);
     let newOrden = {
       ...form, // Copiar las propiedades existentes del objeto form
       comuna: selectedCommune,
@@ -85,19 +89,26 @@ export const Checkout = () => {
           title: 'Orden generada correctamente, pronto recibirar una correo con el numero de orden',
           showConfirmButton: true,
 
-
+        }).then((result) => {
+          if (result.isConfirmed) {
+            localStorage.removeItem('cart')
+            navigate('/');
+            setNewOrden(data)
+          }
         });
-        setTimeout(() => { window.location.href = "/" }, 1200);
-        localStorage.removeItem('cart')
-        setNewOrden(data)
+      } else if(data.status === 'error') {
+        Swal.fire({
+          position: 'center',
+          icon: 'warning',
+          title: data.message,
+          showConfirmButton: true,
 
-      } else {
-        console.log(data.message)
-
+        })
+        setLoading(false);
       }
 
     } catch (error) {
-      console.log('code',error)
+      console.log('code', error)
 
     }
 
@@ -176,22 +187,22 @@ export const Checkout = () => {
                   ))}
 
                   {/* 
-          <li className="list-group-item d-flex justify-content-between bg-body-tertiary">
-            <div className="text-success">
-              <h6 className="my-0">Promo code</h6>
-              <small>EXAMPLECODE</small>
-            </div>
-            <span className="text-success">−$0</span>
-          </li>
-         
-          <form className="card p-2">
-            <div className="input-group">
-              <label htmlFor='promecode'></label>
-              <input type="text" className="form-control" placeholder="Promo code" />
-              <button type="submit" className="btn btn-secondary">Aplicar</button>
-            </div>
-          </form>
-        */}
+                  <li className="list-group-item d-flex justify-content-between bg-body-tertiary">
+                    <div className="text-success">
+                      <h6 className="my-0">Promo code</h6>
+                      <small>EXAMPLECODE</small>
+                    </div>
+                    <span className="text-success">−$0</span>
+                  </li>
+                
+                  <form className="card p-2">
+                    <div className="input-group">
+                      <label htmlFor='promecode'></label>
+                      <input type="text" className="form-control" placeholder="Promo code" />
+                      <button type="submit" className="btn btn-secondary">Aplicar</button>
+                    </div>
+                  </form>
+                */}
 
                   <li className="list-group-item d-flex justify-content-between">
                     <span>Precio Total: </span>
@@ -336,10 +347,15 @@ export const Checkout = () => {
 
                 <hr className="my-4" />
 
-                <button className="w-100 btn btn-primary btn-lg" type="submit">Confirmar compra</button>
+                {loading ? (
+                  <Spiner></Spiner>
+                ) : (
+                  <div className="text-center">
+                    <button className="w-100 btn btn-primary btn-lg" type="submit">Confirmar compra</button>
+                  </div>
+                )}
 
               </div>
-
 
             </div>
           </form>

@@ -4,14 +4,15 @@ import { useState } from 'react'
 import useAuth from '../../hooks/useAuth'
 import { Global } from '../../helpers/Global'
 import { NavLink } from 'react-router-dom'
-import useCart from '../../hooks/useCart'
+import { useNavigate } from 'react-router-dom'
+
 
 export const Login = () => {
 
   const { form, changed } = useForm({})
   const [saved, setSaved] = useState('not_sended')
-
   const { setAuth } = useAuth()
+  const navigate = useNavigate()
 
   const loginUser = async (e) => {
     e.preventDefault()
@@ -27,6 +28,7 @@ export const Login = () => {
       }
     })
     const data = await request.json()
+    console.log(data.user)
 
     if (data.status == "success") {
       // Persistir datos en el navegador - guardar datos de inicio de sesión
@@ -46,7 +48,22 @@ export const Login = () => {
         timer: 1150
 
       });
-      setTimeout(() => { window.location.reload() }, 1200);
+      if(data.user.role === 'admin'){
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Login correcto',
+          showConfirmButton: false,
+          timer: 1150
+  
+        });
+        window.location.replace('/admin')
+        
+
+      }else{
+        setTimeout(() => { window.location.reload() }, 1200);
+      }
+      
 
 
     } else if (data.status == "error_404") {

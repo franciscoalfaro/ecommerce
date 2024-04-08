@@ -19,10 +19,16 @@ import { Cart } from '../components/publication/Cart'
 import { FeaturedProducts } from '../components/publication/FeaturedProducts'
 import { Offers } from '../components/publication/Offers'
 import { OrderSearch } from '../components/publication/OrderSearch'
-import { Dashboard } from '../components/publication/Dashboard'
 import { Orders } from '../components/publication/Orders'
 import { ProductSelect } from '../components/publication/ProductSelect'
 import { CartProvider } from '../context/CartContext'
+
+import { Dashboard } from '../components/administrador/Dashboard'
+import { AdminLayout } from '../components/layout/admin/AdminLayout'
+import { ProductAdmin } from '../components/administrador/ProductAdmin'
+import { GestionProduct } from '../components/administrador/GestionProduct'
+import { OrderAdmin } from '../components/administrador/OrderAdmin'
+import { CreateUser } from '../components/administrador/CreateUser'
 
 
 export const Routing = () => {
@@ -52,13 +58,11 @@ export const Routing = () => {
 
                         <Route path='/auth' element={<PrivateLayout></PrivateLayout>}>
                             <Route index element={<Inicio></Inicio>}></Route>
-                            <Route path='dashboard' element={<Dashboard></Dashboard>}></Route>
                             <Route path='cart' element={<Cart></Cart>}></Route>
                             <Route path='checkout' element={<Checkout></Checkout>}></Route>
                             <Route path='order' element={<Orders></Orders>}></Route>
                             <Route path='logout' element={<Logout></Logout>}></Route>
                             <Route path='perfil' element={<Profile></Profile>}></Route>
-
                             <Route path='products' element={<Products></Products>}></Route>
                             <Route path='product/:id/' element={<ProductSelect></ProductSelect>}></Route>
 
@@ -67,9 +71,17 @@ export const Routing = () => {
                             <Route path='search/:product' element={<Search></Search>}></Route>
                             <Route path='offers' element={<Offers></Offers>}></Route>
                             <Route path='seguimiento' element={<OrderSearch></OrderSearch>}></Route>
-
                         </Route>
 
+                        <Route path='/admin' element={<AdminLayout></AdminLayout>}>
+                            <Route index element={<Dashboard></Dashboard>}></Route>
+                            <Route path='crear' element={<ProductAdmin></ProductAdmin>}></Route>
+                            <Route path='crear-usuario' element={<CreateUser></CreateUser>}></Route>
+                            <Route path='administrar-productos' element={<GestionProduct></GestionProduct>}></Route>
+                            <Route path='pedidos' element={<OrderAdmin></OrderAdmin>}></Route>
+                            <Route path='logout' element={<Logout></Logout>}></Route>
+                            <Route path='perfil' element={<Profile></Profile>}></Route>
+                        </Route>
                         <Route path='*' element={<><h1><p>Error 404 <Link to="/">Volver Al inicio</Link></p></h1></>}></Route>
                     </Routes>
                 </CartProvider>

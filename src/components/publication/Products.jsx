@@ -21,6 +21,13 @@ export const Products = () => {
   const [productFilter, setProductFilter] = useState('');
   const [priceFilter, setPriceFilter] = useState('');
 
+  const uniqueBrands = [...new Set(products.map(product => product.brand))];
+
+  const clearFilters = () => {
+    setProductFilter('');
+    setPriceFilter('');
+  };
+
 
   const nextPage = () => {
     let next = page + 1;
@@ -69,7 +76,7 @@ export const Products = () => {
       }
 
     } catch (error) {
-      console.log('code',error)
+      console.log('code', error)
 
     }
 
@@ -83,17 +90,21 @@ export const Products = () => {
       <section className="py-4 bg-light">
         <div className="container">
           <h2>Filtrar por</h2>
-
           <div className="row">
             <div className="col-lg-3 col-md-4 col-sm-6 mb-4">
               <select className="form-select" value={productFilter} onChange={(e) => setProductFilter(e.target.value)}>
                 <option value="">Todos los productos</option>
-                <option value="levis">levis</option>
-                <option value="opaline">opaline</option>
+                {uniqueBrands.map((brand, index) => (
+                  <option key={index} value={brand}>
+                    {brand}
+                  </option>
+                ))}
               </select>
             </div>
+            <div className="col-lg-3 col-md-4 col-sm-6 mb-4">
+              <button className="btn btn-secondary" onClick={clearFilters}>Limpiar Filtros</button>
+            </div>
           </div>
-
         </div>
       </section>
 

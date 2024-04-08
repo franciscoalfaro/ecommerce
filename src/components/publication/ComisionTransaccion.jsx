@@ -1,89 +1,46 @@
 import React, { useState } from 'react';
 
 
-
-
 export const ComisionTransaccion = () => {
-    const [monto, setMonto] = useState('');
-    const [comisionUSD, setComisionUSD] = useState(0);
-    const [comisionCLP, setComisionCLP] = useState(0);
-    const [totalUSD, setTotalUSD] = useState(0);
-    const [totalCLP, setTotalCLP] = useState(0);
-    const tasaCambioDolar = 750; // Tasa de cambio de pesos chilenos a dólares
-
-    const handleInputChange = (event) => {
-        setMonto(event.target.value);
-    };
-
-    const limpiarMonto = (monto) => {
-        // Eliminar cualquier carácter que no sea un número o un punto decimal
-        return monto.replace(/[^\d.]/g, '');
-    };
+    const [montoVenta, setMontoVenta] = useState('');
+    const [comisionTotal, setComisionTotal] = useState(0);
 
     const calcularComision = () => {
-        const tarifaFija = 0.30; // en dólares
-        const porcentajeComision = 5.4 / 100; // convertimos el porcentaje a decimal
-
-        // Limpiar el monto de cualquier carácter no válido
-        const montoLimpio = limpiarMonto(monto);
-
-        // Convertir el monto a número
-        const montoFloat = parseFloat(montoLimpio);
-        if (isNaN(montoFloat) || montoFloat <= 0) {
-            alert('Por favor, ingrese un monto válido mayor que cero.');
-            return;
+        // Verificar que el monto de la venta sea un número válido
+        if (!isNaN(parseFloat(montoVenta))) {
+            // Calcular la comisión (2.3%)
+            const comision = parseFloat(montoVenta) * 0.023;
+            // Calcular el IVA (19%)
+            const iva = comision * 0.19;
+            // Calcular el total de la comisión (comisión + IVA)
+            const totalComision = comision + iva;
+            // Actualizar el estado con el total de la comisión
+            setComisionTotal(totalComision);
+        } else {
+            // Si el monto de la venta no es válido, mostrar un mensaje de error
+            alert('Por favor, introduce un monto de venta válido.');
         }
-
-        // Convertir el monto a dólares usando la tasa de cambio
-        const montoUSD = montoFloat / tasaCambioDolar;
-
-        const comisionCalculadaUSD = montoUSD * porcentajeComision + tarifaFija;
-        setComisionUSD(comisionCalculadaUSD.toFixed(2));
-
-        // Convertir la comisión de dólares a pesos chilenos
-        const comisionCLP = comisionCalculadaUSD * tasaCambioDolar;
-        setComisionCLP(comisionCLP.toFixed(2));
-
-        // Calcular el total que recibirá el cliente
-        const totalUSD = montoUSD - comisionCalculadaUSD;
-        setTotalUSD(totalUSD.toFixed(2));
-
-        // Convertir el total a pesos chilenos
-        const totalCLP = totalUSD * tasaCambioDolar;
-        setTotalCLP(totalCLP.toFixed(2));
     };
 
     return (
         <div>
-            <h2>Simulador de Comisión por Transacción</h2>
+            <h2>Calculadora de Comisión de Venta en Chile</h2>
             <div>
-                <label htmlFor="monto">Monto de la Transacción (en CLP):</label>
+                <label htmlFor="montoVenta">Monto de la Venta (CLP):</label>
                 <input
-                    type="text" // Cambiado a texto para permitir puntos decimales
-                    id="monto"
-                    value={monto}
-                    onChange={handleInputChange}
+                    type="text"
+                    id="montoVenta"
+                    value={montoVenta}
+                    onChange={(e) => setMontoVenta(e.target.value)}
                 />
             </div>
             <button onClick={calcularComision}>Calcular Comisión</button>
-            <div>
-                {comisionUSD > 0 && comisionCLP > 0 && (
-                    <div>
-                        <p>La comisión por transacción es:</p>
-                        <p>En USD: ${comisionUSD}</p>
-                        <p>En CLP: {comisionCLP} pesos chilenos</p>
-                    </div>
-                )}
-            </div>
-            <div>
-                {totalUSD > 0 && totalCLP > 0 && (
-                    <div>
-                        <p>El total que recibirá el cliente es:</p>
-                        <p>En USD: ${totalUSD}</p>
-                        <p>En CLP: {totalCLP} pesos chilenos</p>
-                    </div>
-                )}
-            </div>
+            {comisionTotal > 0 && (
+                <div>
+                    <h3>Comisión Total:</h3>
+                    <p>{comisionTotal.toFixed(2)} CLP</p>
+                </div>
+            )}
         </div>
     );
 };

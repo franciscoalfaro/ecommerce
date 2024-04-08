@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import useCart from '../../hooks/useCart';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { FormattedNumber, IntlProvider } from 'react-intl';
 import useAuth from '../../hooks/useAuth';
 import { useForm } from '../../hooks/useForm';
 import { regiones } from '../data/chile';
 import { Global } from '../../helpers/Global';
+import { Spiner } from '../../hooks/Spiner';
 
 
 export const CheckoutRegister = () => {
 
     const { auth } = useAuth({});
     const { form, changed } = useForm({})
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate()
 
     //funcionamiento del carrito 
     const { cart, removeFromCart, updateQuantity, totalItems } = useCart();
@@ -42,11 +45,12 @@ export const CheckoutRegister = () => {
 
 
 
-    const generarOrden = async (e) => { 
+    const generarOrden = async (e) => {
         e.preventDefault();
+        setLoading(true);
         let newOrden = {
             ...form, // Copiar las propiedades existentes del objeto form
-            
+
             products: cart.map(item => ({
                 product: item._id,
                 quantity: item.quantity,
@@ -73,18 +77,28 @@ export const CheckoutRegister = () => {
                     showConfirmButton: true,
 
 
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/auth/order');
+                        localStorage.removeItem('cart')
+                        setNewOrden(data)
+                    }
                 });
-                setTimeout(() => { window.location.href = "/" }, 1200);
-                localStorage.removeItem('cart')
-                setNewOrden(data)
 
-            } else {
-                console.log(data.message)
+            } else if (data.status === 'error') {
+                Swal.fire({
+                    position: 'center',
+                    icon: 'warning',
+                    title: data.message,
+                    showConfirmButton: true,
+
+                })
+                setLoading(false);
 
             }
 
         } catch (error) {
-            console.log('code',error)
+            console.log('code', error)
 
         }
 
@@ -132,7 +146,7 @@ export const CheckoutRegister = () => {
 
 
         } catch (error) {
-            console.log('code',error)
+            console.log('code', error)
 
         }
     }
@@ -285,7 +299,13 @@ export const CheckoutRegister = () => {
 
                         <hr className="my-4" />
 
-                        <button className="w-100 btn btn-primary btn-lg" type="submit">Confirmar compra</button>
+                        {loading ? (
+                            <Spiner></Spiner>
+                        ) : (
+                            <div className="text-center">
+                                <button className="w-100 btn btn-primary btn-lg" type="submit">Confirmar compra</button>
+                            </div>
+                        )}
 
                     </div>
 

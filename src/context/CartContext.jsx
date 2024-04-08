@@ -29,8 +29,9 @@ export const CartProvider = ({ children }) => {
 
   //funcion para agregar los productos
   const addToCart = (product) => {
-
     const existingItemIndex = cart.findIndex((item) => item._id === product._id);
+
+
     if (existingItemIndex !== -1) {
       const updatedCart = [...cart];
       updatedCart[existingItemIndex].quantity += 1;
@@ -41,6 +42,9 @@ export const CartProvider = ({ children }) => {
       Swal.fire({ position: "bottom-end", title: "producto agregado al carro",showConfirmButton: false,timer: 400});
     }
     localStorage.setItem('cart', JSON.stringify(cart));
+
+
+    
   };
 
 
