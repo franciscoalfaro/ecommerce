@@ -95,32 +95,36 @@ export const Orders = () => {
 
   return (
     <>
-
-      <table className="orders-table">
-        <thead>
-          <tr>
-            <th>Numero de orden</th>
-            <th>Estado</th>
-            <th>Boleta</th>
-            <th>Mas</th>
-          </tr>
-        </thead>
-        <tbody>
-          {order.map((order, index) => (
-            <tr key={index}>
-              <td>{order.orderNumber}</td>
-              <td>{order.status}</td>
-              <td>
-                <button>Descargar Boleta</button>
-              </td>
-              <td>
-                <button type="button" className="btn btn-primary" onClick={() => handleAddressClick(order)} data-toggle="modal" data-target="#exampleModal"> Detalle
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="container mt-4">
+        <h2>Mis ultimas compras</h2>
+        <div className="table-responsive">
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Numero de orden</th>
+                <th>Estado</th>
+                <th>Boleta</th>
+                <th>Mas</th>
+              </tr>
+            </thead>
+            <tbody>
+              {order.map((order, index) => (
+                <tr key={index}>
+                  <td>{order.orderNumber}</td>
+                  <td>{order.status}</td>
+                  <td>
+                  <button className="btn btn-info btn-sm">Descargar Boleta</button>
+                  </td>
+                  <td>
+                    <button type="button" className="btn btn-danger btn-sm me-2" onClick={() => handleAddressClick(order)} data-toggle="modal" data-target="#exampleModal"> Detalle
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
 
 
       {loading && <Spiner></Spiner>}

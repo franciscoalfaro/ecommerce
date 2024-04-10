@@ -28,7 +28,7 @@ export const ProductAdmin = () => {
         </div>
         <div className="mb-3">
           <label htmlFor="stockProducto" className="form-label">Stock Disponible</label>
-          <input type="number" className="form-control" id="stockProducto" placeholder="Ingrese el stock disponible"></input>
+          <input type="number" className="form-control" id="stockProducto" min={1} placeholder="Ingrese el stock disponible"></input>
         </div>
         <div className="mb-3">
           <label htmlFor="imagenProducto" className="form-label">Imagen del Producto</label>

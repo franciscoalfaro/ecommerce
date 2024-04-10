@@ -178,3 +178,8 @@
 .orders-table button:hover {
     background-color: #0056b3;
 }
+
+.scrollable-select {
+    overflow-y: auto; /* Añade una barra de desplazamiento vertical si el contenido es más largo que el contenedor */
+    max-height: 200px; /* Define la altura máxima del contenedor para que la barra de desplazamiento aparezca cuando el contenido exceda esta altura */
+  }

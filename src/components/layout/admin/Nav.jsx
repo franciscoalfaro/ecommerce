@@ -33,6 +33,11 @@ export const Nav = () => {
               </Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to="/admin/pedidos">
+                <i className="bi bi-truck"></i>Modificar Pedidos
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" to="/admin/crear-usuario"><i className="bi bi-person"></i>Crear Usuarios</Link>
             </li>
 
@@ -41,7 +46,7 @@ export const Nav = () => {
             </li>
 
             <li className="nav-item">
-              <Link className="btn btn-link" to="/admin/logout"><i className="bi bi-box-arrow-right"></i></Link>
+              <Link className="btn btn-link" to="/admin/logout"><i className="bi bi-box-arrow-right">Salir</i></Link>
             </li>
           </ul>
         </div>
