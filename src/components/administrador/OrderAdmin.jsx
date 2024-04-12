@@ -30,7 +30,7 @@ export const OrderAdmin = () => {
     }
   };
 
-  //llamado al end-point para listar las ordenes
+  //llamado al end-point para listar las ordenes con su estado
   const obtenerOrdenes = async (nextPage = 1) => {
     try {
       const request = await fetch(Global.url + 'order/listall/' + nextPage, {
@@ -45,7 +45,6 @@ export const OrderAdmin = () => {
 
       if (data.status === "success") {
         setOrder(data.order)
-        console.log(data.order)
         setTotalPages(data.totalPages);
       } else {
         console.log('code', data.message)
@@ -58,7 +57,7 @@ export const OrderAdmin = () => {
 
   }
 
-  //todas las ordenes
+  //todas las ordenes en el droplist
   const ListAllOrdenes = async () => {
     try {
       const request = await fetch(Global.url + 'order/listdrop', {
@@ -72,12 +71,6 @@ export const OrderAdmin = () => {
 
       if (data.status === "success") {
         console.log('todas las ordenes', data.order);
-
-        // Filtrar las ordenes para excluir las que tienen estado 'delivery' o 'canceled'
-
-        const filteredOrders = data.order.filter(order => order.status !== "delivered" && order.status !== "canceled");
-
-
 
         // Establecer la lista filtrada como el nuevo estado
         setOrderList(data.order);
@@ -110,7 +103,8 @@ export const OrderAdmin = () => {
         obtenerOrdenes()
 
       } else {
-        console.log(data.message)
+        Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
+
 
       }
 
@@ -122,60 +116,83 @@ export const OrderAdmin = () => {
 
   }
 
+  //funcion para paginar y ocultar numeros 
+  function generatePaginationNumbers(totalPages, currentPage) {
+    const maxVisiblePages = 5; // Número máximo de páginas visibles
+    const halfVisiblePages = Math.floor(maxVisiblePages / 2); // Mitad de las páginas visibles
+
+    let startPage, endPage;
+
+    if (totalPages <= maxVisiblePages) {
+      startPage = 1;
+      endPage = totalPages;
+    } else {
+      if (currentPage <= halfVisiblePages) {
+        startPage = 1;
+        endPage = maxVisiblePages;
+      } else if (currentPage + halfVisiblePages >= totalPages) {
+        startPage = totalPages - maxVisiblePages + 1;
+        endPage = totalPages;
+      } else {
+        startPage = currentPage - halfVisiblePages;
+        endPage = currentPage + halfVisiblePages;
+      }
+    }
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+  }
+
+  const visiblePageNumbers = generatePaginationNumbers(totalPages, page);
 
   return (
     <div className="container mt-4">
       <div className="row">
         <div className="col-md-6">
-          <h4>Estados de Envío</h4>
-          {order.map((ordenes) => (
-            <ul className="list-group" key={ordenes._id}>
-              <li className="list-group-item d-flex justify-content-between align-items-center mb-2">
-                {ordenes.orderNumber}
-                <span className="badge bg-primary">{ordenes.status}</span>
-                <i className="bi bi-pencil"></i>
-              </li>
-            </ul>
-          ))}
-
-          <nav aria-label="Page navigation example">
-            <ul className="pagination">
-              <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-                <a className="page-link" href="#" onClick={prevPage}>Anterior</a>
-              </li>
-              {Array.from({ length: totalPages }, (_, index) => (
-                <li key={index} className={`page-item ${page === index + 1 ? 'active' : ''}`}>
-                  <a className="page-link" href="#" onClick={() => setPage(index + 1)}>{index + 1}</a>
+          <div className="d-flex flex-column">
+            <h4>Estados de Envío</h4>
+            {order.map((ordenes) => (
+              <ul className="list-group" key={ordenes._id}>
+                <li className="list-group-item d-flex justify-content-between align-items-center mb-2">
+                  {ordenes.orderNumber}
+                  <span className={`badge ${ordenes.status === 'pending' ? 'bg-primary' : ordenes.status === 'shipped' ? 'bg-success' : ordenes.status === 'delivered' ? 'bg-info' : ordenes.status === 'canceled' ? 'bg-danger' : ''}`}>
+                    {ordenes.status}
+                  </span>
+                  <i className="bi bi-x-circle" data-toggle="tooltip" data-placement="top" title="Eliminar"></i>
                 </li>
-              ))}
-              <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
-                <a className="page-link" href="#" onClick={nextPage}>Siguiente</a>
-              </li>
-            </ul>
-          </nav>
-
-
+              </ul>
+            ))}
+            <nav aria-label="Page navigation example">
+              <ul className="pagination justify-content-center">
+                <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
+                  <a className="page-link" href="#" onClick={prevPage}>Anterior</a>
+                </li>
+                {visiblePageNumbers.map((pageNumber) => (
+                  <li key={pageNumber} className={`page-item ${page === pageNumber ? 'active' : ''}`}>
+                    <a className="page-link" href="#" onClick={() => setPage(pageNumber)}>{pageNumber}</a>
+                  </li>
+                ))}
+                <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
+                  <a className="page-link" href="#" onClick={nextPage}>Siguiente</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
-
 
         <div className="col-md-6">
           <h4>Actualizar Estado de Envío</h4>
           <form onSubmit={updateOrder}>
-
             <div className="mb-3s overflow-auto">
               <label htmlFor="estadoEnvio" className="form-label">Seleccionar Envío</label>
               <select className="form-select" id="estadoEnvio" onChange={(e) => setSelectedOrderId(e.target.value)} required>
                 <option value="">Selecciona una orden</option>
                 {orderlist.map((listordenes) => (
-                  (listordenes.status !== "delivered" && listordenes.status !== "canceled") &&
+                  (listordenes.status !== "canceled") &&
                   <option key={listordenes._id} value={listordenes._id}>{listordenes.orderNumber}</option>
                 ))}
               </select>
               <div className="invalid-feedback">Debes seleccionar una orden.</div>
             </div>
-
-
-
 
             <div className="mb-3">
               <label htmlFor="status" className="form-label">Nuevo Estado</label>
@@ -191,5 +208,8 @@ export const OrderAdmin = () => {
         </div>
       </div>
     </div>
+
+
+
   );
 };

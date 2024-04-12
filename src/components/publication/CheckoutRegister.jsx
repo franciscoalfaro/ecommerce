@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import useCart from '../../hooks/useCart';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
 import { FormattedNumber, IntlProvider } from 'react-intl';
 import useAuth from '../../hooks/useAuth';
 import { useForm } from '../../hooks/useForm';
@@ -254,7 +254,8 @@ export const CheckoutRegister = () => {
                                     ))
                                 ) : (
                                     <div>
-                                        Sin direcciones
+                                        Sin direcciones, agrega una nueva antes de continuar
+                                        <Link to='/auth/perfil'>Agregar una direccion</Link>
                                     </div>
                                 )}
                             </div>
