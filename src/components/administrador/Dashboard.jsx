@@ -12,6 +12,8 @@ export const Dashboard = () => {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
 
+  const [categoria, setCategorias] = useState([])
+
 
   useEffect(() => {
     obtenerDetalle(page)
@@ -20,7 +22,6 @@ export const Dashboard = () => {
   const nextPage = () => {
     let next = page + 1;
     setPage(next);
-
   };
   const prevPage = () => {
     if (page > 1) {
@@ -90,6 +91,7 @@ export const Dashboard = () => {
 
 
 
+
   return (
     <div className="container mt-4">
       <h2 className="text-center mb-4">Panel de Control - Administrador</h2>
@@ -112,7 +114,7 @@ export const Dashboard = () => {
             </ul>
           )}
 
-
+          <br></br>
           <nav aria-label="Page navigation example">
             <ul className="pagination justify-content-center">
               <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>

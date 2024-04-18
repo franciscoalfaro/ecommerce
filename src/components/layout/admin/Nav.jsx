@@ -33,7 +33,7 @@ export const Nav = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/admin/pedidos">
+              <Link className="nav-link" to="/admin/modificar-pedidos">
                 <i className="bi bi-truck"></i>Modificar Pedidos
               </Link>
             </li>

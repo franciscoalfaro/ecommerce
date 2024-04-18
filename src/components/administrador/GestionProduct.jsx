@@ -1,6 +1,7 @@
 import React from 'react';
 
 export const GestionProduct = () => {
+
   return (
     <div className="container mt-4">
       <h2>Gestión de Productos</h2>
@@ -23,7 +24,8 @@ export const GestionProduct = () => {
               <td>10</td>
               <td>
                 <button className="btn btn-danger btn-sm me-2">Eliminar</button>
-                <button className="btn btn-info btn-sm">Editar</button>
+                <button className="btn btn-info btn-sm me-2">Editar</button>
+                <button className="btn btn-info btn-sm">Stock</button>
               </td>
             </tr>
             <tr>
@@ -33,7 +35,8 @@ export const GestionProduct = () => {
               <td>5</td>
               <td>
                 <button className="btn btn-danger btn-sm me-2">Eliminar</button>
-                <button className="btn btn-info btn-sm">Editar</button>
+                <button className="btn btn-info btn-sm me-2">Editar</button>
+                <button className="btn btn-info btn-sm">Stock</button>
               </td>
             </tr>
           </tbody>

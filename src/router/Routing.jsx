@@ -29,6 +29,7 @@ import { ProductAdmin } from '../components/administrador/ProductAdmin'
 import { GestionProduct } from '../components/administrador/GestionProduct'
 import { OrderAdmin } from '../components/administrador/OrderAdmin'
 import { CreateUser } from '../components/administrador/CreateUser'
+import { AdministrarPedidos } from '../components/administrador/AdministrarPedidos'
 
 
 export const Routing = () => {
@@ -78,6 +79,7 @@ export const Routing = () => {
                             <Route path='crear' element={<ProductAdmin></ProductAdmin>}></Route>
                             <Route path='crear-usuario' element={<CreateUser></CreateUser>}></Route>
                             <Route path='administrar-productos' element={<GestionProduct></GestionProduct>}></Route>
+                            <Route path='modificar-pedidos' element={<AdministrarPedidos></AdministrarPedidos>}></Route>
                             <Route path='pedidos' element={<OrderAdmin></OrderAdmin>}></Route>
                             <Route path='logout' element={<Logout></Logout>}></Route>
                             <Route path='perfil' element={<Profile></Profile>}></Route>
