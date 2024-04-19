@@ -6,7 +6,6 @@ import { SerializeForm } from '../../helpers/SerializeForm';
 export const GestionProduct = () => {
   const { changed } = useForm()
 
-
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [product, setProduct] = useState([])
@@ -76,6 +75,7 @@ export const GestionProduct = () => {
       const data = await request.json();
 
       if (data.status === "success") {
+        Swal.fire({ position: "bottom-end", title: "Producto actualizado correctamente", showConfirmButton: false, timer: 1000 });
         getProduct()
       }
 
@@ -83,112 +83,6 @@ export const GestionProduct = () => {
     } catch (error) {
       console.error(error);
     }
-
-        // subida de imagen al servidor
-        const fileInput = document.querySelector("#file");
-
-        if (data.status == "success" && fileInput.files[0]) {
-          // Recoger imagen a subir
-          const formData = new FormData();
-          formData.append('files', fileInput.files[0]);
-    
-          // Verificar la extensión del archivo
-          const fileName = fileInput.files[0].name;
-          const fileExtension = fileName.split('.').pop().toLowerCase();
-    
-          if (fileExtension === 'gif') {
-            // Si la extensión es .gif, subir el archivo sin comprimir
-            const uploadRequest = await fetch(Global.url + "product/upload"+productID, {
-              method: "POST",
-              body: formData,
-              headers: {
-                'Authorization': localStorage.getItem('token')
-              }
-            });
-    
-            const uploadData = await uploadRequest.json();
-    
-    
-            if (uploadData.status == "success" && uploadData.user) {
-              delete uploadData.password;
-              setAuth({ ...auth, ...uploadData.user });
-              setTimeout(() => { window.location.reload() }, 0);
-              setSaved("saved");
-            } else {
-              setSaved("error");
-            }
-          } else {
-            // Si no es .gif, comprimir el archivo antes de subirlo
-            const compressedFile = await compressImage(fileInput.files[0]);
-    
-            // Crear un nuevo FormData con el archivo comprimido
-            const compressedFormData = new FormData();
-            compressedFormData.append('file0', compressedFile);
-    
-            // Subir el archivo comprimido
-            const uploadRequest = await fetch(Global.url + "product/upload"+productID, {
-              method: "POST",
-              body: compressedFormData,
-              headers: {
-                'Authorization': localStorage.getItem('token')
-              }
-            });
-    
-            const uploadData = await uploadRequest.json();
-    
-    
-            if (uploadData.status == "success" && uploadData.user) {
-              delete uploadData.password;
-              setAuth({ ...auth, ...uploadData.user });
-              setTimeout(() => { window.location.reload() }, 0);
-              setSaved("saved");
-            } else {
-              setSaved("error");
-            }
-          }
-        }
-    
-    
-        // Función para comprimir la imagen
-        async function compressImage(file, maxWidth, maxHeight, quality) {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = (event) => {
-              const img = new Image();
-              img.src = event.target.result;
-              img.onload = () => {
-                // Crear un lienzo (canvas) para dibujar la imagen comprimida
-                const canvas = document.createElement('canvas');
-                let width = img.width;
-                let height = img.height;
-                if (width > maxWidth) {
-                  // Redimensionar la imagen si supera el ancho máximo
-                  height *= maxWidth / width;
-                  width = maxWidth;
-                }
-                if (height > maxHeight) {
-                  // Redimensionar la imagen si supera la altura máxima
-                  width *= maxHeight / height;
-                  height = maxHeight;
-                }
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                // Dibujar la imagen en el lienzo con el tamaño redimensionado
-                ctx.drawImage(img, 0, 0, width, height);
-                // Convertir el lienzo a un archivo comprimido (blob)
-                canvas.toBlob((blob) => {
-                  // Crear un nuevo archivo con el blob comprimido
-                  const compressedFile = new File([blob], file.name, { type: file.type });
-                  resolve(compressedFile);
-                }, file.type, quality);
-              };
-            };
-            reader.onerror = (error) => reject(error);
-          });
-        }
-
 
   }
 
@@ -250,6 +144,39 @@ export const GestionProduct = () => {
   const visiblePageNumbers = generatePaginationNumbers(totalPages, page);
 
 
+
+  //funcion para crear stock
+  const addStock = async (e) => {
+
+    e.preventDefault();
+    const productID = selectedProduct._id
+    const createStock = SerializeForm(e.target)
+
+    try {
+     const request =  await fetch(Global.url + "stock/create/" + productID, {
+        method: "POST",
+        body: JSON.stringify(createStock),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': localStorage.getItem('token')
+        }
+      })
+      const data = await request.json();
+      console.log(data)
+
+      if (data.status === "success") {
+        Swal.fire({ position: "bottom-end", title: "stock actualizado correctamente", showConfirmButton: false, timer: 1000 });
+        getProduct()
+
+      }else{
+        Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
+      }
+
+    } catch (error) {
+      console.log('code', error);
+    }
+
+  }
 
 
 
@@ -318,43 +245,44 @@ export const GestionProduct = () => {
               </button>
             </div>
             <div className="modal-body">
-              <form>
-                <div className="mb-3 row">
-                  <label htmlFor="nombreProducto" className="col-sm-4 col-form-label"></label>
-                  <div className="col-sm-12">
-                    <div className="input-group">
-                      <span className="input-group-text">Nombre del Producto</span>
-                      <input type="text" className="form-control" id="nombreProducto" readOnly defaultValue="Producto 1" />
+              {selectedProduct && (
+                <form onSubmit={addStock}>
+
+                  <div className="mb-3 row">
+                    <label htmlFor="nombreProducto" className="col-sm-4 col-form-label"></label>
+                    <div className="col-sm-12">
+                      <div className="input-group">
+                        <span className="input-group-text">Nombre del Producto</span>
+                        <input type="text" className="form-control" id="nombreProducto" readOnly defaultValue={selectedProduct.name} />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="mb-3 row">
-                  <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
-                  <div className="col-sm-12">
-                    <div className="input-group">
-                      <span className="input-group-text">stock</span>
-                      <input type="number" name='stock' className="form-control" id="stock" defaultValue="0" />
+                  <div className="mb-3 row">
+                    <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
+                    <div className="col-sm-12">
+                      <div className="input-group">
+                        <span className="input-group-text">stock</span>
+                        <input type="number" name='quantity' className="form-control" id="stock" defaultValue={selectedProduct.stock ? selectedProduct.stock.quantity : 'N/A'} onChange={changed} />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="mb-3 row">
-                  <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
-                  <div className="col-sm-12">
-                    <div className="input-group">
-                      <span className="input-group-text">ubicacion</span>
-                      <input type="number" name='ubicacion' className="form-control" id="ubicacion" defaultValue="bodega" />
+                  <div className="mb-3 row">
+                    <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
+                    <div className="col-sm-12">
+                      <div className="input-group">
+                        <span className="input-group-text">ubicacion</span>
+                        <input type="text" name='location' className="form-control" id="ubicacion" defaultValue={selectedProduct.stock ? selectedProduct.stock.location : ''} onChange={changed} />
+                      </div>
                     </div>
                   </div>
-                </div>
-
-              </form>
-
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-              <button type="submit" className="btn btn-primary">Asignar</button>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" className="btn btn-primary">Asignar</button>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
         </div>

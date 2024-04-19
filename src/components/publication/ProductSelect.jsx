@@ -73,7 +73,8 @@ export const ProductSelect = () => {
                 </div>
                 <div className="col-md-6">
                   <h2>{product.name}</h2>
-                  <p>{product.description}</p>
+                  <p>Descripcion: {product.description}</p>
+                  <p>Talla: {product.size}</p>
                   <p>Stock: {product.stock?.quantity}</p>
                   <p>categoria: {product.category?.name}</p>
 

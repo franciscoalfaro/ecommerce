@@ -83,16 +83,17 @@ export const Checkout = () => {
       })
       const data = await request.json()
       if (data.status === 'success') {
+
         Swal.fire({
           position: 'center',
           icon: 'success',
-          title: 'Orden generada correctamente, pronto recibirar una correo con el numero de orden',
+          title: 'Orden generada correctamente, pronto recibiras una correo con el numero de orden',
           showConfirmButton: true,
 
         }).then((result) => {
           if (result.isConfirmed) {
             localStorage.removeItem('cart')
-            navigate('/');
+            setTimeout(() => { window.location.href = "/" });
             setNewOrden(data)
           }
         });

@@ -2,7 +2,7 @@ import React from 'react';
 
 export const CreateUser = () => {
 
-    
+
     return (
         <div className="container mt-5">
             <h2>Crear Nuevo Usuario</h2>
@@ -12,16 +12,22 @@ export const CreateUser = () => {
                     <input type="text" className="form-control" id="inputName" placeholder="Nombre"></input>
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="inputEmail" className="form-label">Correo Electrónico</label>
+                    <label htmlFor="inputEmail" className="form-label">email</label>
                     <input type="email" className="form-control" id="inputEmail" placeholder="Correo Electrónico"></input>
                 </div>
+
                 <div className="mb-3">
-                    <label htmlFor="inputPassword" className="form-label">Contraseña</label>
-                    <input type="password" className="form-control" id="inputPassword" placeholder="Contraseña"></input>
+                    <label htmlFor="inputEmail" className="form-label">confirma e-mail</label>
+                    <input type="email" className="form-control" id="inputEmail" placeholder="Correo Electrónico"></input>
                 </div>
+
                 <div className="mb-3">
-                    <label htmlFor="inputConfirmPassword" className="form-label">Confirmar Contraseña</label>
-                    <input type="password" className="form-control" id="inputConfirmPassword" placeholder="Confirmar Contraseña"></input>
+                    <label htmlFor="users" className="form-label">Tipo de usuario</label>
+                    <select className="form-select" id="nuevoEstado" name='users'>
+                        <option value='Seleccione una opcion'>Seleccione una opcion</option>
+                        <option value='admin'>administrador</option>
+                        <option value='root'>super usuario</option>
+                    </select>
                 </div>
                 <button type="submit" className="btn btn-primary">Crear Usuario</button>
             </form>

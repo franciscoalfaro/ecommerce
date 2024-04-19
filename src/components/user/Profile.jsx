@@ -35,6 +35,7 @@ export const Profile = () => {
       delete data.user.password
       setAuth({ ...auth, ...data.user })
       setSaved("saved")
+      Swal.fire({ position: "bottom-end", title: "usuario actualizado correctamente",showConfirmButton: false,timer: 1000});
     } if (data.status == "warning") {
       setSaved("warning")
     } if (data.status == "error") {

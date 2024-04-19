@@ -73,7 +73,7 @@ export const CheckoutRegister = () => {
                 Swal.fire({
                     position: 'center',
                     icon: 'success',
-                    title: 'Orden generada correctamente, pronto recibirar una correo con el numero de orden',
+                    title: 'Orden generada correctamente, pronto recibiras una correo con el numero de orden',
                     showConfirmButton: true,
 
 

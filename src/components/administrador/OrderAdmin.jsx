@@ -70,9 +70,6 @@ export const OrderAdmin = () => {
       const data = await request.json();
 
       if (data.status === "success") {
-        console.log('todas las ordenes', data.order);
-
-        // Establecer la lista filtrada como el nuevo estado
         setOrderList(data.order);
       } else {
         console.log('code', data.message);
@@ -144,6 +141,36 @@ export const OrderAdmin = () => {
 
   const visiblePageNumbers = generatePaginationNumbers(totalPages, page);
 
+//eliminar ordenes
+  const deleteOrder = async (productID, index) => {
+
+    try {
+      const request = await fetch(Global.url + 'order/delete/' + productID, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('token')
+        }
+      });
+      const data = await request.json();
+
+      if (data.status === 'success') {
+        const newItems = [...order];
+        newItems.splice(index, 1);
+        setOrderList(newItems);
+        obtenerOrdenes()
+        ListAllOrdenes()
+
+
+      } else {
+        setOrderList([]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
   return (
     <div className="container mt-4">
       <div className="row">
@@ -157,7 +184,7 @@ export const OrderAdmin = () => {
                   <span className={`badge ${ordenes.status === 'pending' ? 'bg-primary' : ordenes.status === 'shipped' ? 'bg-success' : ordenes.status === 'delivered' ? 'bg-info' : ordenes.status === 'canceled' ? 'bg-danger' : ''}`}>
                     {ordenes.status}
                   </span>
-                  <i className="bi bi-x-circle" data-toggle="tooltip" data-placement="top" title="Eliminar"></i>
+                  <i className="bi bi-x-circle" data-toggle="tooltip" data-placement="top" onClick={() => deleteOrder(ordenes._id)}title="Eliminar"></i>
                 </li>
               </ul>
             ))}
