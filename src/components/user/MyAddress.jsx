@@ -57,7 +57,6 @@ export const MyAddress = () => {
 
 
 
-
   const deleteAddress = async (addressId, index) => {
 
     try {

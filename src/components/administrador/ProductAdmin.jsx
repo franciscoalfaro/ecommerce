@@ -43,35 +43,112 @@ export const ProductAdmin = () => {
 
   const crearProducto = async (e) => {
     e.preventDefault();
-    let newProduct = form
-    console.log(newProduct)
-    try {
 
+    let newProduct = form;
+
+    try {
       const request = await fetch(Global.url + "product/create/", {
         method: "POST",
         body: JSON.stringify(newProduct),
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": localStorage.getItem("token")
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('token')
         }
-      })
-      const data = await request.json()
+      });
+      const data = await request.json();
 
-      if (data.status === "success") {
-        Swal.fire({ position: "bottom-end", title: "producto creado", showConfirmButton: false, timer: 1000 });
-        const myForm = document.querySelector("#product")
-        myForm.reset()
-        setSelectedOption('')
+      const fileInput = document.querySelector("#files");
 
+      const imagesAttached = fileInput && fileInput.files.length > 0;
+
+
+      if (data.status === "success" && !imagesAttached) {
+        Swal.fire({ position: "bottom-end", title: "Producto creado correctamente", showConfirmButton: false, timer: 1000 });
       } else {
         Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
       }
 
-    } catch (error) {
-      console.log('code', error)
-    }
+      const files = fileInput.files;
 
+      if (data.status === "success" && files.length > 0) {
+        const formData = new FormData();
+
+        for (let i = 0; i < files.length; i++) {
+          const compressedFile = await compressImage(files[i], 800, 600, 0.7);
+          formData.append('files', compressedFile);
+        }
+
+        const uploadRequest = await fetch(Global.url + "product/uploads/" + data.newProduct._id, {
+          method: "POST",
+          body: formData,
+          headers: {
+            'Authorization': localStorage.getItem('token')
+          }
+        });
+        const uploadData = await uploadRequest.json();
+
+        if (uploadData.status === "success") {
+         
+          const myForm = document.querySelector("#product");
+          myForm.reset();
+          setSelectedOption('');
+        } else {
+          Swal.fire({ position: "bottom-end", title: uploadData.message, showConfirmButton: false, timer: 1000 });
+        }
+      } else {
+        // Si no se adjuntaron imágenes, se restablece el formulario
+        const myForm = document.querySelector("#product");
+        myForm.reset();
+        setSelectedOption('');
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire({ position: "bottom-end", title: "Error al crear el producto", showConfirmButton: false, timer: 1000 });
+    }
   }
+
+
+  // Función para comprimir la imagen
+  async function compressImage(file, maxWidth, maxHeight, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          // Crear un lienzo (canvas) para dibujar la imagen comprimida
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          if (width > maxWidth) {
+            // Redimensionar la imagen si supera el ancho máximo
+            height *= maxWidth / width;
+            width = maxWidth;
+          }
+          if (height > maxHeight) {
+            // Redimensionar la imagen si supera la altura máxima
+            width *= maxHeight / height;
+            height = maxHeight;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          // Dibujar la imagen en el lienzo con el tamaño redimensionado
+          ctx.drawImage(img, 0, 0, width, height);
+          // Convertir el lienzo a un archivo comprimido (blob)
+          canvas.toBlob((blob) => {
+            // Crear un nuevo archivo con el blob comprimido
+            const compressedFile = new File([blob], file.name, { type: file.type });
+            resolve(compressedFile);
+          }, file.type, quality);
+        };
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  }
+
+
 
 
   const listCategoryAdmin = async () => {
@@ -140,7 +217,7 @@ export const ProductAdmin = () => {
           <label htmlFor="crearcategoria" className="form-label me-2">Crear nueva Categoría</label>
           <i className="bi bi-plus-circle" data-toggle="modal" data-target="#exampleModal" style={{ cursor: 'pointer' }}></i>
         </div>
-        
+
         <div className="mb-3">
           <label htmlFor="categoriaProducto" className="form-label">Categoría del Producto</label>
           <select className="form-select" id="category" name='category' required value={selectedOption} onChange={eventosDistintos}>
@@ -154,7 +231,7 @@ export const ProductAdmin = () => {
 
         <div className="mb-3">
           <label htmlFor="imagenProducto" className="form-label">Imagen del Producto</label>
-          <input type="file" className="form-control" id="imagenProducto" multiple></input>
+          <input type="file" name='files' className="form-control" id="files" multiple onChange={changed}></input>
         </div>
         <button type="submit" className="btn btn-primary">Subir Producto</button>
       </form>

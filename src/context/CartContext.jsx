@@ -26,11 +26,17 @@ export const CartProvider = ({ children }) => {
   }, [cart]);
 
 
+  
 
   //funcion para agregar los productos
   const addToCart = (product) => {
     const existingItemIndex = cart.findIndex((item) => item._id === product._id);
 
+    //si carrito hago el al list carrito si no lo creo
+
+    //hacer la consulta bk para comprobar por si por medio de mi ID existe el carrito si existe agrego los elementos que estan en el lst
+
+    //list carrito
 
     if (existingItemIndex !== -1) {
       const updatedCart = [...cart];
@@ -43,8 +49,6 @@ export const CartProvider = ({ children }) => {
     }
     localStorage.setItem('cart', JSON.stringify(cart));
 
-
-    
   };
 
 
