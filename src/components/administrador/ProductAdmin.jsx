@@ -117,28 +117,25 @@ export const ProductAdmin = () => {
         const img = new Image();
         img.src = event.target.result;
         img.onload = () => {
-          // Crear un lienzo (canvas) para dibujar la imagen comprimida
-          const canvas = document.createElement('canvas');
+          const aspectRatio = img.width / img.height;
           let width = img.width;
           let height = img.height;
+  
           if (width > maxWidth) {
-            // Redimensionar la imagen si supera el ancho máximo
-            height *= maxWidth / width;
             width = maxWidth;
+            height = width / aspectRatio;
           }
           if (height > maxHeight) {
-            // Redimensionar la imagen si supera la altura máxima
-            width *= maxHeight / height;
             height = maxHeight;
+            width = height * aspectRatio;
           }
+  
+          const canvas = document.createElement('canvas');
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
-          // Dibujar la imagen en el lienzo con el tamaño redimensionado
           ctx.drawImage(img, 0, 0, width, height);
-          // Convertir el lienzo a un archivo comprimido (blob)
           canvas.toBlob((blob) => {
-            // Crear un nuevo archivo con el blob comprimido
             const compressedFile = new File([blob], file.name, { type: file.type });
             resolve(compressedFile);
           }, file.type, quality);
@@ -147,6 +144,7 @@ export const ProductAdmin = () => {
       reader.onerror = (error) => reject(error);
     });
   }
+  
 
 
 

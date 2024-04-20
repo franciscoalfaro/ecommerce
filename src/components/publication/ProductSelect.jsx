@@ -75,7 +75,7 @@ export const ProductSelect = () => {
                   <h2>{product.name}</h2>
                   <p>Descripcion: {product.description}</p>
                   <p>Talla: {product.size}</p>
-                  <p>Stock: {product.stock?.quantity}</p>
+                  <p>Stock: {product.stock?.quantity ? product.stock.quantity : '0'}</p>
                   <p>categoria: {product.category?.name}</p>
 
                   {product.discountPercentage > 0 ? (

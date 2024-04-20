@@ -183,3 +183,13 @@
     overflow-y: auto; /* Añade una barra de desplazamiento vertical si el contenido es más largo que el contenedor */
     max-height: 200px; /* Define la altura máxima del contenedor para que la barra de desplazamiento aparezca cuando el contenido exceda esta altura */
   }
+
+  /*imagenes card geleria */
+
+  .small-image {
+    width: 80px;
+    height: 200px;
+    object-fit: cover; /* Ajusta la imagen dentro del contenedor manteniendo la proporción */
+  }
+
+  

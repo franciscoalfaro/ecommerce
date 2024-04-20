@@ -153,7 +153,7 @@ export const GestionProduct = () => {
     const createStock = SerializeForm(e.target)
 
     try {
-     const request =  await fetch(Global.url + "stock/create/" + productID, {
+      const request = await fetch(Global.url + "stock/create/" + productID, {
         method: "POST",
         body: JSON.stringify(createStock),
         headers: {
@@ -168,7 +168,7 @@ export const GestionProduct = () => {
         Swal.fire({ position: "bottom-end", title: "stock actualizado correctamente", showConfirmButton: false, timer: 1000 });
         getProduct()
 
-      }else{
+      } else {
         Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
       }
 
@@ -293,7 +293,7 @@ export const GestionProduct = () => {
         <div className="modal-dialog modal-lg" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel" >Editar</h5>
+              <h5 className="modal-title" id="exampleModalLabel">Editar Producto</h5>
               <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -302,43 +302,85 @@ export const GestionProduct = () => {
               <div className="modal-body">
                 {selectedProduct && (
                   <div>
-                    <div className="mb-3">
-                      <label htmlFor="name">Nombre:</label>
-                      <input type="text" className="form-control" name="name" defaultValue={selectedProduct.name} onChange={changed} />
+                    {/* Sección de campos de texto */}
+                    <div className="row mb-3">
+                      <div className="col">
+                        <label htmlFor="name">Nombre:</label>
+                        <input type="text" className="form-control" name="name" defaultValue={selectedProduct.name} onChange={changed} />
+                      </div>
+                      <div className="col">
+                        <label htmlFor="description">Descripción:</label>
+                        <input type="text" className="form-control" name="description" defaultValue={selectedProduct.description} onChange={changed} />
+                      </div>
                     </div>
-                    <div className="mb-3">
-                      <label htmlFor="description">Descripcion:</label>
-                      <input type="text" className="form-control" name="description" defaultValue={selectedProduct.description} onChange={changed} />
+                    <div className="row mb-3">
+                      <div className="col">
+                        <label htmlFor="brand">Marca:</label>
+                        <input type="text" className="form-control" name="brand" defaultValue={selectedProduct.brand} onChange={changed} />
+                      </div>
+                      <div className="col">
+                        <label htmlFor="price">Precio:</label>
+                        <input type="number" className="form-control" name="price" defaultValue={selectedProduct.price} onChange={changed} />
+                      </div>
                     </div>
-                    <div className="mb-3">
-                      <label htmlFor="brand">Marca:</label>
-                      <input type="text" className="form-control" name="brand" defaultValue={selectedProduct.brand} onChange={changed} />
+                    <div className="row mb-3">
+                      <div className="col">
+                        <label htmlFor="size">Talla:</label>
+                        <input type="text" className="form-control" name="size" defaultValue={selectedProduct.size} onChange={changed} />
+                      </div>
+                      <div className="col">
+                        <label htmlFor="standout">Destacado:</label>
+                        <select className="form-control" name="standout" defaultValue={selectedProduct.standout} onChange={changed}>
+                          <option value="true">Sí</option>
+                          <option value="false">No</option>
+                        </select>
+                      </div>
                     </div>
-                    <div className="mb-3">
-                      <label htmlFor="price">Precio:</label>
-                      <input type="number" className="form-control" name="price" defaultValue={selectedProduct.price} onChange={changed} />
+                    <div className="row mb-3">
+                      <div className="col">
+                        <label htmlFor="stock">Stock:</label>
+                        <input type="text" className="form-control" readOnly name="stock" defaultValue={selectedProduct.stock ? selectedProduct.stock.quantity : 'N/A'} />
+                        <input type="text" className="form-control" readOnly hidden name="stock" defaultValue={selectedProduct.stock ? selectedProduct.stock._id : 'N/A'} />
+                      </div>
+                      <div className="col">
+                        <label htmlFor="location">Ubicación:</label>
+                        <input type="text" className="form-control" name="location" defaultValue={selectedProduct.stock ? selectedProduct.stock.location : 'N/A'} onChange={changed} />
+                      </div>
                     </div>
-                    <div className="mb-3">
-                      <label htmlFor="size">Talla:</label>
-                      <input type="text" className="form-control" name="size" defaultValue={selectedProduct.size} onChange={changed} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="standout">Destacado:</label>
-                      <select className="form-control" name="standout" defaultValue={selectedProduct.standout} onChange={changed}>
-                        <option value="true">Sí</option>
-                        <option value="false">No</option>
-                      </select>
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="stock">Stock:</label>
-                      <input type="text" className="form-control" readOnly name="stock" defaultValue={selectedProduct.stock ? selectedProduct.stock.quantity : 'N/A'} />
-                      <input type="text" className="form-control" readOnly hidden name="stock" defaultValue={selectedProduct.stock ? selectedProduct.stock._id : 'N/A'} />
+                    {/* Sección de imágenes */}
+                    <div className="row mb-3">
+                      <div className="col">
+                        <label>Imágenes:</label>
+                        <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
+                          <ol className="carousel-indicators">
+                            {selectedProduct.images && selectedProduct.images.map((_, index) => (
+                              <li key={index} data-target="#carouselExampleIndicators" data-slide-to={index} className={index === 0 ? "active" : ""}></li>
+                            ))}
+                          </ol>
+                          <div className="carousel-inner">
+                            {selectedProduct.images && selectedProduct.images.map((image, index) => (
+                              <div key={index} className={`carousel-item ${index === 0 ? "active" : ""}`}>
+                                <img src={Global.url + 'product/media/' + image.filename} className="d-block w-100 small-image" alt={`Imagen ${index}`} />
+                              </div>
+                            ))}
+                          </div>
+                          <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span className="sr-only">Previous</span>
+                          </a>
+                          <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                            <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span className="sr-only">Next</span>
+                          </a>
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="mb-3">
-                      <label htmlFor="location">Ubicacion:</label>
-                      <input type="text" className="form-control" name="location" defaultValue={selectedProduct.stock ? selectedProduct.stock.location : 'N/A'} onChange={changed} />
-                    </div>
+
+
+
+
+
                   </div>
                 )}
               </div>
@@ -350,6 +392,8 @@ export const GestionProduct = () => {
           </div>
         </div>
       </div>
+
+
 
     </>
 
