@@ -64,7 +64,7 @@ export const FeaturedProducts = () => {
     return (
         <>
             <main>
-                <section className="py-4 bg-light">
+                <section className="py-4">
                     <div className="container">
                         {featuredproduct.length === 0 ? (
                             <p>No existen productos en ofertas.</p>
@@ -79,7 +79,8 @@ export const FeaturedProducts = () => {
                                                 </Link>
                                             )}
                                             <div className="card-body">
-                                                <h5 className="card-title">{product.name}</h5>
+                                            <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}><h5 className="card-title">{product.name}</h5></Link>
+
 
                                                 {product.discountPercentage > 0 ? (
                                                     <>

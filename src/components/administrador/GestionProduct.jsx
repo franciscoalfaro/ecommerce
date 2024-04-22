@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Global } from '../../helpers/Global';
 import { useForm } from '../../hooks/useForm';
 import { SerializeForm } from '../../helpers/SerializeForm';
+import { IntlProvider, FormattedNumber } from 'react-intl';
 
 export const GestionProduct = () => {
-  const { changed } = useForm()
+  const { form, changed } = useForm({})
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -150,6 +151,7 @@ export const GestionProduct = () => {
 
     e.preventDefault();
     const productID = selectedProduct._id
+    console.log(productID)
     const createStock = SerializeForm(e.target)
 
     try {
@@ -167,8 +169,11 @@ export const GestionProduct = () => {
       if (data.status === "success") {
         Swal.fire({ position: "bottom-end", title: "stock actualizado correctamente", showConfirmButton: false, timer: 1000 });
         getProduct()
+        $('#exampleModal').modal('hide');
+        window.location.replace('/admin/administrar-productos')
 
       } else {
+        setProduct([])
         Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
       }
 
@@ -193,8 +198,12 @@ export const GestionProduct = () => {
                 <th>Descripción</th>
                 <th>Categoría</th>
                 <th>Stock</th>
-                <th>ubicacion</th>
+                <th>Ubicacion</th>
+                <th>Destacado</th>
+                <th>Precio</th>
+                <th>Precio oferta</th>
                 <th>Acciones</th>
+
               </tr>
             </thead>
             <tbody>
@@ -205,7 +214,17 @@ export const GestionProduct = () => {
                   <td>{prod.category.name}</td>
                   <td>{prod.stock ? prod.stock.quantity : 'N/A'}</td>
                   <td>{prod.stock ? prod.stock.location : 'N/A'}</td>
+
+                  <td>{prod.standout ? 'Sí' : 'No'}</td>
+                  <IntlProvider locale="es" defaultLocale="es">
+                    <td><FormattedNumber value={prod.price} style="currency" currency="CLP" /></td>
+                  </IntlProvider>
+                  <IntlProvider locale="es" defaultLocale="es">
+                    <td><FormattedNumber value={prod.offerprice ? prod.offerprice : 0} style="currency" currency="CLP" /></td>
+                  </IntlProvider>
+
                   <td>
+                    <span>{prod.standout}</span>
                     <button className="btn btn-danger btn-sm me-2" onClick={() => deleteProduct(prod._id)}>Eliminar</button>
                     <button className="btn btn-info btn-sm me-2" data-toggle="modal" data-target="#exampleModal2" onClick={() => handleProductClick(prod)}>Editar</button>
                     <button className="btn btn-info btn-sm" data-toggle="modal" data-target="#exampleModal" onClick={() => handleProductClick(prod)}>Stock</button>
@@ -244,46 +263,46 @@ export const GestionProduct = () => {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div className="modal-body">
-              {selectedProduct && (
-                <form onSubmit={addStock}>
-
-                  <div className="mb-3 row">
-                    <label htmlFor="nombreProducto" className="col-sm-4 col-form-label"></label>
-                    <div className="col-sm-12">
-                      <div className="input-group">
-                        <span className="input-group-text">Nombre del Producto</span>
-                        <input type="text" className="form-control" id="nombreProducto" readOnly defaultValue={selectedProduct.name} />
+            <form onSubmit={addStock}>
+              <div className="modal-body">
+                {selectedProduct && (
+                  <div>
+                    <div className="mb-3 row">
+                      <label htmlFor="name" className="col-sm-4 col-form-label"></label>
+                      <div className="col-sm-12">
+                        <div className="input-group">
+                          <span className="input-group-text">Nombre del Producto</span>
+                          <input type="text" className="form-control" id="name" readOnly value={selectedProduct.name}></input>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mb-3 row">
+                      <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
+                      <div className="col-sm-12">
+                        <div className="input-group">
+                          <span className="input-group-text">stock</span>
+                          <input type="number" name='quantity' id="stock" defaultValue={selectedProduct.stock ? selectedProduct.stock.quantity : ''} onChange={changed} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mb-3 row">
+                      <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
+                      <div className="col-sm-12">
+                        <div className="input-group">
+                          <span className="input-group-text">ubicacion</span>
+                          <input type="text" name='location' className="form-control" id="ubicacion" defaultValue={selectedProduct.stock ? selectedProduct.stock.location : ''} onChange={changed} />
+                        </div>
                       </div>
                     </div>
                   </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={(e) => { admin / administrar - productos }} data-dismiss="modal">Cerrar</button>
+                <button type="submit" className="btn btn-primary">Actualizar</button>
+              </div>
+            </form>
 
-                  <div className="mb-3 row">
-                    <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
-                    <div className="col-sm-12">
-                      <div className="input-group">
-                        <span className="input-group-text">stock</span>
-                        <input type="number" name='quantity' className="form-control" id="stock" defaultValue={selectedProduct.stock ? selectedProduct.stock.quantity : 'N/A'} onChange={changed} />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mb-3 row">
-                    <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
-                    <div className="col-sm-12">
-                      <div className="input-group">
-                        <span className="input-group-text">ubicacion</span>
-                        <input type="text" name='location' className="form-control" id="ubicacion" defaultValue={selectedProduct.stock ? selectedProduct.stock.location : ''} onChange={changed} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" className="btn btn-primary">Asignar</button>
-                  </div>
-                </form>
-              )}
-            </div>
           </div>
         </div>
       </div>
@@ -336,6 +355,17 @@ export const GestionProduct = () => {
                         </select>
                       </div>
                     </div>
+
+                    <div className="row mb-3">
+                      <div className="col">
+                        <label htmlFor="offerprice">Precio oferta:</label>
+                        <input type="text" className="form-control" name="offerprice" defaultValue={selectedProduct.offerprice} onChange={changed}/>
+                      </div>
+                      <div className="col">
+                        
+                      </div>
+                    </div>
+
                     <div className="row mb-3">
                       <div className="col">
                         <label htmlFor="stock">Stock:</label>

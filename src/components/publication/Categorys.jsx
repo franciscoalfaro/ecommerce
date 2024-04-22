@@ -58,7 +58,7 @@ export const Categorys = () => {
   };
 
   return (
-    <section className="py-4 bg-light">
+    <section className="py-4">
       <div className="container">
         <h2 className='title'>{nameCategoria}</h2>
         <br></br>
@@ -67,7 +67,7 @@ export const Categorys = () => {
         ) : (
           <div className="row">
             {products.map(product => (
-              <div className="col-lg-4 col-md-4 col-sm-6 mb-4" key={product._id}>
+              <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={product._id}>
                 <div className="card">
                 {product.images.length > 0 && (
                       <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}>

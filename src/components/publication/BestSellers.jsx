@@ -77,7 +77,7 @@ export const BestSellers = () => {
                                         )}
 
                                         <div className="card-body">
-                                            <h5 className="card-title">{product.name}</h5>
+                                        <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}><h5 className="card-title">{product.name}</h5></Link>
 
 
                                             {product.discountPercentage > 0 ? (

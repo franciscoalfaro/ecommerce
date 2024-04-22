@@ -87,7 +87,7 @@ export const Products = () => {
   return (
     <main>
 
-      <section className="py-4 bg-light">
+      <section className="py-4">
         <div className="container">
           <h2>Filtrar por</h2>
           <div className="row">
@@ -108,14 +108,14 @@ export const Products = () => {
         </div>
       </section>
 
-      <section className="py-4 bg-light">
+      <section className="py-4">
         <div className="container">
           {products.length === 0 ? (
             <p>No existen productos.</p>
           ) : (
             <div className="row">
               {products.map(product => (
-                <div className="col-lg-4 col-md-4 col-sm-6 mb-4" key={product._id}>
+                <div className="col-lg-3 col-md-4 col-sm-6 mb-4"  key={product._id}>
                   <div className="card">
 
 
@@ -126,7 +126,8 @@ export const Products = () => {
                     )}
 
                     <div className="card-body">
-                      <h5 className="card-title">{product.name}</h5>
+                      
+                      <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}><h5 className="card-title">{product.name}</h5></Link>
                       <p className="card-text">Marca {product.brand}</p>
                       <p className="card-text">{product.description}</p>
 

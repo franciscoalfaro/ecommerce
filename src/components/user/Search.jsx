@@ -75,7 +75,7 @@ export const Search = () => {
   return (
     <>
 
-      <section className="py-4 bg-light">
+      <section className="py-4">
         <div className="container">
 
           {/*filtro*/}

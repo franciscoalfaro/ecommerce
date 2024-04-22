@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Global } from '../../helpers/Global'
 import useCart from '../../hooks/useCart'
 import { IntlProvider, FormattedNumber } from 'react-intl'
+import useAuth from '../../hooks/useAuth'
+import { Link } from 'react-router-dom'
 
 export const Offers = () => {
 
@@ -10,6 +12,8 @@ export const Offers = () => {
     const [page, setPage] = useState(1)
     const [totalPages, setTotalPages] = useState(1)
     const { addToCart } = useCart()
+    const { auth } = useAuth({})
+
 
 
 
@@ -52,7 +56,7 @@ export const Offers = () => {
             }
 
         } catch (error) {
-            console.log('code',error)
+            console.log('code', error)
 
         }
 
@@ -60,7 +64,7 @@ export const Offers = () => {
 
     return (
         <main>
-            <section className="py-4 bg-light">
+            <section className="py-4">
                 <div className="container">
                     {offerProduct.length === 0 ? (
                         <p>No existen productos en ofertas.</p>
@@ -70,7 +74,9 @@ export const Offers = () => {
                                 <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={product._id}>
                                     <div className="card">
                                         {product.images.length > 0 && (
-                                            <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name}></img>
+                                            <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}>
+                                                <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name} />
+                                            </Link>
                                         )}
 
                                         <div className="card-body">
@@ -81,7 +87,7 @@ export const Offers = () => {
                                                 <>
                                                     <IntlProvider locale="es" defaultLocale="es">
                                                         <p className="card-text">
-                                                            <ins>$<FormattedNumber value={product.offerprice}  style="currency" currency="CLP"></FormattedNumber></ins>
+                                                            <ins>$<FormattedNumber value={product.offerprice} style="currency" currency="CLP"></FormattedNumber></ins>
                                                             <span className="discount"> -{product.discountPercentage}%</span>
                                                         </p>
                                                     </IntlProvider>
