@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import useCart from '../../hooks/useCart';
 
 import { IntlProvider, FormattedNumber } from 'react-intl'
+import { GetProducts } from '../../helpers/GetProducts';
 
 
 export const Products = () => {
@@ -14,18 +15,17 @@ export const Products = () => {
   const { addToCart } = useCart()
 
   //listar todos los productos y permitir un filtro de productos
-  const [products, setProducts] = useState([])
+  const [products, setProduct] = useState([])
 
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [productFilter, setProductFilter] = useState('');
-  const [priceFilter, setPriceFilter] = useState('');
+
 
   const uniqueBrands = [...new Set(products.map(product => product.brand))];
 
   const clearFilters = () => {
     setProductFilter('');
-    setPriceFilter('');
   };
 
 
@@ -41,46 +41,62 @@ export const Products = () => {
   };
 
   useEffect(() => {
-    productList(page)
+    getDataProduct()
 
   }, [page, productFilter])
 
 
 
-  const productList = async (nextPage = 1) => {
-
+  //obtener el listado de los productos. 
+  const getDataProduct = async () => {
     try {
-      const request = await fetch(Global.url + 'product/list/' + nextPage, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': localStorage.getItem('token')
-        }
-      })
-      const data = await request.json()
+      let data = await GetProducts(page, setProduct, setTotalPages);
+      setProduct(data.products);
+      setTotalPages(data.totalPages)
 
-      if (data.status === 'success') {
-        let filteredProducts = data.products;
-
-
-        if (productFilter) {
-          filteredProducts = filteredProducts.filter(product => product.brand === productFilter);
-
-        }
-
-        setProducts(filteredProducts);
-        setTotalPages(data.totalPages);
-
-      } else {
-        setProducts([]);
+      let filteredProducts = data.products;
+      //no filtra por el brand 
+      if (productFilter) {
+        filteredProducts = filteredProducts.filter(product => product.brand === productFilter);
       }
+      setProduct(productFilter ? filteredProducts : data.products);
 
     } catch (error) {
-      console.log('code', error)
+      console.error('Error:', error);
+    }
+  };
 
+
+
+
+  //funcion para paginar y ocultar numeros 
+  function generatePaginationNumbers(totalPages, currentPage) {
+    const maxVisiblePages = 5; // Número máximo de páginas visibles
+    const halfVisiblePages = Math.floor(maxVisiblePages / 2); // Mitad de las páginas visibles
+
+    let startPage, endPage;
+
+    if (totalPages <= maxVisiblePages) {
+      startPage = 1;
+      endPage = totalPages;
+    } else {
+      if (currentPage <= halfVisiblePages) {
+        startPage = 1;
+        endPage = maxVisiblePages;
+      } else if (currentPage + halfVisiblePages >= totalPages) {
+        startPage = totalPages - maxVisiblePages + 1;
+        endPage = totalPages;
+      } else {
+        startPage = currentPage - halfVisiblePages;
+        endPage = currentPage + halfVisiblePages;
+      }
     }
 
+    return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
   }
+  const visiblePageNumbers = generatePaginationNumbers(totalPages, page);
+
+
 
 
 
@@ -115,7 +131,7 @@ export const Products = () => {
           ) : (
             <div className="row">
               {products.map(product => (
-                <div className="col-lg-3 col-md-4 col-sm-6 mb-4"  key={product._id}>
+                <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={product._id}>
                   <div className="card">
 
 
@@ -126,7 +142,7 @@ export const Products = () => {
                     )}
 
                     <div className="card-body">
-                      
+
                       <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}><h5 className="card-title">{product.name}</h5></Link>
                       <p className="card-text">Marca {product.brand}</p>
                       <p className="card-text">{product.description}</p>
@@ -178,13 +194,13 @@ export const Products = () => {
           )}
 
           <nav aria-label="Page navigation example">
-            <ul className="pagination">
+            <ul className="pagination justify-content-center">
               <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
                 <a className="page-link" href="#" onClick={prevPage}>Anterior</a>
               </li>
-              {Array.from({ length: totalPages }, (_, index) => (
-                <li key={index} className={`page-item ${page === index + 1 ? 'active' : ''}`}>
-                  <a className="page-link" href="#" onClick={() => setPage(index + 1)}>{index + 1}</a>
+              {visiblePageNumbers.map((pageNumber) => (
+                <li key={pageNumber} className={`page-item ${page === pageNumber ? 'active' : ''}`}>
+                  <a className="page-link" href="#" onClick={() => setPage(pageNumber)}>{pageNumber}</a>
                 </li>
               ))}
               <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>

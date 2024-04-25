@@ -3,21 +3,27 @@ import { Global } from '../../helpers/Global';
 import { useForm } from '../../hooks/useForm';
 import { SerializeForm } from '../../helpers/SerializeForm';
 import { IntlProvider, FormattedNumber } from 'react-intl';
+import useAuth from '../../hooks/useAuth';
+import { Link } from 'react-router-dom';
+import { GetProducts } from '../../helpers/GetProducts';
 
 export const GestionProduct = () => {
   const { form, changed } = useForm({})
+  const { auth } = useAuth({})
 
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [product, setProduct] = useState([])
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+
   const [selectedProduct, setSelectedProduct] = useState(null);
 
 
   const nextPage = () => {
-    let next = page + 1;
-    setPage(next);
+    if (page < totalPages) {
+      setPage(page + 1);
+    }
+  };
 
-  }
   const prevPage = () => {
     if (page > 1) {
       setPage(page - 1);
@@ -26,66 +32,15 @@ export const GestionProduct = () => {
 
 
   useEffect(() => {
-    getProduct(page);
+    getDataProduct();
   }, [page]);
 
 
-  const getProduct = async (nextPage = 1) => {
-    try {
-      const request = await fetch(Global.url + "product/list/" + nextPage, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': localStorage.getItem('token')
-        }
-      })
-      const data = await request.json();
-      console.log(data)
-      if (data.status === 'success') {
-
-        setProduct(data.products);
-        setTotalPages(data.totalPages)
-      } else {
-        setProduct([]);
-      }
-
-    } catch (error) {
-      console.error(error);
-    }
-  }
 
   const handleProductClick = (selectedProduct) => {
     setSelectedProduct(selectedProduct);
   };
 
-
-  const updateProduct = async (e) => {
-    e.preventDefault();
-    const productID = selectedProduct._id
-    const updateProduct = SerializeForm(e.target)
-    delete updateProduct.stock;
-    try {
-      const request = await fetch(Global.url + "product/update/" + productID, {
-        method: "PUT",
-        body: JSON.stringify(updateProduct),
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': localStorage.getItem('token')
-        }
-      })
-      const data = await request.json();
-
-      if (data.status === "success") {
-        Swal.fire({ position: "bottom-end", title: "Producto actualizado correctamente", showConfirmButton: false, timer: 1000 });
-        getProduct()
-      }
-
-
-    } catch (error) {
-      console.error(error);
-    }
-
-  }
 
 
   const deleteProduct = async (productID, index) => {
@@ -104,7 +59,7 @@ export const GestionProduct = () => {
         const newItems = [...product];
         newItems.splice(index, 1);
         setProduct(newItems);
-        getProduct()
+        getDataProduct()
 
 
       } else {
@@ -186,6 +141,19 @@ export const GestionProduct = () => {
 
 
 
+  //llamado a helpers para obtener el listado de los productos 
+  const getDataProduct = async () => {
+    try {
+      let data = await GetProducts(page, setProduct, setTotalPages);
+      setProduct(data.products);
+      setTotalPages(data.totalPages)
+
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+
   return (
     <>
       <div className="container mt-4">
@@ -195,7 +163,7 @@ export const GestionProduct = () => {
             <thead>
               <tr>
                 <th>Nombre</th>
-                <th>Descripción</th>
+
                 <th>Categoría</th>
                 <th>Stock</th>
                 <th>Ubicacion</th>
@@ -210,7 +178,7 @@ export const GestionProduct = () => {
               {product.map((prod, index) => (
                 <tr key={index}>
                   <td>{prod.name}</td>
-                  <td>{prod.description}</td>
+
                   <td>{prod.category.name}</td>
                   <td>{prod.stock ? prod.stock.quantity : 'N/A'}</td>
                   <td>{prod.stock ? prod.stock.location : 'N/A'}</td>
@@ -226,8 +194,11 @@ export const GestionProduct = () => {
                   <td>
                     <span>{prod.standout}</span>
                     <button className="btn btn-danger btn-sm me-2" onClick={() => deleteProduct(prod._id)}>Eliminar</button>
-                    <button className="btn btn-info btn-sm me-2" data-toggle="modal" data-target="#exampleModal2" onClick={() => handleProductClick(prod)}>Editar</button>
                     <button className="btn btn-info btn-sm" data-toggle="modal" data-target="#exampleModal" onClick={() => handleProductClick(prod)}>Stock</button>
+                    
+                    <Link to={auth && auth._id ? `/admin/editar-producto/${prod._id}` : '#'}>
+                      <button className="btn btn-info btn-sm">Editar</button>
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -251,6 +222,7 @@ export const GestionProduct = () => {
           </ul>
         </nav>
       </div>
+
 
       {/* abrir modal de creación de crear stock */}
 
@@ -298,7 +270,7 @@ export const GestionProduct = () => {
                 )}
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={(e) => { admin / administrar - productos }} data-dismiss="modal">Cerrar</button>
+                <button type="button" className="btn btn-secondary" onClick={(e) => { admin / administrar-productos }} data-dismiss="modal">Cerrar</button>
                 <button type="submit" className="btn btn-primary">Actualizar</button>
               </div>
             </form>
@@ -306,123 +278,6 @@ export const GestionProduct = () => {
           </div>
         </div>
       </div>
-
-      {/* abrir modal para editar producto*/}
-      <div className="modal fade bd-example-modal-lg" id="exampleModal2" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
-        <div className="modal-dialog modal-lg" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">Editar Producto</h5>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form onSubmit={updateProduct}>
-              <div className="modal-body">
-                {selectedProduct && (
-                  <div>
-                    {/* Sección de campos de texto */}
-                    <div className="row mb-3">
-                      <div className="col">
-                        <label htmlFor="name">Nombre:</label>
-                        <input type="text" className="form-control" name="name" defaultValue={selectedProduct.name} onChange={changed} />
-                      </div>
-                      <div className="col">
-                        <label htmlFor="description">Descripción:</label>
-                        <input type="text" className="form-control" name="description" defaultValue={selectedProduct.description} onChange={changed} />
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col">
-                        <label htmlFor="brand">Marca:</label>
-                        <input type="text" className="form-control" name="brand" defaultValue={selectedProduct.brand} onChange={changed} />
-                      </div>
-                      <div className="col">
-                        <label htmlFor="price">Precio:</label>
-                        <input type="number" className="form-control" name="price" defaultValue={selectedProduct.price} onChange={changed} />
-                      </div>
-                    </div>
-                    <div className="row mb-3">
-                      <div className="col">
-                        <label htmlFor="size">Talla:</label>
-                        <input type="text" className="form-control" name="size" defaultValue={selectedProduct.size} onChange={changed} />
-                      </div>
-                      <div className="col">
-                        <label htmlFor="standout">Destacado:</label>
-                        <select className="form-control" name="standout" defaultValue={selectedProduct.standout} onChange={changed}>
-                          <option value="true">Sí</option>
-                          <option value="false">No</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <div className="col">
-                        <label htmlFor="offerprice">Precio oferta:</label>
-                        <input type="text" className="form-control" name="offerprice" defaultValue={selectedProduct.offerprice} onChange={changed}/>
-                      </div>
-                      <div className="col">
-                        
-                      </div>
-                    </div>
-
-                    <div className="row mb-3">
-                      <div className="col">
-                        <label htmlFor="stock">Stock:</label>
-                        <input type="text" className="form-control" readOnly name="stock" defaultValue={selectedProduct.stock ? selectedProduct.stock.quantity : 'N/A'} />
-                        <input type="text" className="form-control" readOnly hidden name="stock" defaultValue={selectedProduct.stock ? selectedProduct.stock._id : 'N/A'} />
-                      </div>
-                      <div className="col">
-                        <label htmlFor="location">Ubicación:</label>
-                        <input type="text" className="form-control" name="location" defaultValue={selectedProduct.stock ? selectedProduct.stock.location : 'N/A'} onChange={changed} />
-                      </div>
-                    </div>
-                    {/* Sección de imágenes */}
-                    <div className="row mb-3">
-                      <div className="col">
-                        <label>Imágenes:</label>
-                        <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
-                          <ol className="carousel-indicators">
-                            {selectedProduct.images && selectedProduct.images.map((_, index) => (
-                              <li key={index} data-target="#carouselExampleIndicators" data-slide-to={index} className={index === 0 ? "active" : ""}></li>
-                            ))}
-                          </ol>
-                          <div className="carousel-inner">
-                            {selectedProduct.images && selectedProduct.images.map((image, index) => (
-                              <div key={index} className={`carousel-item ${index === 0 ? "active" : ""}`}>
-                                <img src={Global.url + 'product/media/' + image.filename} className="d-block w-100 small-image" alt={`Imagen ${index}`} />
-                              </div>
-                            ))}
-                          </div>
-                          <a className="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-                            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span className="sr-only">Previous</span>
-                          </a>
-                          <a className="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-                            <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span className="sr-only">Next</span>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-
-
-
-
-
-
-                  </div>
-                )}
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="submit" className="btn btn-primary">Actualizar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
 
 
     </>

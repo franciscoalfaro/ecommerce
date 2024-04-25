@@ -19,21 +19,6 @@ export const ProductSelect = () => {
   }, [])
 
 
-  // Inicializar los modales después de que el componente se monta
-  const modalElems = document.querySelectorAll('.thumbnail-clickable')
-  modalElems.forEach((elem) => {
-    elem.addEventListener('click', function () {
-      const targetModal = elem.getAttribute('data-bs-target')
-      const modal = new bootstrap.Modal(document.querySelector(targetModal))
-      modal.show()
-
-      // Obtener el índice de la imagen correspondiente
-      const imageIndex = elem.getAttribute('data-bs-image')
-      // Actualizar la imagen en el modal
-      const modalImg = document.querySelector(targetModal + ' img')
-      modalImg.src = Global.url + 'product/media/' + productSelect[0]?.images?.[imageIndex]?.filename
-    })
-  })
 
   const productSelected = async () => {
     let id = params.id
@@ -66,19 +51,23 @@ export const ProductSelect = () => {
           {productSelect.map((product, index) => (
             <div className="row" key={index}>
               <div className="col-md-6">
-                <img src={Global.url + 'product/media/' + product.images?.[0]?.filename} className="img-fluid" alt={`Imagen 1 del producto ${index + 1}`} data-bs-toggle="modal" data-bs-target={`#galleryModal${index}`} style={{ cursor: 'pointer' }}/>
+                <img src={Global.url + 'product/media/' + product.images?.[0]?.filename} className="img-fluid" alt={`Imagen 1 del producto ${index + 1}`} data-bs-toggle="modal" data-bs-target={`#galleryModal${index}`} style={{ cursor: 'pointer', 'border-radius': '30px' }} />
                 <div className="row mt-3">
                   {product.images?.map((image, imageIndex) => (
+                    
                     <div className="col-4" key={imageIndex}>
-                      <img src={Global.url + 'product/media/' + image.filename} className="img-fluid gallery-item" alt={`Imagen ${imageIndex + 2} del producto ${index + 1}`} data-bs-target={`#galleryModal${index}`} data-bs-toggle="modal" style={{ cursor: 'pointer' }}/>
+                      <br></br>
+                      <img src={Global.url + 'product/media/' + image.filename} className="img-fluid gallery-item" alt={`Imagen ${imageIndex + 2} del producto ${index + 1}`} data-bs-target={`#galleryModal${index}`} data-bs-toggle="modal" style={{ cursor: 'pointer','border-radius': '15px' }} />
                     </div>
+       
+
+                    
                   ))}
                 </div>
               </div>
               <div className="col-md-6">
-
-                <div class="row">
-                  <div class="col">
+                <div className="row">
+                  <div className="col">
                     <h2>{product.name}</h2>
                     {product.discountPercentage > 0 ? (
                       <>
@@ -108,7 +97,7 @@ export const ProductSelect = () => {
                       </p>
                     )}
                     <p>{product.description}</p>
-                    <p>Disponibilidad: {product.stock?.quantity ? product.stock.quantity : '0'} <span class="text-success">En Stock</span></p>
+                    <p>Disponibilidad: {product.stock?.quantity ? product.stock.quantity : '0'} <span className="text-success">En Stock</span></p>
                     <p>Talla: {product.size}</p>
                     <p>categoria: {product.category?.name}</p>
                     <p>SKU: 123456</p>
@@ -125,33 +114,41 @@ export const ProductSelect = () => {
                 )}
 
               </div>
+
+              <div className="col-md-6">
+                <br></br><hr /><br></br>
+              </div>
+
+              <div className="col-md-6">
+                <br></br><hr /><br></br>
+              </div>
+
+
               <div className='col-md-6'>
-                <div class="row mt-3">
-                  <div class="col">
-                    <h5>Especificaciones:</h5>
-                    <ul>
-                      <li>Condición del producto: Nuevo</li>
-                      <li>País de origen: Francia</li>
-                      <li>Modelo: La Vie Est Belle</li>
-                      <li>Fragancia: Floral</li>
-                      <li>Género: Mujer</li>
-                      <li>Incluye: La Vie Est Belle EDP 30ml</li>
-                      <li>Posee vaporizador: Sí</li>
-                      <li>Tipo de perfume: Eau de parfum</li>
-                      <li>Contenido (ml): 30ml</li>
-                      <li>Nombre comercial: Perfume Polo Blue EDT 30 ml GWP</li>
-                      <li>Notas de fondo: Esencia de corazón de pachulí.</li>
-                      <li>Formato belleza: Individual</li>
-                      <li>Notas de salida: Iris pallida y acorde de delicadas delicias.</li>
-                      <li>Temporada: Toda temporada</li>
-                    </ul>
+                <div className="row mt-3">
+                  <div className="col">
+
+                    {product.specifications.length > 0 ? (
+                      <>
+                        <h5>Especificaciones:</h5>
+                        {product.specifications.map((specification, index) => (
+                          <div key={index}>
+                            <ul>
+                              <li>{specification.key}: {specification.value}</li>
+                            </ul>
+                          </div>
+                        ))}
+                      </>
+                    ) : (
+                      <p>sin datos</p>
+                    )}
                   </div>
                 </div>
               </div>
 
               <div className='col-md-6'>
                 <div className='row'>
-                  <div class="col">
+                  <div className="col">
                     <h5>Información Adicional:</h5>
                     <p>Características de Perfume Mujer La Vie Est Belle EDP 30 ml LANCOME</p>
                     <p>Sumérgete en un mundo de sofisticación y elegancia con el perfume La Vie Est Belle de Lancome.</p>
@@ -164,6 +161,8 @@ export const ProductSelect = () => {
                   </div>
                 </div>
               </div>
+
+
             </div>
           ))}
         </div>
