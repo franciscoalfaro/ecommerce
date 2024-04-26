@@ -51,20 +51,17 @@ export const ProductSelect = () => {
           {productSelect.map((product, index) => (
             <div className="row" key={index}>
               <div className="col-md-6">
-                <img src={Global.url + 'product/media/' + product.images?.[0]?.filename} className="img-fluid" alt={`Imagen 1 del producto ${index + 1}`} data-bs-toggle="modal" data-bs-target={`#galleryModal${index}`} style={{ cursor: 'pointer', 'border-radius': '30px' }} />
+                <img src={Global.url + 'product/media/' + product.images?.[0]?.filename} className="img-fluid" alt={`Imagen 1 del producto ${index + 1}`} data-bs-toggle="modal" data-bs-target={`#galleryModal${index}`} style={{ cursor: 'pointer', borderRadius: '30px' }} />
                 <div className="row mt-3">
                   {product.images?.map((image, imageIndex) => (
-                    
                     <div className="col-4" key={imageIndex}>
-                      <br></br>
-                      <img src={Global.url + 'product/media/' + image.filename} className="img-fluid gallery-item" alt={`Imagen ${imageIndex + 2} del producto ${index + 1}`} data-bs-target={`#galleryModal${index}`} data-bs-toggle="modal" style={{ cursor: 'pointer','border-radius': '15px' }} />
+                      <br />
+                      <img src={Global.url + 'product/media/' + image.filename} className="img-fluid gallery-item" alt={`Imagen ${imageIndex + 2} del producto ${index + 1}`} data-bs-target={`#galleryModal${index}`} data-bs-toggle="modal" style={{ cursor: 'pointer', borderRadius: '15px' }} />
                     </div>
-       
-
-                    
                   ))}
                 </div>
               </div>
+
               <div className="col-md-6">
                 <div className="row">
                   <div className="col">
@@ -96,7 +93,9 @@ export const ProductSelect = () => {
                         </IntlProvider>
                       </p>
                     )}
-                    <p>{product.description}</p>
+                    {product.description.split('\n').map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
                     <p>Disponibilidad: {product.stock?.quantity ? product.stock.quantity : '0'} <span className="text-success">En Stock</span></p>
                     <p>Talla: {product.size}</p>
                     <p>categoria: {product.category?.name}</p>
@@ -150,17 +149,17 @@ export const ProductSelect = () => {
                 <div className='row'>
                   <div className="col">
                     <h5>Información Adicional:</h5>
-                    <p>Características de Perfume Mujer La Vie Est Belle EDP 30 ml LANCOME</p>
-                    <p>Sumérgete en un mundo de sofisticación y elegancia con el perfume La Vie Est Belle de Lancome.</p>
-                    <p>Con un volumen de 30 ml, este perfume es una declaración de la belleza de la vida, personificada por la actriz Julia Roberts y creado por tres líderes perfumistas de Francia.</p>
-                    <p>Su aroma floral, compuesto por preciosos ingredientes, ofrece una experiencia sensorial única que resalta tu personalidad y realza tu esencia.</p>
-                    <p>Las notas de salida del perfume La Vie Est Belle son de iris pallida y acorde de delicadas delicias, que aportan un toque de frescura y suavidad al perfume.</p>
-                    <p>Seguido de esto, las notas de corazón están compuestas por concreto de iris pallida, flor de azahar del naranjo y jazmín sambac, que aportan un aroma floral y delicado, lleno de feminidad y elegancia.</p>
-                    <p>Finalmente, las notas de fondo del perfume son de esencia de corazón de pachulí. Este ingrediente aporta un toque exótico y misterioso al perfume, dejando una estela duradera y cautivadora que te hará sentir segura y única.</p>
-                    <p>La Vie Est Belle de Lancome es más que un perfume, es una declaración de belleza y libertad. Un perfume hecho para mujeres fuertes, únicas y contemporáneas.</p>
+                    {product.additionalInformation ? (
+                      product.additionalInformation.split('\n').map((paragraph, index) => (
+                        <p key={index}>{paragraph}</p>
+                      ))
+                    ) : (
+                      <p>sin datos</p>
+                    )}
                   </div>
                 </div>
               </div>
+
 
 
             </div>

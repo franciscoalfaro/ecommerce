@@ -75,7 +75,7 @@ export const CreateUser = () => {
 
                 <div className="mb-3">
                     <label htmlFor="inputEmail" className="form-label">confirma e-mail</label>
-                    <input type="email" name='confirmEmail' className={`form-control ${(!form.confirmEmail || !emailMatch) && 'is-invalid'}`} id="inputConfirmEmail" onKeyDown={validar} placeholder="Confirmar Correo Electrónico" onChange={changed}></input>
+                    <input type="email" name='confirmEmail' className={`form-control ${(!form.confirmEmail || !emailMatch) && 'is-invalid'}`} id="inputConfirmEmail" placeholder="Confirmar Correo Electrónico" onKeyDown={validar}  onChange={changed}></input>
                     {!emailMatch && <div className="invalid-feedback">Los correos electrónicos no coinciden</div>}
                 
                 </div>

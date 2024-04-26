@@ -22,9 +22,9 @@ export const Footer = () => {
           </div>
           <div className="col-md-4">
             <h5>Redes Sociales</h5>
-            <a href="www.facebook.com"><i className="bi bi-facebook"></i></a>
-            <a href="www.twitter.com"><i className="bi bi-twitter-x"></i></a>
-            <a href="www.instagram.com"><i className="bi bi-instagram"></i></a>
+            <a href="https://www.facebook.com" target="_blank"><i className="bi bi-facebook"></i></a>
+            <a href="https://www.twitter.com" target="_blank"><i className="bi bi-twitter-x"></i></a>
+            <a href="https://www.instagram.com" target="_blank"><i className="bi bi-instagram"></i></a>
           </div>
         </div>
       </div>

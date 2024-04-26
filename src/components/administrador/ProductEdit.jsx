@@ -3,18 +3,15 @@ import { Link, useParams } from 'react-router-dom'
 import { Global } from '../../helpers/Global'
 import { useForm } from '../../hooks/useForm'
 import { SerializeForm } from '../../helpers/SerializeForm'
+import useModalClose from '../../hooks/useModalClose'
 
 export const ProductEdit = () => {
   const params = useParams()
   const [product, setProduct] = useState(null);
   const { form, changed } = useForm({})
+  const closeModal = useModalClose();
 
-  const [selectedOption, setSelectedOption] = useState('')
 
-  const opcioneDelselect = (event) => {
-    setSelectedOption(event.target.value); // Actualiza la opción seleccionada
-
-  };
   //producto Seleccionado 
   const productSelected = async () => {
     let id = params.id
@@ -31,6 +28,7 @@ export const ProductEdit = () => {
 
       if (data.status === 'success') {
         setProduct(data.product) // Cambiar a data.product
+        console.log(data)
 
       } else {
         console.log(data.message)
@@ -134,7 +132,7 @@ export const ProductEdit = () => {
 
           const myForm = document.querySelector("#product");
           myForm.reset();
-          setSelectedOption('');
+
         } else {
           Swal.fire({ position: "bottom-end", title: uploadData.message, showConfirmButton: false, timer: 1000 });
         }
@@ -142,7 +140,7 @@ export const ProductEdit = () => {
         // Si no se adjuntaron imágenes, se restablece el formulario
         const myForm = document.querySelector("#product");
         myForm.reset();
-        setSelectedOption('');
+
       }
 
 
@@ -192,12 +190,81 @@ export const ProductEdit = () => {
 
 
 
-
-
-
-
-
   //crear llamado para crear especificaciones y caracteristicas adicionales.
+  const spectCreate = async (e) => {
+    e.preventDefault();
+
+    try {
+      let newEspect = form;
+      const productId = params.id
+
+      const request = await fetch(Global.url + "product/spect/" + productId, {
+        method: "POST",
+        body: JSON.stringify(newEspect),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': localStorage.getItem('token')
+        }
+      })
+      const data = await request.json();
+      if (data.status === 'success') {
+        Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
+        productSelected()
+        const myForm = document.querySelector("#modalForm");
+        myForm.reset();
+        closeModal()
+ 
+
+      }
+      if (data.status === 'error') {
+        console.log(data.status)
+        const myForm = document.querySelector("#modalForm");
+        myForm.reset();
+        closeModal()
+        
+  
+        Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
+
+      }
+    } catch (error) {
+      console.log('existe un error:', error)
+
+    }
+
+  }
+
+
+  const deleteSpect = async (specification, index) => {
+    const productID = product._id
+    let spectId = specification
+
+    try {
+      const request = await fetch(Global.url + 'product/deletespect/'+productID, {
+        method: 'DELETE',
+        body: JSON.stringify({spectId}),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('token')
+        }
+      });
+      const data = await request.json();
+
+      if (data.status === 'success') {
+        //const newItems = [...product];
+        //newItems.splice(index, 1);
+        //setProduct(newItems);
+        productSelected()
+
+
+      } else {
+        setProduct([]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
+
 
   return (
     <>
@@ -251,26 +318,37 @@ export const ProductEdit = () => {
               </div>
 
               <div className="row mb-3">
-                <p>Especificaciones</p>
                 <div className="col">
-                  <label htmlFor="offerprice">Nombre:</label>
-                  <input type="text" className="form-control" placeholder='Ejemplo Condición del producto' name="offerprice" defaultValue={''} onChange={changed} />
+                  <p>Especificaciones <i className="bi bi-plus-circle" data-toggle="modal" data-target="#exampleModal" style={{ cursor: 'pointer' }}></i></p>
                 </div>
                 <div className="col">
-                  <label htmlFor="offerprice">Valor:</label>
-                  <input type="text" className="form-control" name="offerprice" placeholder='ejemplo nuevo' defaultValue={''} onChange={changed} />
+                  {product.specifications.length > 0 ? (
+                    <>
+                      <h5>Especificaciones:</h5>
+                      {product.specifications.map((specification, index) => (
+                        <div key={index}>
+                          <ul>
+                            <li>{specification.key}: {specification.value} <i className="bi bi-trash" onClick={() => deleteSpect(specification._id)}></i></li>
+                          </ul>
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <p>sin especificaciones</p>
+                  )}
+
                 </div>
               </div>
 
               <div className="row mb-3">
                 <div className="col">
                   <label htmlFor="stock">Stock:</label>
-                  <input type="text" className="form-control" readOnly name="stock" defaultValue={product.stock ? product.stock.quantity : 'N/A'} />
+                  <input type="text" className="form-control" disabled name="stock" defaultValue={product.stock ? product.stock.quantity : 'N/A'} />
                   <input type="text" className="form-control" readOnly hidden name="stock" defaultValue={product.stock ? product.stock._id : 'N/A'} />
                 </div>
                 <div className="col">
                   <label htmlFor="location">Ubicación:</label>
-                  <input type="text" className="form-control" name="location" defaultValue={product.stock ? product.stock.location : 'N/A'} onChange={changed} />
+                  <input type="text" className="form-control" name="location" defaultValue={product.stock ? product.stock.location : 'N/A'} disabled onChange={changed} />
                 </div>
               </div>
               {/* Sección de imágenes */}
@@ -322,6 +400,38 @@ export const ProductEdit = () => {
         </div>
 
       </form>
+
+
+      <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModal" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModal">Nueva Especificacion</h1>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <form id='modalForm' onSubmit={spectCreate}>
+                <div className="mb-3">
+                  <label htmlFor="recipient-name" className="col-form-label">Nombre:</label>
+                  <input type="text" className="form-control" name='key' id="recipient-key" onChange={changed}></input>
+                </div>
+                <div className="mb-3">
+                  <label htmlFor="recipient-name" className="col-form-label">Detalle:</label>
+                  <input type="text" className="form-control" name='value' id="recipient-value" onChange={changed}></input>
+                </div>
+
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                  <button type="submit" className="btn btn-primary">Agregar Especificacion</button>
+                </div>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
 
 
     </>

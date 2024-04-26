@@ -224,3 +224,12 @@
     object-fit: cover;
     /* Ajusta la imagen dentro del contenedor manteniendo la proporción */
 }
+
+
+.gallery-item {
+    transition: transform 0.3s ease; /* Transición suave durante 0.3 segundos */
+  }
+  
+  .gallery-item:hover {
+    transform: scale(1.1); /* Aumenta el tamaño al hacer hover */
+  }

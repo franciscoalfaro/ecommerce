@@ -26,19 +26,10 @@ export const ProductAdmin = () => {
     changed(event);
   };
 
-  const nextPage = () => {
-    let next = page + 1;
-    setPage(next);
-  };
-  const prevPage = () => {
-    if (page > 1) {
-      setPage(page - 1);
-    }
-  };
 
   useEffect(() => {
-    listCategoryAdmin(page)
-  }, [page])
+    listCategoryAdmin()
+  }, [])
 
 
   const crearProducto = async (e) => {
@@ -64,7 +55,7 @@ export const ProductAdmin = () => {
 
       if (data.status === "success" && !imagesAttached) {
         Swal.fire({ position: "bottom-end", title: "Producto creado correctamente", showConfirmButton: false, timer: 1000 });
-      } else {
+      } if(data.status === "error") {
         Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
       }
 
@@ -164,8 +155,6 @@ export const ProductAdmin = () => {
       if (data.status === 'success') {
 
         setCategorias(data.categorias)
-        setTotalPages(data.totalPages)
-
 
       } else {
         setCategorias([])
@@ -189,6 +178,11 @@ export const ProductAdmin = () => {
         <div className="mb-3">
           <label htmlFor="description" className="form-label">Descripción del Producto</label>
           <textarea className="form-control" id="description" rows="3" name='description' placeholder="Ingrese la descripción del producto" required onChange={changed}></textarea>
+        </div>
+
+        <div className="mb-3">
+          <label htmlFor="additionalInformation" className="form-label">Informacion Adicional</label>
+          <textarea className="form-control" id="additionalInformation" rows="3" name='additionalInformation' placeholder="Informacion Adicional" required onChange={changed}></textarea>
         </div>
         <div className="mb-3">
           <label htmlFor="brand" className="form-label">Marca del Producto</label>

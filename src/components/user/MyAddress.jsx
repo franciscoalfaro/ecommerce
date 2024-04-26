@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Global } from '../../helpers/Global';
 import { useForm } from '../../hooks/useForm';
 import { SerializeForm } from '../../helpers/SerializeForm';
+import useModalClose from '../../hooks/useModalClose';
 
 export const MyAddress = () => {
   const [page, setPage] = useState(1);
@@ -9,6 +10,7 @@ export const MyAddress = () => {
   const [address, setAddress] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const { form, changed } = useForm()
+  const closeModal = useModalClose();
 
 
   const nextPage = () => {
@@ -137,10 +139,11 @@ export const MyAddress = () => {
         getAddressList()
         Swal.fire({ position: "bottom-end", title: "Direccion Agregada correctamente", showConfirmButton: false, timer: 800 });
 
-        $('#exampleModal3').modal('hide');
+        closeModal()
 
       } else {
         console.log(data.message)
+        closeModal()
 
       }
 

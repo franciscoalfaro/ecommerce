@@ -66,12 +66,12 @@ export const Products = () => {
     }
   };
 
-
+  //hacer match con el useEffect
 
 
   //funcion para paginar y ocultar numeros 
   function generatePaginationNumbers(totalPages, currentPage) {
-    const maxVisiblePages = 5; // Número máximo de páginas visibles
+    const maxVisiblePages = 0; // Número máximo de páginas visibles
     const halfVisiblePages = Math.floor(maxVisiblePages / 2); // Mitad de las páginas visibles
 
     let startPage, endPage;
@@ -145,7 +145,9 @@ export const Products = () => {
 
                       <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}><h5 className="card-title">{product.name}</h5></Link>
                       <p className="card-text">Marca {product.brand}</p>
-                      <p className="card-text">{product.description}</p>
+                      {product.description.split('\n').map((paragraph, index) => (
+                        <p key={index}>{paragraph}</p>
+                      ))}
 
                       {product.discountPercentage > 0 ? (
                         <>
@@ -196,7 +198,7 @@ export const Products = () => {
           <nav aria-label="Page navigation example">
             <ul className="pagination justify-content-center">
               <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-                <a className="page-link" href="#" onClick={prevPage}>Anterior</a>
+                <a className="page-link" href="#" onClick={prevPage}><i className="bi bi-chevron-left"></i></a>
               </li>
               {visiblePageNumbers.map((pageNumber) => (
                 <li key={pageNumber} className={`page-item ${page === pageNumber ? 'active' : ''}`}>
@@ -204,7 +206,9 @@ export const Products = () => {
                 </li>
               ))}
               <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
-                <a className="page-link" href="#" onClick={nextPage}>Siguiente</a>
+                <a className="page-link" href="#" onClick={nextPage}><i class="bi bi-chevron-right"></i></a>
+                
+                
               </li>
             </ul>
           </nav>

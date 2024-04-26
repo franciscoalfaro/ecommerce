@@ -6,6 +6,7 @@ import { IntlProvider, FormattedNumber } from 'react-intl';
 import useAuth from '../../hooks/useAuth';
 import { Link } from 'react-router-dom';
 import { GetProducts } from '../../helpers/GetProducts';
+import useModalClose from '../../hooks/useModalClose';
 
 export const GestionProduct = () => {
   const { form, changed } = useForm({})
@@ -16,6 +17,7 @@ export const GestionProduct = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const closeModal = useModalClose(); 
 
 
   const nextPage = () => {
@@ -123,8 +125,8 @@ export const GestionProduct = () => {
 
       if (data.status === "success") {
         Swal.fire({ position: "bottom-end", title: "stock actualizado correctamente", showConfirmButton: false, timer: 1000 });
-        getProduct()
-        $('#exampleModal').modal('hide');
+        getDataProduct()
+        closeModal()
         window.location.replace('/admin/administrar-productos')
 
       } else {
