@@ -206,7 +206,7 @@ export const Products = () => {
                 </li>
               ))}
               <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
-                <a className="page-link" href="#" onClick={nextPage}><i class="bi bi-chevron-right"></i></a>
+                <a className="page-link" href="#" onClick={nextPage}><i className="bi bi-chevron-right"></i></a>
                 
                 
               </li>

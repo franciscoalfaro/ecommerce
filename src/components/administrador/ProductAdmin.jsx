@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Global } from '../../helpers/Global';
 import useAuth from '../../hooks/useAuth';
 import { useForm } from '../../hooks/useForm';
+import useModalClose from '../../hooks/useModalClose';
 
 export const ProductAdmin = () => {
   const { auth } = useAuth({});
   const { form, changed } = useForm({})
+  const closeModal = useModalClose();
 
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
@@ -14,16 +16,19 @@ export const ProductAdmin = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [selectedOption, setSelectedOption] = useState('')
 
+
   const opcioneDelselect = (event) => {
     setSelectedOption(event.target.value); // Actualiza la opción seleccionada
-
   };
+
+
 
 
   //llamar eventos distintos con onchange
   const eventosDistintos = (event) => {
     opcioneDelselect(event);
     changed(event);
+
   };
 
 
@@ -34,6 +39,12 @@ export const ProductAdmin = () => {
 
   const crearProducto = async (e) => {
     e.preventDefault();
+
+    if (selectedOption === "") {
+      // Mostrar mensaje de error o realizar alguna acción
+      Swal.fire({ position: "bottom-end", title: "Por favor selecciona una categoría válida", showConfirmButton: false, timer: 1500 });
+      return; // Detener el proceso de creación del producto
+    }
 
     let newProduct = form;
 
@@ -55,7 +66,7 @@ export const ProductAdmin = () => {
 
       if (data.status === "success" && !imagesAttached) {
         Swal.fire({ position: "bottom-end", title: "Producto creado correctamente", showConfirmButton: false, timer: 1000 });
-      } if(data.status === "error") {
+      } if (data.status === "error") {
         Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
       }
 
@@ -79,7 +90,7 @@ export const ProductAdmin = () => {
         const uploadData = await uploadRequest.json();
 
         if (uploadData.status === "success") {
-         
+
           const myForm = document.querySelector("#product");
           myForm.reset();
           setSelectedOption('');
@@ -111,7 +122,7 @@ export const ProductAdmin = () => {
           const aspectRatio = img.width / img.height;
           let width = img.width;
           let height = img.height;
-  
+
           if (width > maxWidth) {
             width = maxWidth;
             height = width / aspectRatio;
@@ -120,7 +131,7 @@ export const ProductAdmin = () => {
             height = maxHeight;
             width = height * aspectRatio;
           }
-  
+
           const canvas = document.createElement('canvas');
           canvas.width = width;
           canvas.height = height;
@@ -135,7 +146,7 @@ export const ProductAdmin = () => {
       reader.onerror = (error) => reject(error);
     });
   }
-  
+
 
 
 
@@ -166,6 +177,36 @@ export const ProductAdmin = () => {
   }
 
 
+  const CreateCategory = async (e) => {
+    e.preventDefault()
+    console.log('aqui')
+    try {
+      let newCat = form;
+      console.log(form)
+
+      const request = await fetch(Global.url + "category/newcategory", {
+        method: "POST",
+        body: JSON.stringify(newCat),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': localStorage.getItem('token')
+        }
+      });
+      const data = await request.json()
+      console.log(data)
+      if (data.status === 'success') {
+        listCategoryAdmin()
+        const myForm = document.querySelector("#modalForm");
+        myForm.reset();
+        closeModal()
+      }
+
+    } catch (error) {
+
+    }
+
+  }
+
 
   return (
     <div className="container mt-4">
@@ -195,8 +236,17 @@ export const ProductAdmin = () => {
         </div>
 
         <div className="mb-3">
+
+
+
           <label htmlFor="gender" className="form-label">Genero</label>
-          <input type="text" className="form-control" id="gender" name='gender' placeholder="Talla del producto" required onChange={changed}></input>
+          <select className="form-control" name="gender" required onChange={changed}>
+            <option value="">Selecciona opcion</option>
+            <option value="Hombre">Hombre</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Unisex">Unisex</option>
+            <option value="Nino">Nino</option>
+          </select>
         </div>
 
 
@@ -211,15 +261,21 @@ export const ProductAdmin = () => {
         </div>
 
         <div className="mb-3">
-          <label htmlFor="categoriaProducto" className="form-label">Categoría del Producto</label>
-          <select className="form-select" id="category" name='category' required value={selectedOption} onChange={eventosDistintos}>
-            <option value="Seleccione una categoría" >Seleccione una categoría</option>
-            {categoria.map((categorias) => (
-              <option key={categorias._id} value={categorias.name}>{categorias.name}</option>
-            ))}
-          </select>
-          <input type="hidden" name="categoria" className="form-control" placeholder="Categoria" hidden value={selectedOption} onChange={changed} />
+          <div className=''>
+            <label htmlFor="categoriaProducto" className="form-label">Categoría del Producto</label>
+            <select className="form-select" id="category" name='category' required value={selectedOption} onChange={eventosDistintos}>
+              <option value="Seleccione una categoría" >Seleccione una categoría</option>
+              {categoria.map((categorias) => (
+                <option key={categorias._id} value={categorias.name}>{categorias.name}</option>
+              ))}
+            </select>
+            <input type="hidden" name="categoria" className="form-control" placeholder="Categoria" hidden value={selectedOption} onChange={changed} />
+          </div>
         </div>
+
+
+
+
 
         <div className="mb-3">
           <label htmlFor="imagenProducto" className="form-label">Imagen del Producto</label>
@@ -232,27 +288,28 @@ export const ProductAdmin = () => {
 
       {/* abrir modal de creación de categoría */}
 
-      <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div className="modal-dialog" role="document">
+      <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModal" aria-hidden="true">
+        <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel" >Crear Categoria</h5>
+              <h1 className="modal-title fs-5" id="exampleModal">Nueva Especificacion</h1>
               <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div className="modal-body">
-              <form>
-                <div className="mb-6">
-                  <label htmlFor="nombreCategoria" className="form-label">Nombre de la Categoría</label>
-                  <input type="text" className="form-control" id="nombreCategoria" required placeholder="Ingrese el nombre de la categoría"></input>
+              <form id='modalForm' onSubmit={CreateCategory}>
+                <div className="mb-3">
+                  <label htmlFor="name" className="col-form-label">Nombre:</label>
+                  <input type="text" className="form-control" name='name' id="name" onChange={changed}></input>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                  <button type="submit" className="btn btn-primary">Agregar Especificacion</button>
                 </div>
               </form>
             </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-              <button type="submit" className="btn btn-primary">Crear Categoría</button>
-            </div>
+
           </div>
         </div>
       </div>

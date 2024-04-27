@@ -4,12 +4,14 @@ import { Global } from '../../helpers/Global'
 import { useForm } from '../../hooks/useForm'
 import { SerializeForm } from '../../helpers/SerializeForm'
 import useModalClose from '../../hooks/useModalClose'
+import useModal2 from '../../hooks/useModal2'
 
 export const ProductEdit = () => {
   const params = useParams()
   const [product, setProduct] = useState(null);
   const { form, changed } = useForm({})
   const closeModal = useModalClose();
+  const closeModal2 = useModal2();
 
 
   //producto Seleccionado 
@@ -27,8 +29,8 @@ export const ProductEdit = () => {
       const data = await request.json()
 
       if (data.status === 'success') {
-        setProduct(data.product) // Cambiar a data.product
-        console.log(data)
+        setProduct(data.product)
+  
 
       } else {
         console.log(data.message)
@@ -213,7 +215,7 @@ export const ProductEdit = () => {
         const myForm = document.querySelector("#modalForm");
         myForm.reset();
         closeModal()
- 
+
 
       }
       if (data.status === 'error') {
@@ -221,8 +223,8 @@ export const ProductEdit = () => {
         const myForm = document.querySelector("#modalForm");
         myForm.reset();
         closeModal()
-        
-  
+
+
         Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
 
       }
@@ -239,9 +241,9 @@ export const ProductEdit = () => {
     let spectId = specification
 
     try {
-      const request = await fetch(Global.url + 'product/deletespect/'+productID, {
+      const request = await fetch(Global.url + 'product/deletespect/' + productID, {
         method: 'DELETE',
-        body: JSON.stringify({spectId}),
+        body: JSON.stringify({ spectId }),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': localStorage.getItem('token')
@@ -264,6 +266,51 @@ export const ProductEdit = () => {
     }
 
   }
+
+
+  //funcion para crear stock
+  const addStock = async (e) => {
+
+    e.preventDefault();
+    const productID = params.id
+
+    const createStock = SerializeForm(e.target)
+
+    try {
+      const request = await fetch(Global.url + "stock/create/" + productID, {
+        method: "POST",
+        body: JSON.stringify(createStock),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': localStorage.getItem('token')
+        }
+      })
+      const data = await request.json();
+      if (data.status === 'success') {
+        productSelected()
+        Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
+        const myForm = document.querySelector("#formStock");
+        myForm.reset();
+        closeModal2()
+
+
+      }
+      if (data.status === 'error') {
+        const myForm = document.querySelector("#formStock");
+        myForm.reset();
+        closeModal2()
+        Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
+
+      }else{
+        console.log('existe un error:', data.message)
+      }
+    } catch (error) {
+      console.log('existe un error:', error)
+
+    }
+
+  }
+
 
 
   return (
@@ -314,8 +361,11 @@ export const ProductEdit = () => {
                   <input type="text" className="form-control" name="offerprice" defaultValue={product.offerprice} onChange={changed} />
                 </div>
                 <div className="col">
+
                 </div>
               </div>
+
+
 
               <div className="row mb-3">
                 <div className="col">
@@ -340,17 +390,27 @@ export const ProductEdit = () => {
                 </div>
               </div>
 
+
+
               <div className="row mb-3">
-                <div className="col">
+                <div className="col-sm-2">
                   <label htmlFor="stock">Stock:</label>
-                  <input type="text" className="form-control" disabled name="stock" defaultValue={product.stock ? product.stock.quantity : 'N/A'} />
-                  <input type="text" className="form-control" readOnly hidden name="stock" defaultValue={product.stock ? product.stock._id : 'N/A'} />
+                  <input type="text" className="form-control" disabled name="stock" value={product.stock ? product.stock.quantity : 'N/A'}/>
+                  <input type="text" className="form-control"  disabled hidden name="stock" defaultValue={product.stock ? product.stock._id : 'N/A'} />
                 </div>
-                <div className="col">
+                <div className="col-sm-8">
                   <label htmlFor="location">Ubicación:</label>
                   <input type="text" className="form-control" name="location" defaultValue={product.stock ? product.stock.location : 'N/A'} disabled onChange={changed} />
                 </div>
+                <div className="col-sm-2">
+                  <br></br>
+                  <button type='button' className="stockedit btn btn-info" data-toggle="modal" data-target="#exampleModal2">Stock</button>
+                </div>
               </div>
+
+
+
+
               {/* Sección de imágenes */}
               <div className="row mb-3 border border-primary rounded p-3">
                 {product.images && product.images.length > 0 ? (
@@ -432,6 +492,62 @@ export const ProductEdit = () => {
           </div>
         </div>
       </div>
+
+
+      {/* modal stock*/}
+      <div className="modal fade" id="exampleModal2" tabIndex="-1" role="dialog" aria-labelledby="exampleModal2" aria-hidden="true">
+        <div className="modal-dialog modal-lg" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModal2">Crear Stock</h5>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form id='formStock' onSubmit={addStock}>
+              <div className="modal-body">
+                {product && (
+                  <div>
+                    <div className="mb-3 row">
+                      <label htmlFor="name" className="col-sm-4 col-form-label"></label>
+                      <div className="col-sm-12">
+                        <div className="input-group">
+                          <span className="input-group-text">Nombre del Producto</span>
+                          <input type="text" className="form-control" id="name" readOnly value={product.name}></input>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mb-3 row">
+                      <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
+                      <div className="col-sm-12">
+                        <div className="input-group">
+                          <span className="input-group-text">stock</span>
+                          <input type="number" name='quantity' id="stock" defaultValue={product.stock ? product.stock.quantity : ''} onChange={changed} />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mb-3 row">
+                      <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
+                      <div className="col-sm-12">
+                        <div className="input-group">
+                          <span className="input-group-text">ubicacion</span>
+                          <input type="text" name='location' className="form-control" id="ubicacion" defaultValue={product.stock ? product.stock.location : ''} onChange={changed} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="submit" className="btn btn-primary">Actualizar</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+
 
 
     </>

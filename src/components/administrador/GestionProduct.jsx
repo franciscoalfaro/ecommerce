@@ -16,9 +16,6 @@ export const GestionProduct = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
 
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const closeModal = useModalClose(); 
-
 
   const nextPage = () => {
     if (page < totalPages) {
@@ -36,12 +33,6 @@ export const GestionProduct = () => {
   useEffect(() => {
     getDataProduct();
   }, [page]);
-
-
-
-  const handleProductClick = (selectedProduct) => {
-    setSelectedProduct(selectedProduct);
-  };
 
 
 
@@ -103,46 +94,6 @@ export const GestionProduct = () => {
 
 
 
-  //funcion para crear stock
-  const addStock = async (e) => {
-
-    e.preventDefault();
-    const productID = selectedProduct._id
-    console.log(productID)
-    const createStock = SerializeForm(e.target)
-
-    try {
-      const request = await fetch(Global.url + "stock/create/" + productID, {
-        method: "POST",
-        body: JSON.stringify(createStock),
-        headers: {
-          "Content-Type": "application/json",
-          'Authorization': localStorage.getItem('token')
-        }
-      })
-      const data = await request.json();
-      console.log(data)
-
-      if (data.status === "success") {
-        Swal.fire({ position: "bottom-end", title: "stock actualizado correctamente", showConfirmButton: false, timer: 1000 });
-        getDataProduct()
-        closeModal()
-        window.location.replace('/admin/administrar-productos')
-
-      } else {
-        setProduct([])
-        Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
-      }
-
-    } catch (error) {
-      console.log('code', error);
-    }
-
-  }
-
-
-
-
   //llamado a helpers para obtener el listado de los productos 
   const getDataProduct = async () => {
     try {
@@ -196,8 +147,7 @@ export const GestionProduct = () => {
                   <td>
                     <span>{prod.standout}</span>
                     <button className="btn btn-danger btn-sm me-2" onClick={() => deleteProduct(prod._id)}>Eliminar</button>
-                    <button className="btn btn-info btn-sm" data-toggle="modal" data-target="#exampleModal" onClick={() => handleProductClick(prod)}>Stock</button>
-                    
+                                        
                     <Link to={auth && auth._id ? `/admin/editar-producto/${prod._id}` : '#'}>
                       <button className="btn btn-info btn-sm">Editar</button>
                     </Link>
@@ -223,62 +173,6 @@ export const GestionProduct = () => {
             </li>
           </ul>
         </nav>
-      </div>
-
-
-      {/* abrir modal de creación de crear stock */}
-
-      <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div className="modal-dialog modal-lg" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">Crear Stock</h5>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form onSubmit={addStock}>
-              <div className="modal-body">
-                {selectedProduct && (
-                  <div>
-                    <div className="mb-3 row">
-                      <label htmlFor="name" className="col-sm-4 col-form-label"></label>
-                      <div className="col-sm-12">
-                        <div className="input-group">
-                          <span className="input-group-text">Nombre del Producto</span>
-                          <input type="text" className="form-control" id="name" readOnly value={selectedProduct.name}></input>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mb-3 row">
-                      <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
-                      <div className="col-sm-12">
-                        <div className="input-group">
-                          <span className="input-group-text">stock</span>
-                          <input type="number" name='quantity' id="stock" defaultValue={selectedProduct.stock ? selectedProduct.stock.quantity : ''} onChange={changed} />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mb-3 row">
-                      <label htmlFor="stock" className="col-sm-4 col-form-label"></label>
-                      <div className="col-sm-12">
-                        <div className="input-group">
-                          <span className="input-group-text">ubicacion</span>
-                          <input type="text" name='location' className="form-control" id="ubicacion" defaultValue={selectedProduct.stock ? selectedProduct.stock.location : ''} onChange={changed} />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={(e) => { admin / administrar-productos }} data-dismiss="modal">Cerrar</button>
-                <button type="submit" className="btn btn-primary">Actualizar</button>
-              </div>
-            </form>
-
-          </div>
-        </div>
       </div>
 
 
