@@ -3,6 +3,7 @@ import { Global } from '../../helpers/Global';
 import { useForm } from '../../hooks/useForm';
 import { SerializeForm } from '../../helpers/SerializeForm';
 import useModalClose from '../../hooks/useModalClose';
+import useModal2 from '../../hooks/useModal2';
 
 export const MyAddress = () => {
   const [page, setPage] = useState(1);
@@ -11,6 +12,7 @@ export const MyAddress = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const { form, changed } = useForm()
   const closeModal = useModalClose();
+  const closeModal2 = useModal2();
 
 
   const nextPage = () => {
@@ -104,7 +106,12 @@ export const MyAddress = () => {
       const data = await request.json();
 
       if (data.status === "success") {
+        Swal.fire({ position: "bottom-end", title: "Direccion actualizada correctamente", showConfirmButton: false, timer: 800 });
         getAddressList()
+        closeModal2()
+      }else{
+        console.log(data.message)
+        closeModal2()
       }
 
 
@@ -138,7 +145,6 @@ export const MyAddress = () => {
       if (data.status === "success") {
         getAddressList()
         Swal.fire({ position: "bottom-end", title: "Direccion Agregada correctamente", showConfirmButton: false, timer: 800 });
-
         closeModal()
 
       } else {
@@ -160,14 +166,14 @@ export const MyAddress = () => {
   return (
     <div>
       <h2>Mis Direcciones</h2>
-      <button type="button" className="btn btn-secondary"><i className="bi bi-building-fill-add" data-toggle="modal" data-target="#exampleModal3"> Agregar nueva direccion</i>
+      <button type="button" className="btn btn-secondary"><i className="bi bi-building-fill-add" data-toggle="modal" data-target="#exampleModal"> Agregar nueva direccion</i>
       </button>
       <hr></hr>
 
       {address && address.length > 0 ? (
         address.map((addr, index) => (
           <div key={addr._id} className="address-container">
-            <button type="button" className="btn btn-primary" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal">
+            <button type="button" className="btn btn-primary" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal3">
               {addr.nombre}
             </button>
             <i className="bi bi-trash" onClick={() => deleteAddress(addr._id)}></i>
@@ -201,11 +207,11 @@ export const MyAddress = () => {
       </nav>
 
 
-      <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div className="modal fade" id="exampleModal3" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel" >Mi dirección</h5>
+              <h5 className="modal-title" id="exampleModalLabel3" >Mi dirección</h5>
               <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -235,7 +241,7 @@ export const MyAddress = () => {
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel" >Editar</h5>
+              <h5 className="modal-title" id="exampleModalLabel2" >Editar</h5>
               <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -246,7 +252,7 @@ export const MyAddress = () => {
                   <div>
                     <div className="mb-3">
                       <label htmlFor="nombre">Nombre:</label>
-                      <input type="text" className="form-control" id="nombre" name="nombre" value={selectedAddress.nombre} onChange={changed} />
+                      <input type="text" className="form-control" id="nombre" name="nombre" defaultValue={selectedAddress.nombre} onChange={changed} />
                     </div>
                     <div className="mb-3">
                       <label htmlFor="direccion">Dirección:</label>
@@ -285,7 +291,7 @@ export const MyAddress = () => {
       </div>
 
 
-      <div className="modal fade" id="exampleModal3" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+      <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
@@ -296,48 +302,56 @@ export const MyAddress = () => {
             </div>
             <form id="CreateAdd" onSubmit={createAddress}>
               <div className="modal-body">
-
-                <div>
-                  <div className="mb-3">
-                    <label htmlFor="nombre">Nombre:</label>
-                    <input type="text" className="form-control" id="nombre" name="nombre" onChange={changed} />
+                <div className="container">
+                  <div className="row">
+                    <div className="col order-first">
+                      <label htmlFor="nombre">Nombre:</label>
+                      <input type="text" className="form-control" id="nombre" name="nombre" onChange={changed} />
+                    </div>
+                    <div className="col">
+                      <label htmlFor="direccion">Dirección:</label>
+                      <input type="text" className="form-control" id="direccion" name="direccion" onChange={changed} />
+                    </div>
                   </div>
-                  <div className="mb-3">
-                    <label htmlFor="direccion">Dirección:</label>
-                    <input type="text" className="form-control" id="direccion" name="direccion" onChange={changed} />
+                  <div className="row">
+                    <div className="col order-first">
+                      <label htmlFor="numero">Número:</label>
+                      <input type="text" className="form-control" id="numero" name="numero" onChange={changed} />
+                    </div>
+                    <div className="col">
+                      <label htmlFor="phone">Teléfono:</label>
+                      <input type="text" className="form-control" id="phone" name="phone" onChange={changed} />
+                    </div>
                   </div>
-                  <div className="mb-3">
-                    <label htmlFor="numero">Número:</label>
-                    <input type="text" className="form-control" id="numero" name="numero" onChange={changed} />
+                  <div className="row">
+                    <div className="col order-first">
+                      <label htmlFor="codigoPostal">Código Postal:</label>
+                      <input type="text" className="form-control" id="codigoPostal" name="codigoPostal" onChange={changed} />
+                    </div>
+                    <div className="col">
+                      <label htmlFor="region">Región:</label>
+                      <input type="text" className="form-control" id="region" name="region" onChange={changed} />
+                    </div>
                   </div>
-                  <div className="mb-3">
-                    <label htmlFor="phone">Teléfono:</label>
-                    <input type="text" className="form-control" id="phone" name="phone" onChange={changed} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="ciudad">codigo postal:</label>
-                    <input type="text" className="form-control" id="codigoPostal" name="codigoPostal" onChange={changed} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="region">Región:</label>
-                    <input type="text" className="form-control" id="region" name="region" onChange={changed} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="comuna">Comuna:</label>
-                    <input type="text" className="form-control" id="comuna" name="comuna" onChange={changed} />
-                  </div>
-                  <div className="mb-3">
-                    <label htmlFor="ciudad">Ciudad:</label>
-                    <input type="text" className="form-control" id="ciudad" name="ciudad" onChange={changed} />
+                  <div className="row">
+                    <div className="col order-first">
+                      <label htmlFor="comuna">Comuna:</label>
+                      <input type="text" className="form-control" id="comuna" name="comuna" onChange={changed} />
+                    </div>
+                    <div className="col">
+                      <label htmlFor="ciudad">Ciudad:</label>
+                      <input type="text" className="form-control" id="ciudad" name="ciudad" onChange={changed} />
+                    </div>
                   </div>
                 </div>
-
               </div>
+
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                 <button type="submit" className="btn btn-primary">Crear</button>
               </div>
             </form>
+
           </div>
         </div>
       </div>
