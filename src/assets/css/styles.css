@@ -250,3 +250,7 @@
 .stockedit{
     margin-top: 8px;
 }
+.carousel-control-next-icon,
+.carousel-control-prev-icon {
+    background-color: #000; /* Cambia #000 al color de fondo que desees */
+}

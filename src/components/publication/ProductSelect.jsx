@@ -11,6 +11,11 @@ export const ProductSelect = () => {
   const [productSelect, setProductSelect] = useState([])
   const { addToCart, updateQuantity } = useCart()
 
+  const [imagenSelect, setImagenSelect] = useState([])
+
+  const handleImageSelect = (imageName) => {
+    setImagenSelect(imageName.filename);
+  };
 
 
   useEffect(() => {
@@ -32,7 +37,7 @@ export const ProductSelect = () => {
         }
       })
       const data = await request.json()
-    
+
       if (data.status === 'success') {
         setProductSelect([data.product]) // Cambiar a data.product
 
@@ -56,7 +61,7 @@ export const ProductSelect = () => {
                   {product.images?.map((image, imageIndex) => (
                     <div className="col-4" key={imageIndex}>
                       <br />
-                      <img src={Global.url + 'product/media/' + image.filename} className="img-fluid gallery-item" alt={`Imagen ${imageIndex + 2} del producto ${index + 1}`} data-bs-target={`#galleryModal${index}`} data-bs-toggle="modal" style={{ cursor: 'pointer', borderRadius: '15px' }} />
+                      <img src={Global.url + 'product/media/' + image.filename} className="img-fluid gallery-item" alt={`Imagen ${imageIndex + 2} del producto ${index + 1}`} data-bs-target={`#galleryModal${index}`} data-bs-toggle="modal" onClick={() => handleImageSelect(image)} style={{ cursor: 'pointer', borderRadius: '15px' }} />
                     </div>
                   ))}
                 </div>
@@ -176,7 +181,7 @@ export const ProductSelect = () => {
                   <div id={`galleryCarousel${index}`} className="carousel slide" data-bs-ride="carousel">
                     <div className="carousel-inner">
                       {product.images?.map((image, imageIndex) => (
-                        <div className={`carousel-item ${imageIndex === 0 ? 'active' : ''}`} key={imageIndex}>
+                        <div className={`carousel-item ${imagenSelect === image.filename ? 'active' : ''}`} key={imageIndex}>
                           <img src={Global.url + 'product/media/' + image.filename} className="d-block w-100" alt={`Imagen ${imageIndex + 1} del producto ${index + 1}`} />
                         </div>
                       ))}
@@ -195,6 +200,7 @@ export const ProductSelect = () => {
             </div>
           </div>
         ))}
+
       </main>
     </>
   )
