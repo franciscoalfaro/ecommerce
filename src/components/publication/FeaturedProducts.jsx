@@ -43,7 +43,7 @@ export const FeaturedProducts = () => {
                 }
             })
             const data = await request.json()
-            console.log(data)
+           
             if (data.status === 'success') {
                 setFeaturedproduct(data.products)
                 setTotalPages(data.totalPages)

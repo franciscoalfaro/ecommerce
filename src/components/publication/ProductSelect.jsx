@@ -32,7 +32,7 @@ export const ProductSelect = () => {
         }
       })
       const data = await request.json()
-      console.log(data)
+    
       if (data.status === 'success') {
         setProductSelect([data.product]) // Cambiar a data.product
 

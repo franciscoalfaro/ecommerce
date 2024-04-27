@@ -31,7 +31,7 @@ export const Orders = () => {
 
       if (data.status === "success") {
         setOrder(data.order)
-        console.log(data.order)
+      
       } else {
         console.log('code', data.message)
       }
@@ -51,9 +51,7 @@ export const Orders = () => {
 
 
   const getOrder = async (order) => {
-    console.log('getorder', order)
-
-
+    
     let numeroOrder = order.orderNumber
     setError(null);
 
@@ -77,7 +75,7 @@ export const Orders = () => {
 
       if (data.status === 'success') {
         setOrderNume(data.order);
-        console.log(data.order)
+       
       } else {
         setError('Error al obtener el número de orden')
       }

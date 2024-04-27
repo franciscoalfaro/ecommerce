@@ -42,7 +42,7 @@ export const BestSellers = () => {
                 }
             })
             const data = await request.json()
-            console.log('best seller', data)
+            
             if (data.status === 'success') {
                 setBestseller(data.products)
                 setTotalPages(data.totalPages)

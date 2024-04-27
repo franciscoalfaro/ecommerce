@@ -45,7 +45,7 @@ export const Offers = () => {
                 }
             })
             const data = await request.json()
-            console.log(data)
+      
             if (data.status === 'success') {
                 setOfferProduct(data.products)
                 setTotalPages(data.totalPages)
