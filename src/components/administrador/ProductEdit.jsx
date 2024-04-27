@@ -400,7 +400,7 @@ export const ProductEdit = () => {
                 </div>
                 <div className="col-sm-8">
                   <label htmlFor="location">Ubicación:</label>
-                  <input type="text" className="form-control" name="location" defaultValue={product.stock ? product.stock.location : 'N/A'} disabled onChange={changed} />
+                  <input type="text" className="form-control" name="location" value={product.stock ? product.stock.location : 'N/A'} disabled onChange={changed} />
                 </div>
                 <div className="col-sm-2">
                   <br></br>

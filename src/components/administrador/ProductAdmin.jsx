@@ -292,7 +292,7 @@ export const ProductAdmin = () => {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModal">Nueva Especificacion</h1>
+              <h1 className="modal-title fs-5" id="exampleModal">Nueva Categoria</h1>
               <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -305,7 +305,7 @@ export const ProductAdmin = () => {
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                  <button type="submit" className="btn btn-primary">Agregar Especificacion</button>
+                  <button type="submit" className="btn btn-primary">Agregar Categoria</button>
                 </div>
               </form>
             </div>
