@@ -16,7 +16,7 @@ export const ProductSelect = () => {
   const handleImageSelect = (imageName) => {
     setImagenSelect(imageName.filename);
   };
-
+console.log()
 
   useEffect(() => {
     productSelected()
@@ -56,7 +56,7 @@ export const ProductSelect = () => {
           {productSelect.map((product, index) => (
             <div className="row" key={index}>
               <div className="col-md-6">
-                <img src={Global.url + 'product/media/' + product.images?.[0]?.filename} className="img-fluid" alt={`Imagen 1 del producto ${index + 1}`} data-bs-toggle="modal" data-bs-target={`#galleryModal${index}`} style={{ cursor: 'pointer', borderRadius: '30px' }} />
+                <img src={Global.url + 'product/media/' + product.images?.[0]?.filename} className="img-fluid" alt={`Imagen 1 del producto ${index + 1}`} data-bs-toggle="modal" data-bs-target={`#galleryModal${index}`} onClick={() => handleImageSelect(product.images?.[0])} style={{ cursor: 'pointer', borderRadius: '30px' }} />
                 <div className="row mt-3">
                   {product.images?.map((image, imageIndex) => (
                     <div className="col-4" key={imageIndex}>
