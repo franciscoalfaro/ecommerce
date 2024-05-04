@@ -181,9 +181,7 @@ export const OrderAdmin = () => {
               <ul className="list-group" key={ordenes._id}>
                 <li className="list-group-item d-flex justify-content-between align-items-center mb-2">
                   {ordenes.orderNumber}
-                  <span className={`badge ${ordenes.status === 'pending' ? 'bg-primary' : ordenes.status === 'shipped' ? 'bg-success' : ordenes.status === 'delivered' ? 'bg-info' : ordenes.status === 'canceled' ? 'bg-danger' : ''}`}>
-                    {ordenes.status}
-                  </span>
+                  <span className={`badge ${ ordenes.status === 'pending' ? 'bg-primary' :  ordenes.status === 'shipped' ? 'bg-success' : ordenes.status === 'delivered' ? 'bg-info' :ordenes.status === 'canceled' ? 'bg-danger' : ''}`}>{ordenes.status === 'pending' ? 'Pendiente' :ordenes.status === 'shipped' ? 'Enviado' :ordenes.status === 'delivered' ? 'Entregado' :ordenes.status === 'canceled' ? 'Cancelado' :ordenes.status}</span>                  
                   <i className="bi bi-x-circle" data-toggle="tooltip" data-placement="top" onClick={() => deleteOrder(ordenes._id)}title="Eliminar"></i>
                 </li>
               </ul>

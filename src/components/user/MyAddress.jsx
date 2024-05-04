@@ -42,6 +42,7 @@ export const MyAddress = () => {
         }
       });
       const data = await request.json();
+      console.log(data)
 
       if (data.status === 'success') {
         setAddress(data.address);
@@ -109,7 +110,7 @@ export const MyAddress = () => {
         Swal.fire({ position: "bottom-end", title: "Direccion actualizada correctamente", showConfirmButton: false, timer: 800 });
         getAddressList()
         closeModal2()
-      }else{
+      } else {
         console.log(data.message)
         closeModal2()
       }
@@ -172,23 +173,23 @@ export const MyAddress = () => {
 
       {address && address.length > 0 ? (
         address.map((addr, index) => (
-          <div key={addr._id} className="address-container">
-            <button type="button" className="btn btn-primary" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal3">
-              {addr.nombre}
-            </button>
-            <i className="bi bi-trash" onClick={() => deleteAddress(addr._id)}></i>
-            <i className="bi bi-pencil" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal2"></i>
-          </div>
-
-
-
+          // Verificar si la dirección está marcada como eliminada
+          addr.eliminado === false ? (
+            <div key={addr._id} className="address-container">
+              <button type="button" className="btn btn-primary" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal3">
+                {addr.nombre}
+              </button>
+              <i className="bi bi-trash" onClick={() => deleteAddress(addr._id)}></i>
+              <i className="bi bi-pencil" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal2"></i>
+            </div>
+          ) : null // Si la dirección está marcada como eliminada, no mostrarla
         ))
-
       ) : (
         <div>
           Sin direcciones
         </div>
       )}
+
 
       <nav aria-label="Page navigation example">
         <ul className="pagination">

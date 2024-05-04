@@ -75,7 +75,7 @@ export const OrderSearch = () => {
                         <div key={index} className="card border-primary mb-3">
                             <div className="card-header">Orden #: {order.orderNumber}</div>
                             <div className="card-body text-primary">
-                                <p className="card-text">Estado: {order.status}</p>
+                            <p className="card-text">Estado: {order.status === 'pending' ? 'Pendiente' : order.status === 'shipped' ? 'Enviado' : order.status === 'delivered' ? 'Entregado' : order.status === 'canceled' ? 'Cancelado' : order.status}</p>
 
                                 <IntlProvider locale="es" defaultLocale="es">
                                     <p className="card-text">
@@ -103,6 +103,7 @@ export const OrderSearch = () => {
                                                 </p>
                                             </IntlProvider>
                                             <p className="card-text">Cantidad: {product.quantity}</p>
+                                            <p className="card-text">Talla: {product.size ?? 'Sin tamaño'}</p>
                                         </div>
                                     </div>
                                 ))}

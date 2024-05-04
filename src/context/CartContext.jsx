@@ -1,10 +1,13 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { Global } from '../helpers/Global';
+import useAuth from '../hooks/useAuth';
 
 
 const CartContext = createContext();
 
 
 export const CartProvider = ({ children }) => {
+  const { auth } = useAuth([])
   const [cart, setCart] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
 
@@ -20,36 +23,118 @@ export const CartProvider = ({ children }) => {
 
 
   useEffect(() => {
-    const newTotalItems = cart.reduce((total, item) => total + item.quantity, 0);
-    setTotalItems(newTotalItems);
-    
+    //const newTotalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    //setTotalItems(newTotalItems);
   }, [cart]);
 
 
-  
+
 
   //funcion para agregar los productos
-  const addToCart = (product) => {
-    const existingItemIndex = cart.findIndex((item) => item._id === product._id);
+  const addToCart = async (product) => {
+    try {
+      const existingItemIndex = cart.findIndex((item) => item._id === product._id);
+      if (existingItemIndex !== -1) {
+        const updatedCart = [...cart];
+        updatedCart[existingItemIndex].quantity += 1;
+        setCart(updatedCart);
+        Swal.fire({ position: "bottom-end", title: "producto actualizado en el carro", showConfirmButton: false, timer: 400 });
+      } else {
+        // Crear el objeto que representa el producto en el carrito
+        const cartItem = {
+          ...product,
+          quantity: 1,
+          size: product.size // Agregar el tamaño del producto al objeto del carrito
+        };
+        const updatedCart = [...cart, cartItem]; // Actualizar el carrito local
+        setCart(updatedCart);
+        Swal.fire({ position: "bottom-end", title: "producto agregado al carro", showConfirmButton: false, timer: 400 });
 
-    //si carrito hago el al list carrito si no lo creo
+        // Almacenar el carrito actualizado en el almacenamiento local
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
 
-    //hacer la consulta bk para comprobar por si por medio de mi ID existe el carrito si existe agrego los elementos que estan en el lst
+        // Si el usuario está autenticado, enviar los datos del carrito actualizado al servidor
+        if (auth && localStorage.getItem("token")) {
+          const cartData = {
+            items: updatedCart.map(item => ({
+              size: item.size,
+              product: item._id,
+              quantity: item.quantity,
+              priceunitary: item.offerprice && parseFloat(item.offerprice) > 0 ? item.offerprice : item.price
+            }))
+          };
 
-    //list carrito
+          const request = await fetch(Global.url + 'cart/create', {
+            method: 'POST',
+            body: JSON.stringify(cartData),
+            headers: {
+              'Content-Type': 'application/json',
+              "Authorization": localStorage.getItem("token")
+            },
+          });
 
-    if (existingItemIndex !== -1) {
-      const updatedCart = [...cart];
-      updatedCart[existingItemIndex].quantity += 1;
-      setCart(updatedCart);
-      Swal.fire({ position: "bottom-end", title: "producto actualizado en el carro",showConfirmButton: false,timer: 400});
-    } else {
-      setCart([...cart, { ...product, quantity: 1 }]);
-      Swal.fire({ position: "bottom-end", title: "producto agregado al carro",showConfirmButton: false,timer: 400});
+          const data = await request.json();
+          console.log('carrito creado', data);
+          if (data.status === 'success') {
+
+            // Limpiar el carrito localmente después de crearlo en el servidor
+            setCart([]);
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+           
+            // Manejar cualquier acción adicional después de agregar productos al carrito y enviarlos al servidor
+          } else {
+            console.error('Error al crear el carrito:', data.message);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error al agregar productos al carrito:', error);
     }
-    localStorage.setItem('cart', JSON.stringify(cart));
-
   };
+
+  useEffect(()=>{
+    ListCart()
+  })
+
+
+  const ListCart = async () => {
+    try {
+      const request = await fetch(Global.url + 'cart/list', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": localStorage.getItem("token")
+        },
+      });
+      const data = await request.json();
+
+      data.cart.items.map((item) => {
+        console.log('console',item.product);
+        // Aquí puedes hacer lo que necesites con cada producto, como mostrar su nombre, descripción, etc.
+      });
+
+
+
+      if (data.status === 'success') {
+
+
+        localStorage.setItem('cart', JSON.stringify(data.cart));
+
+        setCart(data.cart);
+           
+      } else {
+        // Manejar el caso en el que no se encuentre un carrito en el backend
+      }
+    } catch (error) {
+      // Manejar cualquier error que ocurra durante la solicitud
+    }
+  }
+  
+
+
+
+
+
 
 
 
@@ -72,6 +157,10 @@ export const CartProvider = ({ children }) => {
   const getTotalPrice = () => {
     return cart.reduce((total, item) => total + item.quantity * parseFloat(item.price), 0);
   };
+
+
+
+
 
 
   return (

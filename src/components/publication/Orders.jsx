@@ -109,7 +109,7 @@ export const Orders = () => {
               {order.map((order, index) => (
                 <tr key={index}>
                   <td>{order.orderNumber}</td>
-                  <td>{order.status}</td>
+                  <td className="card-text">{order.status === 'pending' ? 'Pendiente' : order.status === 'shipped' ? 'Enviado' : order.status === 'delivered' ? 'Entregado' : order.status === 'canceled' ? 'Cancelado' : order.status}</td>
                   <td>
                   <button className="btn btn-info btn-sm">Descargar Boleta</button>
                   </td>
@@ -145,8 +145,7 @@ export const Orders = () => {
                     <div key={index} className="card border-primary mb-3">
                       <div className="card-header">Orden #: {order.orderNumber}</div>
                       <div className="card-body text-primary">
-                        <p className="card-text">Estado: {order.status}</p>
-
+                        <p className="card-text">Estado: {order.status === 'pending' ? 'Pendiente' : order.status === 'shipped' ? 'Enviado' : order.status === 'delivered' ? 'Entregado' : order.status === 'canceled' ? 'Cancelado' : order.status}</p>
                         <IntlProvider locale="es" defaultLocale="es">
                           <p className="card-text">
                             Total: $<FormattedNumber value={order.totalPrice} style="currency" currency="CLP" />
@@ -174,6 +173,7 @@ export const Orders = () => {
                                   </p>
                                 </IntlProvider>
                                 <p className="card-text">Cantidad: {product.quantity}</p>
+                                <p className="card-text">Talla: {product.size ?? 'Sin tamaño'}</p>
                               </div>
                             </div>
                           ))}

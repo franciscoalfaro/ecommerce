@@ -52,6 +52,7 @@ export const CheckoutRegister = () => {
             ...form, // Copiar las propiedades existentes del objeto form
 
             products: cart.map(item => ({
+                size:item.size,
                 product: item._id,
                 quantity: item.quantity,
                 priceunitary: item.offerprice && parseFloat(item.offerprice) > 0 ? item.offerprice : item.price
@@ -178,6 +179,7 @@ export const CheckoutRegister = () => {
                                         <h6 className="my-0">{item.name}</h6>
                                         <small className="text-body-secondary">{item.description}</small>
                                         <p onChange={changed}>cantidad {item.quantity}</p>
+                                        <p onChange={changed}>Talla {item.size}</p>
                                         <button className="btn btn-danger btn-remove" onClick={() => removeFromCart(item._id)}>Eliminar</button>
                                     </div>
                                     {item.discountPercentage > 0 ? (
@@ -248,7 +250,7 @@ export const CheckoutRegister = () => {
                                 {address && address.length > 0 ? (
                                     address.map((addr, index) => (
                                         <div key={addr._id} className="address-container">
-                                            <input type="radio" key={addr._id} name="shippingAddress" value={addr._id} onChange={changed}></input>
+                                            <input type="radio" key={addr._id} required name="shippingAddress" value={addr._id} onChange={changed}></input>
                                             <label htmlFor="html">{addr.nombre}</label>
                                         </div>
                                     ))

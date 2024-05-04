@@ -18,6 +18,7 @@ export const Checkout = () => {
   //funcionamiento del carrito 
   const { cart, removeFromCart, updateQuantity, totalItems } = useCart();
 
+
   const [newOrden, setNewOrden] = useState([])
 
   //funcionamiento de seleccion de region
@@ -65,6 +66,7 @@ export const Checkout = () => {
       comuna: selectedCommune,
       region: selectedRegion,
       products: cart.map(item => ({
+        size:item.size,
         product: item._id,
         quantity: item.quantity,
         priceunitary: item.offerprice && parseFloat(item.offerprice) > 0 ? item.offerprice : item.price
@@ -153,6 +155,7 @@ export const Checkout = () => {
                         <h6 className="my-0">{item.name}</h6>
                         <small className="text-body-secondary">{item.description}</small>
                         <p onChange={changed}>cantidad {item.quantity}</p>
+                        <p onChange={changed}>Talla {item.size}</p>
                         <button className="btn btn-danger btn-remove" onClick={() => removeFromCart(item._id)}>Eliminar</button>
                       </div>
                       {item.discountPercentage > 0 ? (

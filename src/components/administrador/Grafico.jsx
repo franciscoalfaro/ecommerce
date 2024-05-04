@@ -49,7 +49,7 @@ export const Grafico = () => {
     const b = Math.floor(Math.random() * 256);
     return `rgb(${r}, ${g}, ${b})`;
   };
-  
+
   // Array de colores para los trozos de la torta
   const colores = ventas.map(() => generarColorRGB());
 
@@ -122,7 +122,6 @@ export const Grafico = () => {
   }, [ventas]);
 
   console.log('detalle', detalleVentas)
-  console.log(ventas)
 
   return (
     <div>
@@ -141,10 +140,15 @@ export const Grafico = () => {
             </thead>
             <tbody>
               {detalleVentas.detalles.map((detalle, index) => (
-                <tr key={index}>
-                  <td>{detalle.nombreProducto[0]}</td>
-                  <td>{detalle.cantidad}</td>
-                </tr>
+                // Verificar si la cantidad es mayor que 0 antes de mostrar la fila
+                detalle.cantidad > 0 && (
+                  <tr key={index}>
+                    {/* Mostrar el nombre del producto solo si está presente y no está vacío */}
+                    <td>{detalle.nombreProducto[0] ? detalle.nombreProducto[0] : ''}</td>
+                    {/* Mostrar la cantidad */}
+                    <td>{detalle.cantidad}</td>
+                  </tr>
+                )
               ))}
             </tbody>
             <tfoot>
