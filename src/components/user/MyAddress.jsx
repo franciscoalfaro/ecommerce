@@ -238,60 +238,6 @@ export const MyAddress = () => {
       </div>
 
 
-      <div className="modal fade" id="exampleModal2" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel2" >Editar</h5>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <form onSubmit={updateAddress}>
-              <div className="modal-body">
-                {selectedAddress && (
-                  <div>
-                    <div className="mb-3">
-                      <label htmlFor="nombre">Nombre:</label>
-                      <input type="text" className="form-control" id="nombre" name="nombre" defaultValue={selectedAddress.nombre} onChange={changed} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="direccion">Dirección:</label>
-                      <input type="text" className="form-control" id="direccion" name="direccion" value={selectedAddress.direccion} onChange={changed} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="numero">Número:</label>
-                      <input type="text" className="form-control" id="numero" name="numero" value={selectedAddress.numero} onChange={changed} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="phone">Teléfono:</label>
-                      <input type="text" className="form-control" id="phone" name="phone" value={selectedAddress.phone} onChange={changed} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="region">Región:</label>
-                      <input type="text" className="form-control" id="region" name="region" value={selectedAddress.region} onChange={changed} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="comuna">Comuna:</label>
-                      <input type="text" className="form-control" id="comuna" name="comuna" value={selectedAddress.comuna} onChange={changed} />
-                    </div>
-                    <div className="mb-3">
-                      <label htmlFor="ciudad">Ciudad:</label>
-                      <input type="text" className="form-control" id="ciudad" name="ciudad" value={selectedAddress.ciudad} onChange={changed} />
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="submit" className="btn btn-primary">Actualizar</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-
-
       <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -357,7 +303,71 @@ export const MyAddress = () => {
         </div>
       </div>
 
+      <div className="modal fade" id="exampleModal2" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel2" >Actualizar direccion</h5>
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <form id="CreateAdd" onSubmit={updateAddress}>
+              <div className="modal-body">
+                {selectedAddress && (
+                  <div className="container">
+                    <div className="row">
+                      <div className="col order-first">
+                        <label htmlFor="nombre">Nombre:</label>
+                        <input type="text" className="form-control" id="nombre" name="nombre" defaultValue={selectedAddress.nombre} onChange={changed} />
+                      </div>
+                      <div className="col">
+                        <label htmlFor="direccion">Dirección:</label>
+                        <input type="text" className="form-control" id="direccion" name="direccion" value={selectedAddress.direccion} onChange={changed} />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col order-first">
+                        <label htmlFor="numero">Número:</label>
+                        <input type="text" className="form-control" id="numero" name="numero" value={selectedAddress.numero} onChange={changed} />
+                      </div>
+                      <div className="col">
+                        <label htmlFor="phone">Teléfono:</label>
+                        <input type="text" className="form-control" id="phone" name="phone" value={selectedAddress.phone} onChange={changed} />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col order-first">
+                        <label htmlFor="codigoPostal">Código Postal:</label>
+                        <input type="text" className="form-control" id="codigoPostal" name="codigoPostal" value={selectedAddress.codigoPostal} onChange={changed} />
+                      </div>
+                      <div className="col">
+                        <label htmlFor="region">Región:</label>
+                        <input type="text" className="form-control" id="region" name="region" value={selectedAddress.region} onChange={changed} />
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col order-first">
+                        <label htmlFor="comuna">Comuna:</label>
+                        <input type="text" className="form-control" id="comuna" name="comuna" value={selectedAddress.comuna} onChange={changed} />
+                      </div>
+                      <div className="col">
+                        <label htmlFor="ciudad">Ciudad:</label>
+                        <input type="text" className="form-control" id="ciudad" name="ciudad" value={selectedAddress.ciudad} onChange={changed} />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="submit" className="btn btn-primary">Actualizar</button>
+              </div>
+            </form>
 
+          </div>
+        </div>
+      </div>
 
 
     </div >

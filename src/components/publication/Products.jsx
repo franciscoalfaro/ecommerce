@@ -71,7 +71,7 @@ export const Products = () => {
 
   //funcion para paginar y ocultar numeros 
   function generatePaginationNumbers(totalPages, currentPage) {
-    const maxVisiblePages = 0; // Número máximo de páginas visibles
+    const maxVisiblePages = 1; // Número máximo de páginas visibles
     const halfVisiblePages = Math.floor(maxVisiblePages / 2); // Mitad de las páginas visibles
 
     let startPage, endPage;
@@ -105,7 +105,7 @@ export const Products = () => {
 
       <section className="py-4">
         <div className="container">
-          <h2>Filtrar por</h2>
+          <h2>Filtrar por marca</h2>
           <div className="row">
             <div className="col-lg-3 col-md-4 col-sm-6 mb-4">
               <select className="form-select" value={productFilter} onChange={(e) => setProductFilter(e.target.value)}>

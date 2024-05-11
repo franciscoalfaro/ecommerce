@@ -23,8 +23,8 @@ export const CartProvider = ({ children }) => {
 
 
   useEffect(() => {
-    //const newTotalItems = cart.reduce((total, item) => total + item.quantity, 0);
-    //setTotalItems(newTotalItems);
+    const newTotalItems = cart.reduce((total, item) => total + item.quantity, 0);
+    setTotalItems(newTotalItems);
   }, [cart]);
 
 

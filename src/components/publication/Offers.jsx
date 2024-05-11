@@ -45,7 +45,7 @@ export const Offers = () => {
                 }
             })
             const data = await request.json()
-      
+
             if (data.status === 'success') {
                 setOfferProduct(data.products)
                 setTotalPages(data.totalPages)
@@ -61,6 +61,34 @@ export const Offers = () => {
         }
 
     }
+
+    //funcion para paginar y ocultar numeros 
+    function generatePaginationNumbers(totalPages, currentPage) {
+        const maxVisiblePages = 1; // Número máximo de páginas visibles
+        const halfVisiblePages = Math.floor(maxVisiblePages / 2); // Mitad de las páginas visibles
+
+        let startPage, endPage;
+
+        if (totalPages <= maxVisiblePages) {
+            startPage = 1;
+            endPage = totalPages;
+        } else {
+            if (currentPage <= halfVisiblePages) {
+                startPage = 1;
+                endPage = maxVisiblePages;
+            } else if (currentPage + halfVisiblePages >= totalPages) {
+                startPage = totalPages - maxVisiblePages + 1;
+                endPage = totalPages;
+            } else {
+                startPage = currentPage - halfVisiblePages;
+                endPage = currentPage + halfVisiblePages;
+            }
+        }
+
+        return Array.from({ length: endPage - startPage + 1 }, (_, index) => startPage + index);
+    }
+    const visiblePageNumbers = generatePaginationNumbers(totalPages, page);
+
 
     return (
         <main>
@@ -133,17 +161,19 @@ export const Offers = () => {
                     )}
 
                     <nav aria-label="Page navigation example">
-                        <ul className="pagination">
+                        <ul className="pagination justify-content-center">
                             <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-                                <a className="page-link" href="#" onClick={prevPage}>Anterior</a>
+                                <a className="page-link" href="#" onClick={prevPage}><i className="bi bi-chevron-left"></i></a>
                             </li>
-                            {Array.from({ length: totalPages }, (_, index) => (
-                                <li key={index} className={`page-item ${page === index + 1 ? 'active' : ''}`}>
-                                    <a className="page-link" href="#" onClick={() => setPage(index + 1)}>{index + 1}</a>
+                            {visiblePageNumbers.map((pageNumber) => (
+                                <li key={pageNumber} className={`page-item ${page === pageNumber ? 'active' : ''}`}>
+                                    <a className="page-link" href="#" onClick={() => setPage(pageNumber)}>{pageNumber}</a>
                                 </li>
                             ))}
                             <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
-                                <a className="page-link" href="#" onClick={nextPage}>Siguiente</a>
+                                <a className="page-link" href="#" onClick={nextPage}><i className="bi bi-chevron-right"></i></a>
+
+
                             </li>
                         </ul>
                     </nav>
