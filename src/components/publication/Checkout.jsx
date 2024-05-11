@@ -139,86 +139,57 @@ export const Checkout = () => {
           <CheckoutRegister></CheckoutRegister>
         ) : (
           <form onSubmit={generarOrden}>
-
             <div className="row g-5">
-              <div className="col-md-5 col-lg-4 order-md-last">
-                <h4 className="d-flex justify-content-between align-items-center mb-3">
-                  {auth && auth._id ? (
-                    <span className="text-primary"><NavLink to={'/auth/cart/'}>Mi Carro</NavLink></span>
-                  ) : (
-                    <span className="text-primary"><NavLink to={'/cart/'}>Mi Carro</NavLink></span>
-                  )}
-                  <span className="badge bg-primary rounded-pill">{totalItems}</span>
-                </h4>
+            <div className="col-md-5 col-lg-4 order-md-last">
+  <h4 className="d-flex justify-content-between align-items-center mb-3">
+    {auth && auth._id ? (
+      <span className="text-primary"><NavLink to={'/auth/cart/'}>Mi Carro</NavLink></span>
+    ) : (
+      <span className="text-primary"><NavLink to={'/cart/'}>Mi Carro</NavLink></span>
+    )}
+    <span className="badge bg-primary rounded-pill">{totalItems}</span>
+  </h4>
+  <ul className="list-group mb-3">
+    {cart.map((item) => (
+      <li className="list-group-item d-flex justify-content-between align-items-start" key={item._id}>
+        <div>
+          <h6 className="my-0">{item.name}</h6>
+          <small className="text-muted">{item.description}</small>
+          <div className="d-flex align-items-center mt-1">
+            <label htmlFor={`quantity_${item._id}`} className="me-2">Cantidad:</label>
+            <input type="number" id={`quantity_${item._id}`} className="form-control form-control-sm" value={item.quantity} onChange={(e) => updateQuantity(item._id, e.target.value)} />
+          </div>
+          <p className="mt-1">Talla: {item.size}</p>
+          <button className="btn btn-danger btn-sm" onClick={() => removeFromCart(item._id)}>Eliminar</button>
+        </div>
+        {item.discountPercentage > 0 ? (
+          <>
+            <IntlProvider locale="es" defaultLocale="es">
+              <p className="text-danger mb-0">
+                <ins>$<FormattedNumber value={item.offerprice} style="currency" currency="CLP" /></ins>
+                <span className="discount"> -{item.discountPercentage}%</span>
+              </p>
+            </IntlProvider>
+            <IntlProvider locale="es" defaultLocale="es">
+              <p className="text-muted mb-0">
+                <del>$<FormattedNumber value={item.price} style="currency" currency="CLP" /></del>
+              </p>
+            </IntlProvider>
+          </>
+        ) : (
+          <IntlProvider locale="es" defaultLocale="es">
+            <p className="mb-0">$<FormattedNumber value={item.price} style="currency" currency="CLP" /></p>
+          </IntlProvider>
+        )}
+      </li>
+    ))}
+    <li className="list-group-item d-flex justify-content-between">
+      <span>Precio Total: </span>
+      <strong>${getTotalPrice()}</strong>
+    </li>
+  </ul>
+</div>
 
-
-
-                <ul className="list-group mb-3" >
-                  {cart.map((item) => (
-                    <li className="list-group-item d-flex justify-content-between lh-sm" key={item._id} onChange={changed}>
-                      <div>
-                        <h6 className="my-0">{item.name}</h6>
-                        <small className="text-body-secondary">{item.description}</small>
-                        <p onChange={changed}>cantidad {item.quantity}</p>
-                        <p onChange={changed}>Talla {item.size}</p>
-                        <button className="btn btn-danger btn-remove" onClick={() => removeFromCart(item._id)}>Eliminar</button>
-                      </div>
-                      {item.discountPercentage > 0 ? (
-                        <>
-                          <IntlProvider locale="es" defaultLocale="es">
-                            <p className="card-text">
-                              <ins>$<FormattedNumber value={item.offerprice} style="currency" currency="CLP" /></ins>
-                              <span className="discount"> -{item.discountPercentage}%</span>
-                            </p>
-                          </IntlProvider>
-                          <del>
-                            <IntlProvider locale="es" defaultLocale="es">
-                              <p className="card-text">
-                                $<FormattedNumber value={item.price} style="currency" currency="CLP" onChange={changed} />
-                              </p>
-                            </IntlProvider>
-                          </del>
-
-                        </>
-                      ) : (
-
-                        <IntlProvider locale="es" defaultLocale="es">
-                          <p className="card-text">
-                            $<FormattedNumber value={item.price} style="currency" currency="CLP" />
-                          </p>
-                        </IntlProvider>
-
-                      )}
-
-                    </li>
-
-
-                  ))}
-
-                  {/* 
-                  <li className="list-group-item d-flex justify-content-between bg-body-tertiary">
-                    <div className="text-success">
-                      <h6 className="my-0">Promo code</h6>
-                      <small>EXAMPLECODE</small>
-                    </div>
-                    <span className="text-success">−$0</span>
-                  </li>
-                
-                  <form className="card p-2">
-                    <div className="input-group">
-                      <label htmlFor='promecode'></label>
-                      <input type="text" className="form-control" placeholder="Promo code" />
-                      <button type="submit" className="btn btn-secondary">Aplicar</button>
-                    </div>
-                  </form>
-                */}
-
-                  <li className="list-group-item d-flex justify-content-between">
-                    <span>Precio Total: </span>
-                    <strong>${getTotalPrice()}</strong>
-                  </li>
-                </ul>
-              </div>
 
 
               <div className="col-md-7 col-lg-8">
