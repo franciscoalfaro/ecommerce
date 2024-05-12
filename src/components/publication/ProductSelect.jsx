@@ -175,7 +175,7 @@ console.log()
         {/* Modals */}
         {productSelect.map((product, index) => (
           <div className="modal fade" id={`galleryModal${index}`} tabIndex="-1" aria-labelledby={`galleryModalLabel${index}`} aria-hidden="true" key={index}>
-            <div className="modal-dialog modal-xl">
+            <div className="modal-dialog modal-l">
               <div className="modal-content">
                 <div className="modal-body">
                   <div id={`galleryCarousel${index}`} className="carousel slide" data-bs-ride="carousel">

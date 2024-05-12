@@ -96,7 +96,7 @@ export const BestSellers = () => {
                         <div className="row">
                             {bestseller.map(product => (
                                 <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={product._id}>
-                                    <div className="card">
+                                    <div className="card product h-100">
                                         {product.images.length > 0 && (
                                             <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}>
                                                 <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name} />
