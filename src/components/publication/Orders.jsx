@@ -31,7 +31,7 @@ export const Orders = () => {
 
       if (data.status === "success") {
         setOrder(data.order)
-      
+
       } else {
         console.log('code', data.message)
       }
@@ -51,7 +51,7 @@ export const Orders = () => {
 
 
   const getOrder = async (order) => {
-    
+
     let numeroOrder = order.orderNumber
     setError(null);
 
@@ -75,7 +75,7 @@ export const Orders = () => {
 
       if (data.status === 'success') {
         setOrderNume(data.order);
-       
+
       } else {
         setError('Error al obtener el número de orden')
       }
@@ -111,7 +111,7 @@ export const Orders = () => {
                   <td>{order.orderNumber}</td>
                   <td className="card-text">{order.status === 'pending' ? 'Pendiente' : order.status === 'shipped' ? 'Enviado' : order.status === 'delivered' ? 'Entregado' : order.status === 'canceled' ? 'Cancelado' : order.status}</td>
                   <td>
-                  <button className="btn btn-info btn-sm">Descargar Boleta</button>
+                    <button className="btn btn-info btn-sm">Descargar Boleta</button>
                   </td>
                   <td>
                     <button type="button" className="btn btn-danger btn-sm me-2" onClick={() => handleAddressClick(order)} data-toggle="modal" data-target="#exampleModal"> Detalle
@@ -128,68 +128,63 @@ export const Orders = () => {
       {loading && <Spiner></Spiner>}
       {error && <p>{error}</p>}
 
-
       <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div className="modal-dialog modal-lg" role="document">
+        <div className="modal-dialog modal-dialog-centered modal-lg" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">Orden numero : </h5>
+              <h5 className="modal-title" id="exampleModalLabel">Detalle de Orden</h5>
               <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div className="modal-body">
-              {orderNume && (
-                <div>
-                  {orderNume.map((order, index) => (
-                    <div key={index} className="card border-primary mb-3">
-                      <div className="card-header">Orden #: {order.orderNumber}</div>
-                      <div className="card-body text-primary">
-                        <p className="card-text">Estado: {order.status === 'pending' ? 'Pendiente' : order.status === 'shipped' ? 'Enviado' : order.status === 'delivered' ? 'Entregado' : order.status === 'canceled' ? 'Cancelado' : order.status}</p>
-                        <IntlProvider locale="es" defaultLocale="es">
-                          <p className="card-text">
-                            Total: $<FormattedNumber value={order.totalPrice} style="currency" currency="CLP" />
-                          </p>
-                        </IntlProvider>
+            {orderNume && (
+              <div>
+                {orderNume.map((order, index) => (
+                  <div className="modal-body" key={index}>
+                    <p>Numero de orden: {order.orderNumber}</p>
+                    <p><strong>Estado:</strong> {order.status === 'pending' ? 'Pendiente' : order.status === 'shipped' ? 'Enviado' : order.status === 'delivered' ? 'Entregado' : order.status === 'canceled' ? 'Cancelado' : order.status}</p>
+                    <IntlProvider locale="es" defaultLocale="es">
+                      <p className="card-text">
+                        <strong>Total: $<FormattedNumber value={order.totalPrice} style="currency" currency="CLP" /></strong>
+                      </p>
+                    </IntlProvider>
+                    <hr className="bg-white"></hr>
+                    <p><strong>Dirección de envío</strong></p>
+                    <p className="card-text">Dirección: {order.shippingAddress.direccion}</p>
+                    <p className="card-text">Número: {order.shippingAddress.numero}</p>
+                    <p className="card-text">Región: {order.shippingAddress.region}</p>
+                    <p className="card-text">Ciudad: {order.shippingAddress.ciudad}</p>
+                    <p className="card-text">Comuna: {order.shippingAddress.comuna}</p>
+                    <p className="card-text">Teléfono: {order.shippingAddress.phone}</p>
+                    <hr className="bg-white"></hr>
+                    <p><strong>Productos</strong></p>
+                    {order.products.map((product, index) => (
+                      <div className="card bg-warning mt-3" key={index}>
+                        <div className="card-body">
+                          <h6 className="card-title">Producto #{index + 1}</h6>
+                          <p className="card-text">Nombre: {product.product.name}</p>
 
-                        <h4 className="card-title">Dirección de envío</h4>
-                        <p className="card-text">Dirección: {order.shippingAddress.direccion}</p>
-                        <p className="card-text">Número: {order.shippingAddress.numero}</p>
-                        <p className="card-text">Región: {order.shippingAddress.region}</p>
-                        <p className="card-text">Ciudad: {order.shippingAddress.ciudad}</p>
-                        <p className="card-text">Comuna: {order.shippingAddress.comuna}</p>
-                        <p className="card-text">Teléfono: {order.shippingAddress.phone}</p>
+                          <IntlProvider locale="es" defaultLocale="es">
+                            <p className="card-text">
+                              Precio unitario: $<FormattedNumber value={product.priceunitary} style="currency" currency="CLP" />
+                            </p>
+                          </IntlProvider>
 
-                        <h4 className="card-title">Productos</h4>
-                        <div className="d-flex flex-wrap">
-                          {order.products.map((product, index) => (
-                            <div key={index} className="card border-secondary mb-3 mr-3">
-                              <div className="card-header">Producto #{index + 1}</div>
-                              <div className="card-body text-secondary">
-                                <p className="card-text">Nombre: {product.product.name}</p>
-                                <IntlProvider locale="es" defaultLocale="es">
-                                  <p className="card-text">
-                                    Precio unitario: $<FormattedNumber value={product.priceunitary} style="currency" currency="CLP" />
-                                  </p>
-                                </IntlProvider>
-                                <p className="card-text">Cantidad: {product.quantity}</p>
-                                <p className="card-text">Talla: {product.size ?? 'Sin tamaño'}</p>
-                              </div>
-                            </div>
-                          ))}
+                          <p className="card-text">Cantidad: {product.quantity}</p>
+                          <p className="card-text">Talla: {product.size ?? 'Sin tamaño'}</p>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-            </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+
+
 
 
 

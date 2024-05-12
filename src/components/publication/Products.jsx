@@ -129,54 +129,46 @@ export const Products = () => {
           {products.length === 0 ? (
             <p>No existen productos.</p>
           ) : (
-            <div className="row">
+            <div className="row row-cols-1 row-cols-md-3 g-4">
               {products.map(product => (
-                <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={product._id}>
-                  <div className="card">
-
-
+                <div className="col" key={product._id}>
+                  <div className="card product h-100">
                     {product.images.length > 0 && (
                       <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}>
                         <img src={Global.url + 'product/media/' + product.images[0].filename} className="card-img-top" alt={product.name} />
                       </Link>
                     )}
-
                     <div className="card-body">
-
-                      <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}><h5 className="card-title">{product.name}</h5></Link>
-                      <p className="card-text">Marca {product.brand}</p>
+                      <Link to={auth && auth._id ? `/auth/product/${product._id}` : `/product/${product._id}`}>
+                        <h5 className="card-title product-name">{product.name}</h5>
+                      </Link>
+                      <p className="card-title product-name">Marca {product.brand}</p>
                       {product.description.split('\n').map((paragraph, index) => (
                         <p key={index}>{paragraph}</p>
                       ))}
-
                       {product.discountPercentage > 0 ? (
                         <>
                           <IntlProvider locale="es" defaultLocale="es">
-                            <p className="card-text">
+                            <p className="card-text product-price">
                               <ins>$<FormattedNumber value={product.offerprice} style="currency" currency="CLP" /></ins>
                               <span className="discount"> -{product.discountPercentage}%</span>
                             </p>
                           </IntlProvider>
                           <del>
                             <IntlProvider locale="es" defaultLocale="es">
-                              <p className="card-text">
+                              <p className="card-text product-price">
                                 $<FormattedNumber value={product.price} style="currency" currency="CLP" />
                               </p>
                             </IntlProvider>
                           </del>
-
                         </>
                       ) : (
-
-
                         <IntlProvider locale="es" defaultLocale="es">
-                          <p className="card-text">
+                          <p className="card-text product-price">
                             $<FormattedNumber value={product.price} style="currency" currency="CLP" />
                           </p>
                         </IntlProvider>
-
                       )}
-
                       {product.stock?.quantity > 0 ? (
                         <button className="btn btn-primary" onClick={() => addToCart(product)}><i className="bi bi-cart-fill"></i> Agregar al carrito</button>
                       ) : (
@@ -186,15 +178,14 @@ export const Products = () => {
                           <div>sin stock disponible</div>
                         </>
                       )}
-
                     </div>
-
                   </div>
                 </div>
               ))}
             </div>
           )}
 
+          <br></br>
           <nav aria-label="Page navigation example">
             <ul className="pagination justify-content-center">
               <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
@@ -207,8 +198,6 @@ export const Products = () => {
               ))}
               <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
                 <a className="page-link" href="#" onClick={nextPage}><i className="bi bi-chevron-right"></i></a>
-                
-                
               </li>
             </ul>
           </nav>
