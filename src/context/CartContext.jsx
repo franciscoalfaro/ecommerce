@@ -80,7 +80,7 @@ export const CartProvider = ({ children }) => {
             // Limpiar el carrito localmente después de crearlo en el servidor
             setCart([]);
             localStorage.setItem('cart', JSON.stringify(updatedCart));
-           
+
             // Manejar cualquier acción adicional después de agregar productos al carrito y enviarlos al servidor
           } else {
             console.error('Error al crear el carrito:', data.message);
@@ -92,7 +92,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     ListCart()
   })
 
@@ -109,27 +109,26 @@ export const CartProvider = ({ children }) => {
       const data = await request.json();
 
       data.cart.items.map((item) => {
-        console.log('console',item.product);
-        // Aquí puedes hacer lo que necesites con cada producto, como mostrar su nombre, descripción, etc.
+        console.log('console', item);
+
       });
-
-
 
       if (data.status === 'success') {
 
+        data.cart.items.map((item) => {
 
-        localStorage.setItem('cart', JSON.stringify(data.cart));
+          localStorage.setItem('cart', JSON.stringify(item));
+          setCart(item);
+        });
 
-        setCart(data.cart);
-           
       } else {
+        setCart([]);
         // Manejar el caso en el que no se encuentre un carrito en el backend
       }
     } catch (error) {
       // Manejar cualquier error que ocurra durante la solicitud
     }
   }
-  
 
 
 
@@ -140,10 +139,12 @@ export const CartProvider = ({ children }) => {
 
 
 
-  //funcion para remover los productos 
+
+  //funcion para remover los productos llamar al end-point para eliminar el producto del carrito
   const removeFromCart = (productId) => {
     const updatedCart = cart.filter((item) => item._id !== productId);
     setCart(updatedCart);
+
   };
 
   //funcion para actualizar la cantidad de productos. 
