@@ -131,7 +131,6 @@ export const MyAddress = () => {
 
     let newAddress = form
 
-
     try {
       const request = await fetch(Global.url + 'address/create', {
         method: "POST",
@@ -166,6 +165,11 @@ export const MyAddress = () => {
 
 
 
+  // Función para manejar el cierre del modal
+  const cerrarModal = () => {
+    const myForm = document.querySelector("#updateAddres");
+    myForm.reset();
+  };
 
   return (
     <div>
@@ -175,28 +179,24 @@ export const MyAddress = () => {
       <hr></hr>
 
       {address && address.length > 0 ? (
-        <div>
-          {address.map((addr) => (
-            !addr.eliminado && (
-              <div key={addr._id} className="address-container">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => handleAddressClick(addr)}
-                  data-toggle="modal"
-                  data-target="#exampleModal3"
-                >
-                  {addr.nombre}
-                </button>
-                <i className="bi bi-trash" onClick={() => deleteAddress(addr._id)}></i>
-                <i className="bi bi-pencil" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal2"></i>
-              </div>
-            )
-          ))}
-        </div>
+        address.map((addr, index) => (
+          // Verificar si la dirección está marcada como eliminada
+          addr.eliminado === false ? (
+            <div key={addr._id} className="address-container">
+              <button type="button" className="btn btn-primary" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal3">
+                {addr.nombre}
+              </button>
+              <i className="bi bi-trash" onClick={() => deleteAddress(addr._id)}></i>
+              <i className="bi bi-pencil" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal2"></i>
+            </div>
+          ) : null // Si la dirección está marcada como eliminada, no mostrarla
+        ))
       ) : (
-        <div>Sin direcciones</div>
+        <div>
+          Sin direcciones
+        </div>
       )}
+
 
       {totalDoc >= 4 ? (
         <nav aria-label="Page navigation example">
@@ -214,9 +214,10 @@ export const MyAddress = () => {
             </li>
           </ul>
         </nav>
-      ):(
+      ) : (
         <div></div>
       )}
+
 
 
       <div className="modal fade" id="exampleModal3" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
@@ -323,55 +324,55 @@ export const MyAddress = () => {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form id="updateAdd" onSubmit={updateAddress}>
+            <form id="updateAddres" onSubmit={updateAddress}>
               <div className="modal-body">
                 {selectedAddress && (
                   <div className="container">
                     <div className="row">
                       <div className="col order-first">
-                        <label htmlFor="nombre">Nombre:</label>
+                        <label htmlFor="nombre">Nombre: {selectedAddress.nombre}</label>
                         <input type="text" className="form-control" id="nombre" name="nombre" defaultValue={selectedAddress.nombre} onChange={changed} />
                       </div>
                       <div className="col">
                         <label htmlFor="direccion">Dirección:</label>
-                        <input type="text" className="form-control" id="direccion" name="direccion" value={selectedAddress.direccion} onChange={changed} />
+                        <input type="text" className="form-control" id="direccion" name="direccion" defaultValue={selectedAddress.direccion} onChange={changed} />
                       </div>
                     </div>
                     <div className="row">
                       <div className="col order-first">
                         <label htmlFor="numero">Número:</label>
-                        <input type="text" className="form-control" id="numero" name="numero" value={selectedAddress.numero} onChange={changed} />
+                        <input type="text" className="form-control" id="numero" name="numero" defaultValue={selectedAddress.numero} onChange={changed} />
                       </div>
                       <div className="col">
                         <label htmlFor="phone">Teléfono:</label>
-                        <input type="text" className="form-control" id="phone" name="phone" value={selectedAddress.phone} onChange={changed} />
+                        <input type="text" className="form-control" id="phone" name="phone" defaultValue={selectedAddress.phone} onChange={changed} />
                       </div>
                     </div>
                     <div className="row">
                       <div className="col order-first">
                         <label htmlFor="codigoPostal">Código Postal:</label>
-                        <input type="text" className="form-control" id="codigoPostal" name="codigoPostal" value={selectedAddress.codigoPostal} onChange={changed} />
+                        <input type="text" className="form-control" id="codigoPostal" name="codigoPostal" defaultValue={selectedAddress.codigoPostal} onChange={changed} />
                       </div>
                       <div className="col">
                         <label htmlFor="region">Región:</label>
-                        <input type="text" className="form-control" id="region" name="region" value={selectedAddress.region} onChange={changed} />
+                        <input type="text" className="form-control" id="region" name="region" defaultValue={selectedAddress.region} onChange={changed} />
                       </div>
                     </div>
                     <div className="row">
                       <div className="col order-first">
                         <label htmlFor="comuna">Comuna:</label>
-                        <input type="text" className="form-control" id="comuna" name="comuna" value={selectedAddress.comuna} onChange={changed} />
+                        <input type="text" className="form-control" id="comuna" name="comuna" defaultValue={selectedAddress.comuna} onChange={changed} />
                       </div>
                       <div className="col">
                         <label htmlFor="ciudad">Ciudad:</label>
-                        <input type="text" className="form-control" id="ciudad" name="ciudad" value={selectedAddress.ciudad} onChange={changed} />
+                        <input type="text" className="form-control" id="ciudad" name="ciudad" defaultValue={selectedAddress.ciudad} onChange={changed} />
                       </div>
                     </div>
                   </div>
                 )}
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => cerrarModal()}>Cerrar</button>
                 <button type="submit" className="btn btn-primary">Actualizar</button>
               </div>
             </form>
