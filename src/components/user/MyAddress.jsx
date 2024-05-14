@@ -10,6 +10,7 @@ export const MyAddress = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [address, setAddress] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [totalDoc, setTotalDoc] = useState(1)
   const { form, changed } = useForm()
   const closeModal = useModalClose();
   const closeModal2 = useModal2();
@@ -43,10 +44,10 @@ export const MyAddress = () => {
       });
       const data = await request.json();
       console.log(data)
-
       if (data.status === 'success') {
         setAddress(data.address);
         setTotalPages(data.totalPages)
+        setTotalDoc(data.totalDocs)
       } else {
         setAddress([]);
       }
@@ -164,6 +165,8 @@ export const MyAddress = () => {
   }
 
 
+
+
   return (
     <div>
       <h2>Mis Direcciones</h2>
@@ -172,40 +175,48 @@ export const MyAddress = () => {
       <hr></hr>
 
       {address && address.length > 0 ? (
-        address.map((addr, index) => (
-          // Verificar si la dirección está marcada como eliminada
-          addr.eliminado === false ? (
-            <div key={addr._id} className="address-container">
-              <button type="button" className="btn btn-primary" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal3">
-                {addr.nombre}
-              </button>
-              <i className="bi bi-trash" onClick={() => deleteAddress(addr._id)}></i>
-              <i className="bi bi-pencil" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal2"></i>
-            </div>
-          ) : null // Si la dirección está marcada como eliminada, no mostrarla
-        ))
-      ) : (
         <div>
-          Sin direcciones
+          {address.map((addr) => (
+            !addr.eliminado && (
+              <div key={addr._id} className="address-container">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => handleAddressClick(addr)}
+                  data-toggle="modal"
+                  data-target="#exampleModal3"
+                >
+                  {addr.nombre}
+                </button>
+                <i className="bi bi-trash" onClick={() => deleteAddress(addr._id)}></i>
+                <i className="bi bi-pencil" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal2"></i>
+              </div>
+            )
+          ))}
         </div>
+      ) : (
+        <div>Sin direcciones</div>
       )}
 
-
-      <nav aria-label="Page navigation example">
-        <ul className="pagination">
-          <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-            <a className="page-link" href="#" onClick={prevPage}>Anterior</a>
-          </li>
-          {Array.from({ length: totalPages }, (_, index) => (
-            <li key={index} className={`page-item ${page === index + 1 ? 'active' : ''}`}>
-              <a className="page-link" href="#" onClick={() => setPage(index + 1)}>{index + 1}</a>
+      {totalDoc >= 4 ? (
+        <nav aria-label="Page navigation example">
+          <ul className="pagination">
+            <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
+              <a className="page-link" href="#" onClick={prevPage}>Anterior</a>
             </li>
-          ))}
-          <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
-            <a className="page-link" href="#" onClick={nextPage}>Siguiente</a>
-          </li>
-        </ul>
-      </nav>
+            {Array.from({ length: totalPages }, (_, index) => (
+              <li key={index} className={`page-item ${page === index + 1 ? 'active' : ''}`}>
+                <a className="page-link" href="#" onClick={() => setPage(index + 1)}>{index + 1}</a>
+              </li>
+            ))}
+            <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
+              <a className="page-link" href="#" onClick={nextPage}>Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      ):(
+        <div></div>
+      )}
 
 
       <div className="modal fade" id="exampleModal3" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
@@ -312,7 +323,7 @@ export const MyAddress = () => {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <form id="CreateAdd" onSubmit={updateAddress}>
+            <form id="updateAdd" onSubmit={updateAddress}>
               <div className="modal-body">
                 {selectedAddress && (
                   <div className="container">
