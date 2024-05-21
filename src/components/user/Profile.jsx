@@ -239,7 +239,9 @@ export const Profile = () => {
       )}
     </div>
   </div>
+  <br></br>
 </section>
+
 
 
 

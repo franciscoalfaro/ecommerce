@@ -169,6 +169,7 @@ export const MyAddress = () => {
   const cerrarModal = () => {
     const myForm = document.querySelector("#updateAddres");
     myForm.reset();
+    getAddressList()
   };
 
   return (
@@ -179,18 +180,48 @@ export const MyAddress = () => {
       <hr></hr>
 
       {address && address.length > 0 ? (
-        address.map((addr, index) => (
-          // Verificar si la dirección está marcada como eliminada
-          addr.eliminado === false ? (
-            <div key={addr._id} className="address-container">
-              <button type="button" className="btn btn-primary" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal3">
-                {addr.nombre}
-              </button>
-              <i className="bi bi-trash" onClick={() => deleteAddress(addr._id)}></i>
-              <i className="bi bi-pencil" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal2"></i>
-            </div>
-          ) : null // Si la dirección está marcada como eliminada, no mostrarla
-        ))
+        <div className="row">
+          {address.map((addr, index) => (
+            // Verificar si la dirección está marcada como eliminada
+            addr.eliminado === false ? (
+              <div key={addr._id} className="col-md-4 mb-3">
+                <div className="address-container">
+                  <div>
+                    <i className="bi bi-geo-alt h1" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal3" style={{ cursor: 'pointer' }}></i>
+                    <h5>{addr.nombre}</h5>
+                    <div>
+                      <i className="bi bi-trash" onClick={() => deleteAddress(addr._id)} style={{ cursor: 'pointer' }}></i>
+                      <i className="bi bi-pencil ms-2" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal2" style={{ cursor: 'pointer' }}></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : null // Si la dirección está marcada como eliminada, no mostrarla
+          ))}
+        </div>
+      ) : (
+        <div>
+          Sin direcciones
+        </div>
+      )}
+
+
+      {address && address.length > 0 ? (
+        <ul className="list-group">
+          {address.map((addr, index) => (
+            // Verificar si la dirección está marcada como eliminada
+            addr.eliminado === false ? (
+              <li key={addr._id} className="list-group-item d-flex justify-content-between align-items-center">
+                <p onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal3" style={{ cursor: 'pointer' }}>{addr.nombre}</p>
+                <div>
+
+                  <i className="bi bi-trash" onClick={() => deleteAddress(addr._id)} style={{ cursor: 'pointer' }}></i>
+                  <i className="bi bi-pencil-square" onClick={() => handleAddressClick(addr)} data-toggle="modal" data-target="#exampleModal2" style={{ cursor: 'pointer' }}></i>
+                </div>
+              </li>
+            ) : null // Si la dirección está marcada como eliminada, no mostrarla
+          ))}
+        </ul>
       ) : (
         <div>
           Sin direcciones
@@ -320,7 +351,7 @@ export const MyAddress = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel2" >Actualizar direccion</h5>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+              <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={() => cerrarModal()}>
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -330,7 +361,7 @@ export const MyAddress = () => {
                   <div className="container">
                     <div className="row">
                       <div className="col order-first">
-                        <label htmlFor="nombre">Nombre: {selectedAddress.nombre}</label>
+                        <label htmlFor="nombre">Nombre:</label>
                         <input type="text" className="form-control" id="nombre" name="nombre" defaultValue={selectedAddress.nombre} onChange={changed} />
                       </div>
                       <div className="col">
