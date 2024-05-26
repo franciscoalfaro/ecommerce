@@ -94,7 +94,7 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     ListCart()
-  })
+  },[])
 
 
   const ListCart = async () => {

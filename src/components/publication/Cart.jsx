@@ -9,8 +9,6 @@ export const Cart = () => {
   const { auth } = useAuth({});
   const { cart, removeFromCart, updateQuantity } = useCart();
 
-  console.log(cart)
-
   const getTotalPrice = () => {
     let totalPrice = 0;
   
