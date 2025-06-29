@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import useAuth from '../../hooks/useAuth'
 import { Spiner } from '../../hooks/Spiner'
 import ReactTimeAgo from 'react-time-ago'
-import { FormattedNumber, IntlProvider } from 'react-intl'
+import { FormattedNumber } from 'react-intl'
 
 
 export const OrderSearch = () => {
@@ -87,9 +87,7 @@ export const OrderSearch = () => {
                                                 <div className="card-body">
                                                     <p><strong>Estado:</strong>{order.status === 'pending' ? 'Pendiente' : order.status === 'shipped' ? 'Enviado' : order.status === 'delivered' ? 'Entregado' : order.status === 'canceled' ? 'Cancelado' : order.status}</p>
                                                     <p>
-                                                        <IntlProvider locale="es" defaultLocale="es">
-                                                            <strong>Total: $<FormattedNumber value={order.totalPrice} style="currency" currency="CLP" /></strong>
-                                                        </IntlProvider>
+                                                        <strong>Total: $<FormattedNumber value={order.totalPrice} style="currency" currency="CLP" /></strong>
                                                     </p>
 
                                                     <hr></hr>
@@ -115,11 +113,9 @@ export const OrderSearch = () => {
                                                             <div className="card-body">
                                                                 <h6 className="card-title">Producto #1</h6>
                                                                 <p className="card-text">Nombre: {product.product && product.product.name ? product.product.name : 'N/A'}</p>
-                                                                <IntlProvider locale="es" defaultLocale="es">
-                                                                    <p className="card-text">
-                                                                        Precio unitario: $<FormattedNumber value={product.priceunitary ? product.priceunitary : 'N/A'} style="currency" currency="CLP" />
-                                                                    </p>
-                                                                </IntlProvider>
+                                                                <p className="card-text">
+                                                                    Precio unitario: $<FormattedNumber value={product.priceunitary ? product.priceunitary : 'N/A'} style="currency" currency="CLP" />
+                                                                </p>
                                                                 <p className="card-text">Cantidad: {product.quantity}</p>
                                                                 <p className="card-text">Talla: {product.size ?? 'Sin tamaño'}</p>
                                                             </div>

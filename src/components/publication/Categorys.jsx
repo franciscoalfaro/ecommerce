@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Global } from '../../helpers/Global';
 import useAuth from '../../hooks/useAuth';
-import { IntlProvider, FormattedNumber } from 'react-intl'
+import { FormattedNumber } from 'react-intl'
 import useCart from '../../hooks/useCart';
 
 export const Categorys = () => {
@@ -109,29 +109,22 @@ export const Categorys = () => {
 
                     {product.discountPercentage > 0 ? (
                         <>
-                          <IntlProvider locale="es" defaultLocale="es">
-                            <p className="card-text">
-                              <ins>$<FormattedNumber value={product.offerprice} style="currency" currency="CLP" /></ins>
-                              <span className="discount"> -{product.discountPercentage}%</span>
-                            </p>
-                          </IntlProvider>
+                          <p className="card-text">
+                            <ins>$<FormattedNumber value={product.offerprice} style="currency" currency="CLP" /></ins>
+                            <span className="discount"> -{product.discountPercentage}%</span>
+                          </p>
                           <del>
-                            <IntlProvider locale="es" defaultLocale="es">
-                              <p className="card-text">
-                                $<FormattedNumber value={product.price} style="currency" currency="CLP" />
-                              </p>
-                            </IntlProvider>
+                            <p className="card-text">
+                              $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                            </p>
                           </del>
 
                         </>
                       ) : (
 
-
-                        <IntlProvider locale="es" defaultLocale="es">
-                          <p className="card-text">
-                            $<FormattedNumber value={product.price} style="currency" currency="CLP" />
-                          </p>
-                        </IntlProvider>
+                        <p className="card-text">
+                          $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                        </p>
 
                       )}
 

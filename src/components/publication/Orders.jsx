@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ComisionTransaccion } from './ComisionTransaccion'
 import useAuth from '../../hooks/useAuth';
 import { Global } from '../../helpers/Global';
-import { FormattedNumber, IntlProvider } from 'react-intl';
+import { FormattedNumber } from 'react-intl';
 import { Spiner } from '../../hooks/Spiner';
 
 export const Orders = () => {
@@ -143,11 +143,9 @@ export const Orders = () => {
                   <div className="modal-body" key={index}>
                     <p>Numero de orden: {order.orderNumber}</p>
                     <p><strong>Estado:</strong> {order.status === 'pending' ? 'Pendiente' : order.status === 'shipped' ? 'Enviado' : order.status === 'delivered' ? 'Entregado' : order.status === 'canceled' ? 'Cancelado' : order.status}</p>
-                    <IntlProvider locale="es" defaultLocale="es">
-                      <p className="card-text">
-                        <strong>Total: $<FormattedNumber value={order.totalPrice} style="currency" currency="CLP" /></strong>
-                      </p>
-                    </IntlProvider>
+                    <p className="card-text">
+                      <strong>Total: $<FormattedNumber value={order.totalPrice} style="currency" currency="CLP" /></strong>
+                    </p>
                     <hr className="bg-white"></hr>
                     <p><strong>Dirección de envío</strong></p>
                     <p className="card-text">Dirección: {order.shippingAddress.direccion}</p>
@@ -164,11 +162,9 @@ export const Orders = () => {
                           <h6 className="card-title">Producto #{index + 1}</h6>
                           <p className="card-text">Nombre: {product.product.name}</p>
 
-                          <IntlProvider locale="es" defaultLocale="es">
-                            <p className="card-text">
-                              Precio unitario: $<FormattedNumber value={product.priceunitary} style="currency" currency="CLP" />
-                            </p>
-                          </IntlProvider>
+                          <p className="card-text">
+                            Precio unitario: $<FormattedNumber value={product.priceunitary} style="currency" currency="CLP" />
+                          </p>
 
                           <p className="card-text">Cantidad: {product.quantity}</p>
                           <p className="card-text">Talla: {product.size ?? 'Sin tamaño'}</p>

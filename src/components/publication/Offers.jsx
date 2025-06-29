@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Global } from '../../helpers/Global'
 import useCart from '../../hooks/useCart'
-import { IntlProvider, FormattedNumber } from 'react-intl'
+import { FormattedNumber } from 'react-intl'
 import useAuth from '../../hooks/useAuth'
 import { Link } from 'react-router-dom'
 
@@ -260,9 +260,7 @@ export const Offers = () => {
                         <div className="space-y-1">
                           <div className="flex items-center space-x-2">
                             <span className="text-2xl font-bold text-danger-600">
-                              <IntlProvider locale="es" defaultLocale="es">
-                                $<FormattedNumber value={product.offerprice} style="currency" currency="CLP" />
-                              </IntlProvider>
+                              $<FormattedNumber value={product.offerprice} style="currency" currency="CLP" />
                             </span>
                             <span className="bg-danger-100 text-danger-800 text-xs font-bold px-2 py-1 rounded-full">
                               -{product.discountPercentage}%
@@ -270,9 +268,7 @@ export const Offers = () => {
                           </div>
                           <div className="flex items-center space-x-2">
                             <span className="text-sm text-gray-500 line-through">
-                              <IntlProvider locale="es" defaultLocale="es">
-                                $<FormattedNumber value={product.price} style="currency" currency="CLP" />
-                              </IntlProvider>
+                              $<FormattedNumber value={product.price} style="currency" currency="CLP" />
                             </span>
                             <span className="text-xs text-success-600 font-medium">
                               Ahorras: $<FormattedNumber value={product.price - product.offerprice} />
@@ -281,9 +277,7 @@ export const Offers = () => {
                         </div>
                       ) : (
                         <span className="text-2xl font-bold text-primary-600">
-                          <IntlProvider locale="es" defaultLocale="es">
-                            $<FormattedNumber value={product.price} style="currency" currency="CLP" />
-                          </IntlProvider>
+                          $<FormattedNumber value={product.price} style="currency" currency="CLP" />
                         </span>
                       )}
                     </div>

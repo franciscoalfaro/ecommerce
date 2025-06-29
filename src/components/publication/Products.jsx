@@ -3,7 +3,7 @@ import { Global } from '../../helpers/Global';
 import useAuth from '../../hooks/useAuth';
 import { Link } from 'react-router-dom';
 import useCart from '../../hooks/useCart';
-import { IntlProvider, FormattedNumber } from 'react-intl'
+import { FormattedNumber } from 'react-intl'
 import { GetProducts } from '../../helpers/GetProducts';
 
 export const Products = () => {
@@ -210,25 +210,19 @@ export const Products = () => {
                       <div>
                         <div className="flex items-center space-x-2">
                           <span className="text-2xl font-bold text-primary-600">
-                            <IntlProvider locale="es" defaultLocale="es">
-                              $<FormattedNumber value={product.offerprice} style="currency" currency="CLP" />
-                            </IntlProvider>
+                            $<FormattedNumber value={product.offerprice} style="currency" currency="CLP" />
                           </span>
                           <span className="badge-danger text-xs">
                             -{product.discountPercentage}%
                           </span>
                         </div>
                         <span className="text-sm text-gray-500 line-through">
-                          <IntlProvider locale="es" defaultLocale="es">
-                            $<FormattedNumber value={product.price} style="currency" currency="CLP" />
-                          </IntlProvider>
+                          $<FormattedNumber value={product.price} style="currency" currency="CLP" />
                         </span>
                       </div>
                     ) : (
                       <span className="text-2xl font-bold text-primary-600">
-                        <IntlProvider locale="es" defaultLocale="es">
-                          $<FormattedNumber value={product.price} style="currency" currency="CLP" />
-                        </IntlProvider>
+                        $<FormattedNumber value={product.price} style="currency" currency="CLP" />
                       </span>
                     )}
                   </div>

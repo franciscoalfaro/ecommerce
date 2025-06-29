@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Chart from 'chart.js/auto';
 import { Global } from '../../helpers/Global';
-import { IntlProvider, FormattedNumber } from 'react-intl';
+import { FormattedNumber } from 'react-intl';
 
 export const Grafico = () => {
   const [ventas, setVentas] = useState([]);
@@ -155,9 +155,7 @@ export const Grafico = () => {
               <tr>
                 <td colSpan="2" className="text-end">Total</td>
                 <td>
-                  <IntlProvider locale="es" defaultLocale="es">
-                    $<FormattedNumber value={detalleVentas.venta} style="currency" currency="CLP" />
-                  </IntlProvider>
+                  $<FormattedNumber value={detalleVentas.venta} style="currency" currency="CLP" />
                 </td>
               </tr>
             </tfoot>

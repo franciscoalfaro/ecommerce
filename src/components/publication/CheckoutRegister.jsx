@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import useCart from '../../hooks/useCart';
 import { Link, NavLink, useNavigate, useParams } from 'react-router-dom';
-import { FormattedNumber, IntlProvider } from 'react-intl';
+import { FormattedNumber } from 'react-intl';
 import useAuth from '../../hooks/useAuth';
 import { useForm } from '../../hooks/useForm';
 import { regiones } from '../data/chile';
@@ -184,28 +184,22 @@ export const CheckoutRegister = () => {
                                     </div>
                                     {item.discountPercentage > 0 ? (
                                         <>
-                                            <IntlProvider locale="es" defaultLocale="es">
-                                                <p className="card-text">
-                                                    <ins>$<FormattedNumber value={item.offerprice} style="currency" currency="CLP" /></ins>
-                                                    <span className="discount"> -{item.discountPercentage}%</span>
-                                                </p>
-                                            </IntlProvider>
+                                            <p className="card-text">
+                                                <ins>$<FormattedNumber value={item.offerprice} style="currency" currency="CLP" /></ins>
+                                                <span className="discount"> -{item.discountPercentage}%</span>
+                                            </p>
                                             <del>
-                                                <IntlProvider locale="es" defaultLocale="es">
-                                                    <p className="card-text">
-                                                        $<FormattedNumber value={item.price} style="currency" currency="CLP" onChange={changed} />
-                                                    </p>
-                                                </IntlProvider>
+                                                <p className="card-text">
+                                                    $<FormattedNumber value={item.price} style="currency" currency="CLP" onChange={changed} />
+                                                </p>
                                             </del>
 
                                         </>
                                     ) : (
 
-                                        <IntlProvider locale="es" defaultLocale="es">
-                                            <p className="card-text">
-                                                $<FormattedNumber value={item.price} style="currency" currency="CLP" />
-                                            </p>
-                                        </IntlProvider>
+                                        <p className="card-text">
+                                            $<FormattedNumber value={item.price} style="currency" currency="CLP" />
+                                        </p>
 
                                     )}
 

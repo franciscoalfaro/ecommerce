@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom' // Agrega Link
 import useAuth from '../../hooks/useAuth'
 import { Global } from '../../helpers/Global'
-import { IntlProvider, FormattedNumber } from 'react-intl'
+import { FormattedNumber } from 'react-intl'
 import useCart from '../../hooks/useCart'
 
 export const ProductSelect = () => {
@@ -74,28 +74,21 @@ console.log()
                     {product.discountPercentage > 0 ? (
                       <>
                         <p className="text-muted">Precio:
-                          <IntlProvider locale="es" defaultLocale="es">
-                            <ins>$<FormattedNumber value={product.offerprice} style="currency" currency="CLP"></FormattedNumber></ins>
-                            <span className="discount"> -{product.discountPercentage}%</span>
-                          </IntlProvider>
+                          <ins>$<FormattedNumber value={product.offerprice} style="currency" currency="CLP"></FormattedNumber></ins>
+                          <span className="discount"> -{product.discountPercentage}%</span>
                         </p>
 
                         <p className="text-muted">Precio anterior:
-                          <IntlProvider locale="es" defaultLocale="es">
-                            <del>
-                              $<FormattedNumber value={product.price} style="currency" currency="CLP" />
-                            </del>
-                          </IntlProvider>
+                          <del>
+                            $<FormattedNumber value={product.price} style="currency" currency="CLP" />
+                          </del>
                         </p>
 
                       </>
                     ) : (
 
                       <p className="text-muted">Precio:
-                        <IntlProvider locale="es" defaultLocale="es">
-
-                          $<FormattedNumber value={product.price} style="currency" currency="CLP" />
-                        </IntlProvider>
+                        $<FormattedNumber value={product.price} style="currency" currency="CLP" />
                       </p>
                     )}
                     {product.description.split('\n').map((paragraph, index) => (
