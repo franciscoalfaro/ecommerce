@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Global } from '../../helpers/Global';
 import { useForm } from '../../hooks/useForm';
-import { FormattedNumber } from 'react-intl';
+import { IntlProvider, FormattedNumber } from 'react-intl';
 import useAuth from '../../hooks/useAuth';
 import { Link } from 'react-router-dom';
 import { GetProducts } from '../../helpers/GetProducts';
@@ -254,11 +254,15 @@ export const GestionProduct = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
-                          <FormattedNumber value={prod.price} style="currency" currency="CLP" />
+                          <IntlProvider locale="es" defaultLocale="es">
+                            <FormattedNumber value={prod.price} style="currency" currency="CLP" />
+                          </IntlProvider>
                         </div>
                         {prod.offerprice && prod.offerprice > 0 && (
                           <div className="text-sm text-success-600">
-                            Oferta: <FormattedNumber value={prod.offerprice} style="currency" currency="CLP" />
+                            <IntlProvider locale="es" defaultLocale="es">
+                              Oferta: <FormattedNumber value={prod.offerprice} style="currency" currency="CLP" />
+                            </IntlProvider>
                           </div>
                         )}
                       </td>

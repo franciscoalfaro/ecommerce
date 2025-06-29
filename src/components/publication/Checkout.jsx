@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { regiones } from '../data/chile';
 import useCart from '../../hooks/useCart';
-import { FormattedNumber } from 'react-intl';
+import { FormattedNumber, IntlProvider } from 'react-intl';
 import { Global } from '../../helpers/Global';
 import { useForm } from '../../hooks/useForm';
 import { CheckoutRegister } from './CheckoutRegister';
@@ -164,16 +164,22 @@ export const Checkout = () => {
         </div>
         {item.discountPercentage > 0 ? (
           <>
-            <p className="text-danger mb-0">
-              <ins>$<FormattedNumber value={item.offerprice} style="currency" currency="CLP" /></ins>
-              <span className="discount"> -{item.discountPercentage}%</span>
-            </p>
-            <p className="text-muted mb-0">
-              <del>$<FormattedNumber value={item.price} style="currency" currency="CLP" /></del>
-            </p>
+            <IntlProvider locale="es" defaultLocale="es">
+              <p className="text-danger mb-0">
+                <ins>$<FormattedNumber value={item.offerprice} style="currency" currency="CLP" /></ins>
+                <span className="discount"> -{item.discountPercentage}%</span>
+              </p>
+            </IntlProvider>
+            <IntlProvider locale="es" defaultLocale="es">
+              <p className="text-muted mb-0">
+                <del>$<FormattedNumber value={item.price} style="currency" currency="CLP" /></del>
+              </p>
+            </IntlProvider>
           </>
         ) : (
-          <p className="mb-0">$<FormattedNumber value={item.price} style="currency" currency="CLP" /></p>
+          <IntlProvider locale="es" defaultLocale="es">
+            <p className="mb-0">$<FormattedNumber value={item.price} style="currency" currency="CLP" /></p>
+          </IntlProvider>
         )}
       </li>
     ))}
