@@ -7,12 +7,15 @@ export const Nav = () => {
   const [categorys, setCategorys] = useState([])
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false)
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isSearchFocused, setIsSearchFocused] = useState(false)
   const navegar = useNavigate();
   const { totalItems } = useCart();
 
   const buscador = (e) => {
     e.preventDefault()
-    let miBusqueda = e.target.search_field.value.trim()
+    const miBusqueda = searchTerm.trim()
     
     if (miBusqueda === '') {
       if (window.Swal) {
@@ -23,16 +26,27 @@ export const Nav = () => {
           toast: true,
           position: 'top-end',
           timer: 2000,
-          showConfirmButton: false
+          showConfirmButton: false,
+          background: '#fff3cd',
+          color: '#856404'
         });
       }
       return;
     }
     
     // Limpiar el campo de búsqueda
-    e.target.search_field.value = '';
+    setSearchTerm('');
+    setIsMenuOpen(false);
     
     navegar("/auth/search/" + miBusqueda, { replace: true })
+  }
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  }
+
+  const clearSearch = () => {
+    setSearchTerm('');
   }
 
   useEffect(() => {
@@ -132,22 +146,45 @@ export const Nav = () => {
             </NavLink>
           </div>
 
-          {/* Search Bar */}
-          <div className="hidden lg:flex flex-1 max-w-md mx-8">
+          {/* Enhanced Search Bar */}
+          <div className="hidden lg:flex flex-1 max-w-lg mx-8">
             <form onSubmit={buscador} className="w-full">
-              <div className="relative">
+              <div className={`relative transition-all duration-300 ${isSearchFocused ? 'transform scale-105' : ''}`}>
                 <input 
-                  name="search_field"
                   type="search" 
-                  placeholder="Buscar productos..." 
-                  className="w-full pl-10 pr-12 py-2.5 border border-gray-300 rounded-lg focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all duration-200 bg-white"
+                  placeholder="¿Qué estás buscando hoy?" 
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  onFocus={() => setIsSearchFocused(true)}
+                  onBlur={() => setIsSearchFocused(false)}
+                  className={`w-full pl-12 pr-20 py-3 border-2 rounded-xl transition-all duration-300 bg-gray-50 focus:bg-white focus:border-primary-500 focus:ring-4 focus:ring-primary-100 ${
+                    isSearchFocused ? 'border-primary-300 shadow-medium' : 'border-gray-200 hover:border-gray-300'
+                  }`}
                 />
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i className="bi bi-search text-gray-400"></i>
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <i className={`bi bi-search transition-colors duration-300 ${isSearchFocused ? 'text-primary-600' : 'text-gray-400'}`}></i>
                 </div>
+                
+                {/* Clear button */}
+                {searchTerm && (
+                  <button 
+                    type="button"
+                    onClick={clearSearch}
+                    className="absolute inset-y-0 right-12 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                  >
+                    <i className="bi bi-x-circle"></i>
+                  </button>
+                )}
+                
+                {/* Search button */}
                 <button 
                   type="submit"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-primary-600 hover:text-primary-700 transition-colors duration-200"
+                  className={`absolute inset-y-0 right-0 mr-2 px-4 py-1 rounded-lg transition-all duration-300 ${
+                    searchTerm 
+                      ? 'bg-primary-600 text-white hover:bg-primary-700 shadow-md' 
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  }`}
+                  disabled={!searchTerm}
                 >
                   <i className="bi bi-arrow-right"></i>
                 </button>
@@ -156,34 +193,58 @@ export const Nav = () => {
           </div>
 
           {/* Right Side Actions */}
-          <div className="flex items-center space-x-3">
-            {/* User Menu */}
-            <div className="relative group">
-              <button className="flex items-center space-x-2 p-2 text-gray-700 hover:text-primary-600 transition-colors duration-200">
-                <i className="bi bi-person-circle text-xl"></i>
+          <div className="flex items-center space-x-4">
+            {/* Enhanced User Menu */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                className="flex items-center space-x-2 p-2 text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all duration-200"
+              >
+                <div className="w-8 h-8 bg-gradient-to-r from-primary-600 to-primary-700 rounded-full flex items-center justify-center">
+                  <i className="bi bi-person text-white text-sm"></i>
+                </div>
                 <i className="bi bi-chevron-down text-xs"></i>
               </button>
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-large border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-                <div className="py-2">
-                  <Link to="/auth/perfil" className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200">
-                    <i className="bi bi-person mr-2"></i>
-                    Mi Perfil
-                  </Link>
-                  <Link to="/auth/order" className="block px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200">
-                    <i className="bi bi-box-seam mr-2"></i>
-                    Mis Compras
-                  </Link>
-                  <hr className="my-2" />
-                  <Link to="/auth/logout" className="block px-4 py-2 text-danger-600 hover:bg-danger-50 transition-colors duration-200">
-                    <i className="bi bi-box-arrow-right mr-2"></i>
-                    Cerrar Sesión
-                  </Link>
+              
+              {isUserMenuOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-large border border-gray-100 z-50">
+                  <div className="py-2">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm font-semibold text-gray-900">Mi cuenta</p>
+                      <p className="text-xs text-gray-500">Gestiona tu perfil y pedidos</p>
+                    </div>
+                    <Link 
+                      to="/auth/perfil" 
+                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <i className="bi bi-person mr-3"></i>
+                      Mi Perfil
+                    </Link>
+                    <Link 
+                      to="/auth/order" 
+                      className="flex items-center px-4 py-2 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors duration-200"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <i className="bi bi-box-seam mr-3"></i>
+                      Mis Compras
+                    </Link>
+                    <hr className="my-2" />
+                    <Link 
+                      to="/auth/logout" 
+                      className="flex items-center px-4 py-2 text-danger-600 hover:bg-danger-50 transition-colors duration-200"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <i className="bi bi-box-arrow-right mr-3"></i>
+                      Cerrar Sesión
+                    </Link>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
-            {/* Cart */}
-            <Link to="/auth/cart" className="relative p-2 text-gray-700 hover:text-primary-600 transition-colors duration-200">
+            {/* Enhanced Cart */}
+            <Link to="/auth/cart" className="relative p-2 text-gray-700 hover:text-primary-600 transition-colors duration-200 hover:bg-primary-50 rounded-lg">
               <i className="bi bi-bag text-xl"></i>
               {totalItems > 0 && (
                 <span className="cart-counter">{totalItems}</span>
@@ -199,7 +260,7 @@ export const Nav = () => {
             {/* Mobile Menu Button */}
             <button 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="md:hidden p-2 text-gray-700 hover:text-primary-600 transition-colors duration-200"
+              className="md:hidden p-2 text-gray-700 hover:text-primary-600 transition-colors duration-200 hover:bg-primary-50 rounded-lg"
             >
               <i className={`bi ${isMenuOpen ? 'bi-x' : 'bi-list'} text-xl`}></i>
             </button>
@@ -208,8 +269,8 @@ export const Nav = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden border-t border-gray-100 py-4 animate-slide-up">
-            <div className="flex flex-col space-y-2">
+          <div className="md:hidden border-t border-gray-100 py-4 animate-slide-up bg-white">
+            <div className="flex flex-col space-y-3">
               <NavLink to="/" className="navbar-link" onClick={() => setIsMenuOpen(false)}>
                 <i className="bi bi-house-door mr-2"></i>
                 Inicio
@@ -220,22 +281,25 @@ export const Nav = () => {
               </NavLink>
               
               {/* Mobile Categories */}
-              <div className="px-4 py-2">
-                <div className="text-sm font-medium text-gray-700 mb-2">Categorías:</div>
-                <div className="pl-4 space-y-1">
+              <div className="px-4 py-2 bg-gray-50 rounded-lg">
+                <div className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                  <i className="bi bi-tags mr-2"></i>
+                  Categorías:
+                </div>
+                <div className="grid grid-cols-2 gap-2">
                   {categorys.length > 0 ? (
                     categorys.map(category => (
                       <Link 
                         key={category._id} 
                         to={`/auth/categorys/${category._id}`}
-                        className="block py-1 text-gray-600 hover:text-primary-600 transition-colors duration-200"
+                        className="block py-2 px-3 text-sm text-gray-600 hover:text-primary-600 hover:bg-white rounded-lg transition-all duration-200"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {category.name}
                       </Link>
                     ))
                   ) : (
-                    <div className="text-gray-500 text-sm">No hay categorías</div>
+                    <div className="text-gray-500 text-sm col-span-2">No hay categorías</div>
                   )}
                 </div>
               </div>
@@ -257,22 +321,49 @@ export const Nav = () => {
                 Seguimiento
               </NavLink>
               
-              {/* Mobile Search */}
-              <div className="pt-4">
+              {/* Mobile Logout */}
+              <div className="pt-3 border-t border-gray-100">
+                <Link 
+                  to="/auth/logout" 
+                  className="flex items-center px-4 py-2 text-danger-600 hover:bg-danger-50 rounded-lg transition-colors duration-200" 
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <i className="bi bi-box-arrow-right mr-2"></i>
+                  Cerrar Sesión
+                </Link>
+              </div>
+              
+              {/* Enhanced Mobile Search */}
+              <div className="pt-4 border-t border-gray-100">
                 <form onSubmit={(e) => { buscador(e); setIsMenuOpen(false); }}>
                   <div className="relative">
                     <input 
-                      name="search_field"
                       type="search" 
                       placeholder="Buscar productos..." 
-                      className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all duration-200"
+                      value={searchTerm}
+                      onChange={handleSearchChange}
+                      className="w-full pl-12 pr-16 py-3 border-2 border-gray-200 rounded-xl focus:ring-4 focus:ring-primary-100 focus:border-primary-500 transition-all duration-200 bg-gray-50 focus:bg-white"
                     />
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                       <i className="bi bi-search text-gray-400"></i>
                     </div>
+                    {searchTerm && (
+                      <button 
+                        type="button"
+                        onClick={clearSearch}
+                        className="absolute inset-y-0 right-12 flex items-center text-gray-400 hover:text-gray-600"
+                      >
+                        <i className="bi bi-x-circle"></i>
+                      </button>
+                    )}
                     <button 
                       type="submit"
-                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-primary-600 hover:text-primary-700"
+                      className={`absolute inset-y-0 right-0 mr-2 px-4 py-1 rounded-lg transition-all duration-300 ${
+                        searchTerm 
+                          ? 'bg-primary-600 text-white hover:bg-primary-700' 
+                          : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      }`}
+                      disabled={!searchTerm}
                     >
                       <i className="bi bi-arrow-right"></i>
                     </button>
