@@ -9,41 +9,40 @@ export const ProductAdmin = () => {
   const { form, changed } = useForm({})
   const closeModal = useModalClose();
 
-  const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-
   const [categoria, setCategorias] = useState([])
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [selectedOption, setSelectedOption] = useState('')
-
+  const [isLoading, setIsLoading] = useState(false)
 
   const opcioneDelselect = (event) => {
-    setSelectedOption(event.target.value); // Actualiza la opción seleccionada
+    setSelectedOption(event.target.value);
   };
 
-
-
-
-  //llamar eventos distintos con onchange
   const eventosDistintos = (event) => {
     opcioneDelselect(event);
     changed(event);
-
   };
-
 
   useEffect(() => {
     listCategoryAdmin()
   }, [])
 
-
   const crearProducto = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (selectedOption === "") {
-      // Mostrar mensaje de error o realizar alguna acción
-      Swal.fire({ position: "bottom-end", title: "Por favor selecciona una categoría válida", showConfirmButton: false, timer: 1500 });
-      return; // Detener el proceso de creación del producto
+      if (window.Swal) {
+        Swal.fire({ 
+          position: "bottom-end", 
+          title: "Por favor selecciona una categoría válida", 
+          showConfirmButton: false, 
+          timer: 1500,
+          icon: 'warning'
+        });
+      }
+      setIsLoading(false);
+      return;
     }
 
     let newProduct = form;
@@ -60,14 +59,30 @@ export const ProductAdmin = () => {
       const data = await request.json();
 
       const fileInput = document.querySelector("#files");
-
       const imagesAttached = fileInput && fileInput.files.length > 0;
 
-
       if (data.status === "success" && !imagesAttached) {
-        Swal.fire({ position: "bottom-end", title: "Producto creado correctamente", showConfirmButton: false, timer: 1000 });
-      } if (data.status === "error") {
-        Swal.fire({ position: "bottom-end", title: data.message, showConfirmButton: false, timer: 1000 });
+        if (window.Swal) {
+          Swal.fire({ 
+            position: "bottom-end", 
+            title: "Producto creado correctamente", 
+            showConfirmButton: false, 
+            timer: 1000,
+            icon: 'success'
+          });
+        }
+      } 
+      
+      if (data.status === "error") {
+        if (window.Swal) {
+          Swal.fire({ 
+            position: "bottom-end", 
+            title: data.message, 
+            showConfirmButton: false, 
+            timer: 1000,
+            icon: 'error'
+          });
+        }
       }
 
       const files = fileInput.files;
@@ -90,27 +105,51 @@ export const ProductAdmin = () => {
         const uploadData = await uploadRequest.json();
 
         if (uploadData.status === "success") {
-
           const myForm = document.querySelector("#product");
           myForm.reset();
           setSelectedOption('');
+          
+          if (window.Swal) {
+            Swal.fire({ 
+              position: "bottom-end", 
+              title: "Producto creado con imágenes correctamente", 
+              showConfirmButton: false, 
+              timer: 1000,
+              icon: 'success'
+            });
+          }
         } else {
-          Swal.fire({ position: "bottom-end", title: uploadData.message, showConfirmButton: false, timer: 1000 });
+          if (window.Swal) {
+            Swal.fire({ 
+              position: "bottom-end", 
+              title: uploadData.message, 
+              showConfirmButton: false, 
+              timer: 1000,
+              icon: 'error'
+            });
+          }
         }
       } else {
-        // Si no se adjuntaron imágenes, se restablece el formulario
         const myForm = document.querySelector("#product");
         myForm.reset();
         setSelectedOption('');
       }
     } catch (error) {
       console.error(error);
-      Swal.fire({ position: "bottom-end", title: "Error al crear el producto", showConfirmButton: false, timer: 1000 });
+      if (window.Swal) {
+        Swal.fire({ 
+          position: "bottom-end", 
+          title: "Error al crear el producto", 
+          showConfirmButton: false, 
+          timer: 1000,
+          icon: 'error'
+        });
+      }
+    } finally {
+      setIsLoading(false);
     }
   }
 
-
-  // Función para comprimir la imagen
   async function compressImage(file, maxWidth, maxHeight, quality) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -147,10 +186,6 @@ export const ProductAdmin = () => {
     });
   }
 
-
-
-
-
   const listCategoryAdmin = async () => {
     try {
       const request = await fetch(Global.url + "category/list/", {
@@ -159,14 +194,11 @@ export const ProductAdmin = () => {
           "Content-Type": "application/json",
           "Authorization": localStorage.getItem("token")
         }
-
       })
       const data = await request.json()
 
       if (data.status === 'success') {
-
         setCategorias(data.categorias)
-
       } else {
         setCategorias([])
         console.log('code', data.message)
@@ -176,13 +208,10 @@ export const ProductAdmin = () => {
     }
   }
 
-
   const CreateCategory = async (e) => {
     e.preventDefault()
-    console.log('aqui')
     try {
       let newCat = form;
-      console.log(form)
 
       const request = await fetch(Global.url + "category/newcategory", {
         method: "POST",
@@ -193,128 +222,259 @@ export const ProductAdmin = () => {
         }
       });
       const data = await request.json()
-      console.log(data)
+      
       if (data.status === 'success') {
         listCategoryAdmin()
         const myForm = document.querySelector("#modalForm");
         myForm.reset();
         closeModal()
+        
+        if (window.Swal) {
+          Swal.fire({ 
+            position: "bottom-end", 
+            title: "Categoría creada correctamente", 
+            showConfirmButton: false, 
+            timer: 1000,
+            icon: 'success'
+          });
+        }
       }
-
     } catch (error) {
-
+      console.error(error);
     }
-
   }
 
-
   return (
-    <div className="container mt-4">
-      <h4>Crear Nuevo Producto</h4>
-      <form id='product' onSubmit={crearProducto}>
-        <div className="mb-3">
-          <label htmlFor="name" className="form-label">Nombre del Producto</label>
-          <input type="text" className="form-control" id="nombreProducto" name='name' placeholder="Ingrese el nombre del producto" required onChange={changed}></input>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="description" className="form-label">Descripción del Producto</label>
-          <textarea className="form-control" id="description" rows="3" name='description' placeholder="Ingrese la descripción del producto" required onChange={changed}></textarea>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Crear Nuevo Producto</h1>
+          <p className="text-gray-600">Agrega un nuevo producto a tu inventario</p>
         </div>
 
-        <div className="mb-3">
-          <label htmlFor="additionalInformation" className="form-label">Informacion Adicional</label>
-          <textarea className="form-control" id="additionalInformation" rows="3" name='additionalInformation' placeholder="Informacion Adicional" required onChange={changed}></textarea>
-        </div>
-        <div className="mb-3">
-          <label htmlFor="brand" className="form-label">Marca del Producto</label>
-          <input type="text" className="form-control" id="brand" name='brand' placeholder="Marca del producto" required onChange={changed}></input>
-        </div>
+        {/* Form */}
+        <div className="card">
+          <div className="card-body">
+            <form id='product' onSubmit={crearProducto} className="space-y-6">
+              {/* Basic Information */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                    Nombre del Producto *
+                  </label>
+                  <input 
+                    type="text" 
+                    id="name" 
+                    name='name' 
+                    required 
+                    className="input-field"
+                    placeholder="Ingrese el nombre del producto"
+                    onChange={changed}
+                  />
+                </div>
 
-        <div className="mb-3">
-          <label htmlFor="size" className="form-label">Talla del Producto</label>
-          <input type="text" className="form-control" id="size" name='size' min={0} placeholder="Talla del producto" required onChange={changed}></input>
-        </div>
+                <div>
+                  <label htmlFor="brand" className="block text-sm font-medium text-gray-700 mb-2">
+                    Marca *
+                  </label>
+                  <input 
+                    type="text" 
+                    id="brand" 
+                    name='brand' 
+                    required 
+                    className="input-field"
+                    placeholder="Marca del producto"
+                    onChange={changed}
+                  />
+                </div>
+              </div>
 
-        <div className="mb-3">
+              <div>
+                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+                  Descripción *
+                </label>
+                <textarea 
+                  id="description" 
+                  rows="4" 
+                  name='description' 
+                  required 
+                  className="input-field"
+                  placeholder="Descripción detallada del producto"
+                  onChange={changed}
+                ></textarea>
+              </div>
 
+              <div>
+                <label htmlFor="additionalInformation" className="block text-sm font-medium text-gray-700 mb-2">
+                  Información Adicional
+                </label>
+                <textarea 
+                  id="additionalInformation" 
+                  rows="3" 
+                  name='additionalInformation' 
+                  className="input-field"
+                  placeholder="Información adicional del producto"
+                  onChange={changed}
+                ></textarea>
+              </div>
 
+              {/* Product Details */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <label htmlFor="size" className="block text-sm font-medium text-gray-700 mb-2">
+                    Talla/Tamaño
+                  </label>
+                  <input 
+                    type="text" 
+                    id="size" 
+                    name='size' 
+                    className="input-field"
+                    placeholder="Ej: M, L, XL"
+                    onChange={changed}
+                  />
+                </div>
 
-          <label htmlFor="gender" className="form-label">Genero</label>
-          <select className="form-control" name="gender" required onChange={changed}>
-            <option value="">Selecciona opcion</option>
-            <option value="Hombre">Hombre</option>
-            <option value="Mujer">Mujer</option>
-            <option value="Unisex">Unisex</option>
-            <option value="Nino">Nino</option>
-          </select>
-        </div>
+                <div>
+                  <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2">
+                    Género *
+                  </label>
+                  <select name="gender" required className="input-field" onChange={changed}>
+                    <option value="">Selecciona género</option>
+                    <option value="Hombre">Hombre</option>
+                    <option value="Mujer">Mujer</option>
+                    <option value="Unisex">Unisex</option>
+                    <option value="Nino">Niño</option>
+                  </select>
+                </div>
 
+                <div>
+                  <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
+                    Precio *
+                  </label>
+                  <input 
+                    type="number" 
+                    id="price" 
+                    name='price' 
+                    min={0} 
+                    required
+                    className="input-field"
+                    placeholder="0"
+                    onChange={changed}
+                  />
+                </div>
+              </div>
 
-        <div className="mb-3">
-          <label htmlFor="price" className="form-label">Precio del Producto</label>
-          <input type="number" className="form-control" id="price" name='price' min={0} placeholder="Precio del producto" onChange={changed}></input>
-        </div>
+              {/* Category */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+                    Categoría del Producto *
+                  </label>
+                  <div className="flex space-x-2">
+                    <select 
+                      id="category" 
+                      name='category' 
+                      required 
+                      value={selectedOption} 
+                      onChange={eventosDistintos}
+                      className="input-field flex-1"
+                    >
+                      <option value="">Seleccione una categoría</option>
+                      {categoria.map((categorias) => (
+                        <option key={categorias._id} value={categorias.name}>
+                          {categorias.name}
+                        </option>
+                      ))}
+                    </select>
+                    <button 
+                      type="button"
+                      className="btn-secondary"
+                      data-toggle="modal" 
+                      data-target="#exampleModal"
+                    >
+                      <i className="bi bi-plus"></i>
+                    </button>
+                  </div>
+                  <input 
+                    type="hidden" 
+                    name="categoria" 
+                    value={selectedOption} 
+                    onChange={changed} 
+                  />
+                </div>
 
-        <div className="mb-3 d-flex align-items-center">
-          <label htmlFor="crearcategoria" className="form-label me-2">Crear nueva Categoría</label>
-          <i className="bi bi-plus-circle" data-toggle="modal" data-target="#exampleModal" style={{ cursor: 'pointer' }}></i>
-        </div>
+                <div>
+                  <label htmlFor="files" className="block text-sm font-medium text-gray-700 mb-2">
+                    Imágenes del Producto
+                  </label>
+                  <input 
+                    type="file" 
+                    name='files' 
+                    id="files" 
+                    multiple 
+                    accept="image/*"
+                    className="input-field"
+                    onChange={changed}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Puedes seleccionar múltiples imágenes
+                  </p>
+                </div>
+              </div>
 
-        <div className="mb-3">
-          <div className=''>
-            <label htmlFor="categoriaProducto" className="form-label">Categoría del Producto</label>
-            <select className="form-select" id="category" name='category' required value={selectedOption} onChange={eventosDistintos}>
-              <option value="Seleccione una categoría" >Seleccione una categoría</option>
-              {categoria.map((categorias) => (
-                <option key={categorias._id} value={categorias.name}>{categorias.name}</option>
-              ))}
-            </select>
-            <input type="hidden" name="categoria" className="form-control" placeholder="Categoria" hidden value={selectedOption} onChange={changed} />
+              {/* Submit Button */}
+              <div className="flex justify-end pt-6 border-t border-gray-200">
+                {isLoading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="loading-spinner"></div>
+                    <span className="text-gray-600">Creando producto...</span>
+                  </div>
+                ) : (
+                  <button type="submit" className="btn-primary">
+                    <i className="bi bi-plus-circle mr-2"></i>
+                    Crear Producto
+                  </button>
+                )}
+              </div>
+            </form>
           </div>
         </div>
 
-
-
-
-
-        <div className="mb-3">
-          <label htmlFor="imagenProducto" className="form-label">Imagen del Producto</label>
-          <input type="file" name='files' className="form-control" id="files" multiple onChange={changed}></input>
-        </div>
-        <button type="submit" className="btn btn-primary">Subir Producto</button>
-      </form>
-
-      <br></br>
-
-      {/* abrir modal de creación de categoría */}
-
-      <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModal" aria-hidden="true">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModal">Nueva Categoria</h1>
-              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+        {/* Category Modal */}
+        <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModal" aria-hidden="true">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h1 className="modal-title fs-5" id="exampleModal">Nueva Categoría</h1>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <form id='modalForm' onSubmit={CreateCategory}>
+                  <div className="mb-3">
+                    <label htmlFor="name" className="col-form-label">Nombre de la categoría:</label>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      name='name' 
+                      id="name" 
+                      required
+                      placeholder="Ej: Electrónicos, Ropa, etc."
+                      onChange={changed}
+                    />
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" className="btn btn-primary">Crear Categoría</button>
+                  </div>
+                </form>
+              </div>
             </div>
-            <div className="modal-body">
-              <form id='modalForm' onSubmit={CreateCategory}>
-                <div className="mb-3">
-                  <label htmlFor="name" className="col-form-label">Nombre:</label>
-                  <input type="text" className="form-control" name='name' id="name" onChange={changed}></input>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                  <button type="submit" className="btn btn-primary">Agregar Categoria</button>
-                </div>
-              </form>
-            </div>
-
           </div>
         </div>
       </div>
-
-
     </div>
   );
 };
