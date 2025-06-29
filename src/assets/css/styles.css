@@ -56,7 +56,7 @@
   }
   
   .product-card {
-    @apply bg-white rounded-xl shadow-soft border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-large hover:-translate-y-1 group;
+    @apply bg-white rounded-xl shadow-soft border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-large hover:-translate-y-1;
   }
   
   .product-image {
