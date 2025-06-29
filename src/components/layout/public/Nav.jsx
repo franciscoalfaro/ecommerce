@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, NavLink, useNavigate, useParams } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { Global } from '../../../helpers/Global'
 import useAuth from '../../../hooks/useAuth'
 import useCart from '../../../hooks/useCart'
@@ -10,26 +10,20 @@ export const Nav = () => {
   const navegar = useNavigate();
   const { totalItems } = useCart();
 
-
-
   const buscador = (e) => {
     e.preventDefault()
     let miBusqueda = e.target.search_field.value
 
-    //aca paso el parametro del campo de la busquera y la derivo a la ruta donde esta
-    if (miBusqueda == '') {
+    if (miBusqueda === '') {
       console.log('debe de ingresar texto')
+      return;
     }
     navegar("search/" + miBusqueda, { replace: true })
-
   }
 
   useEffect(() => {
     listCategorys()
-
   }, [])
-
-  //llamado al end-point para listar las categorias
 
   const listCategorys = async () => {
     try {
@@ -43,82 +37,124 @@ export const Nav = () => {
 
       if (data.status === 'success') {
         setCategorys(data.categorys)
-
       } else {
         console.log(data.message)
       }
     } catch (error) {
-      console.log(data.message)
-
+      console.log(error.message)
     }
-
   }
 
-
-
-
-
   return (
-
-
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <a className="navbar-brand" href="/">Logo</a>
-      <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span className="navbar-toggler-icon"></span>
-      </button>
-      <div className="collapse navbar-collapse" id="navbarNav">
-        <ul className="navbar-nav ml-auto">
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/">Inicio</NavLink>
-          </li>
-          <li className="nav-item">
-            <NavLink className="nav-link" to="/products">Productos</NavLink>
-          </li>
-          <li className="nav-item dropdown">
-            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-              Categorías
-            </a>
-            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-              {categorys.map(category => (
-                <Link key={category._id} className="dropdown-item" to={`categorys/${category._id}`}>{category.name}</Link>))}
-            </div>
-          </li>
-
-          <li className="nav-item">
-            <Link className="nav-link" to="/offers">Ofertas</Link>
-          </li>
-          <li className="nav-item">
-            {totalItems === 0 ? (
-              <Link className="nav-link" to="/cart">
-              <i className="bi bi-cart-fill"></i> Carro
-            </Link>
-               
-            ) : (
-              <Link className="nav-link" to="/cart">
-                <i className="bi bi-cart-fill"></i> Carro ({totalItems})
+    <nav className="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+      <div className="container">
+        <Link className="navbar-brand fw-bold" to="/">
+          <i className="bi bi-shop me-2"></i>
+          TuTienda
+        </Link>
+        
+        <button 
+          className="navbar-toggler" 
+          type="button" 
+          data-bs-toggle="collapse" 
+          data-bs-target="#navbarNav" 
+          aria-controls="navbarNav"
+          aria-expanded="false" 
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
+        
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav me-auto">
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/">
+                <i className="bi bi-house me-1"></i>
+                Inicio
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink className="nav-link" to="/products">
+                <i className="bi bi-grid me-1"></i>
+                Productos
+              </NavLink>
+            </li>
+            <li className="nav-item dropdown">
+              <a 
+                className="nav-link dropdown-toggle" 
+                href="#" 
+                id="navbarDropdown" 
+                role="button" 
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i className="bi bi-tags me-1"></i>
+                Categorías
+              </a>
+              <ul className="dropdown-menu shadow">
+                {categorys.map(category => (
+                  <li key={category._id}>
+                    <Link className="dropdown-item" to={`categorys/${category._id}`}>
+                      {category.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/offers">
+                <i className="bi bi-percent me-1"></i>
+                Ofertas
               </Link>
-            )}
-          </li>
+            </li>
+          </ul>
 
-          <li className="nav-item">
-            <Link className="nav-link" to="/seguimiento">
-              <i className="bi bi-truck"></i> Seguimiento
+          <ul className="navbar-nav">
+            <li className="nav-item position-relative">
+              <Link className="nav-link" to="/cart">
+                <i className="bi bi-cart3 me-1"></i>
+                Carrito
+                {totalItems > 0 && (
+                  <span className="cart-counter">{totalItems}</span>
+                )}
+              </Link>
+            </li>
+            
+            <li className="nav-item">
+              <Link className="nav-link" to="/seguimiento">
+                <i className="bi bi-truck me-1"></i>
+                Seguimiento
+              </Link>
+            </li>
+          </ul>
+
+          <form className="d-flex me-3" onSubmit={buscador}>
+            <div className="input-group">
+              <input 
+                className="form-control" 
+                name="search_field" 
+                type="search" 
+                placeholder="Buscar productos..." 
+                aria-label="Buscar"
+              />
+              <button className="btn btn-primary" type="submit">
+                <i className="bi bi-search"></i>
+              </button>
+            </div>
+          </form>
+
+          <div className="d-flex gap-2">
+            <Link className="btn btn-primary" to="/login">
+              <i className="bi bi-box-arrow-in-right me-1"></i>
+              Iniciar sesión
             </Link>
-          </li>
-
-        </ul>
-        <form className="form-inline" onSubmit={buscador}>
-          <input className="form-control mr-sm-2" name="search_field" type="search" placeholder="Buscar" aria-label="Buscar"></input>
-          <button className="btn btn-outline-primary my-2 my-sm-0" type="submit">Buscar</button>
-        </form>
-        <Link className="btn btn-primary ml-2" to="/login">Iniciar sesión</Link>
-        <Link className="btn btn-link" to="/registro">Registrarse</Link>
+            <Link className="btn btn-outline-primary" to="/registro">
+              <i className="bi bi-person-plus me-1"></i>
+              Registrarse
+            </Link>
+          </div>
+        </div>
       </div>
     </nav>
-
-
-
   )
 }
