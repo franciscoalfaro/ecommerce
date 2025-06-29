@@ -9,6 +9,7 @@ export const Nav = () => {
   const [categorys, setCategorys] = useState([])
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false)
+  const [isAuthMenuOpen, setIsAuthMenuOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const navegar = useNavigate();
@@ -209,28 +210,57 @@ export const Nav = () => {
               Seguimiento
             </Link>
 
-            {/* Enhanced Auth Buttons */}
-            <div className="flex items-center space-x-3">
-              <Link 
-                to="/login" 
-                className="group relative overflow-hidden bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold py-2.5 px-6 rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary-300"
+            {/* Unified Auth Button */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsAuthMenuOpen(!isAuthMenuOpen)}
+                className="group relative overflow-hidden bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold py-2.5 px-5 rounded-xl shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary-300"
               >
                 <span className="relative z-10 flex items-center">
-                  <i className="bi bi-box-arrow-in-right mr-2"></i>
-                  Iniciar sesión
+                  <i className="bi bi-person-circle mr-2"></i>
+                  Identificarse
+                  <i className="bi bi-chevron-down ml-2 text-xs"></i>
                 </span>
                 <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-              </Link>
+              </button>
               
-              <Link 
-                to="/registro" 
-                className="hidden sm:inline-flex group relative overflow-hidden border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary-300 hover:shadow-md transform hover:-translate-y-0.5"
-              >
-                <span className="relative z-10 flex items-center">
-                  <i className="bi bi-person-plus mr-2"></i>
-                  Registrarse
-                </span>
-              </Link>
+              {isAuthMenuOpen && (
+                <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-large border border-gray-100 z-50">
+                  <div className="py-2">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="text-sm font-semibold text-gray-900">¡Bienvenido!</p>
+                      <p className="text-xs text-gray-500">Accede a tu cuenta o crea una nueva</p>
+                    </div>
+                    
+                    <div className="p-4 space-y-3">
+                      <Link 
+                        to="/login" 
+                        className="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-medium py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center"
+                        onClick={() => setIsAuthMenuOpen(false)}
+                      >
+                        <i className="bi bi-box-arrow-in-right mr-2"></i>
+                        Iniciar sesión
+                      </Link>
+                      
+                      <Link 
+                        to="/registro" 
+                        className="w-full border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 flex items-center justify-center"
+                        onClick={() => setIsAuthMenuOpen(false)}
+                      >
+                        <i className="bi bi-person-plus mr-2"></i>
+                        Crear cuenta
+                      </Link>
+                    </div>
+                    
+                    <div className="px-4 py-3 border-t border-gray-100 bg-gray-50 rounded-b-xl">
+                      <div className="flex items-center space-x-2 text-xs text-gray-600">
+                        <i className="bi bi-shield-check text-success-600"></i>
+                        <span>Registro rápido y seguro</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -305,7 +335,7 @@ export const Nav = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <i className="bi bi-person-plus mr-2"></i>
-                  Registrarse
+                  Crear cuenta
                 </Link>
               </div>
               
